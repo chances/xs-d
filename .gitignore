@@ -1,5 +1,9 @@
 xs-test-library
 
+# Intermediate Artifacts
+thirdparty/moddable.zip
+thirdparty/moddable/
+
 # Compiled Object files
 *.o
 *.obj

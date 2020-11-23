@@ -1,9 +1,26 @@
+CWD := $(shell pwd)
 SOURCES := $(shell find source -name '*.d')
 TARGET_OS := $(shell uname -s)
 LIBS_PATH := bin/wgpu-64-debug
 
 .DEFAULT_GOAL := docs
 all: docs
+
+thirdparty/moddable.zip:
+	wget https://github.com/Moddable-OpenSource/moddable/archive/OS201116.zip -q --show-progress -O thirdparty/moddable.zip
+thirdparty/moddable: thirdparty/moddable.zip
+	unzip thirdparty/moddable.zip -d thirdparty
+	@mv thirdparty/moddable-OS201116 thirdparty/moddable
+xs: thirdparty/moddable
+	@cd thirdparty/moddable/xs/makefiles/lin && env MODDABLE="$(CWD)/thirdparty/moddable" make -f xsc.mk
+.PHONY : xs
+xs-release:
+	@cd thirdparty/moddable/xs/makefiles/lin && env MODDABLE="$(CWD)/thirdparty/moddable" make GOAL=release -f xsc.mk
+.PHONY : xs-release
+
+source/bindings/package.d:
+	dub run dpp -- --preprocess-only --no-sys-headers --ignore-macros --include-path "$(CWD)/thirdparty/moddable/xs/includes" source/bindings/xs.dpp
+	@mv source/bindings/xs.d source/bindings/package.d
 
 EXAMPLES := bin/hello-world
 examples: $(EXAMPLES)
@@ -48,6 +65,7 @@ docs: docs/sitemap.xml
 .PHONY: docs
 
 clean:
+	rm -f source/bindings/package.d
 	rm -f bin/headless
 	rm -f $(EXAMPLES)
 	rm -f docs.json

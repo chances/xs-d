@@ -48,10 +48,17 @@
 $('#symbolSearchPane').show();</script>
 			</div>
 			<ul class="tree-view">
-				<li>
-					<div class="module ">
+				<li class="tree-view ">
+					<div class="package ">
 						<a href="./xs.html">xs</a>
 					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="./xs/bindings.html">bindings</a>
+					</div>
+				</li>
+			</ul>
 				</li>
 			</ul>
 		</nav>
@@ -117,7 +124,7 @@ $('#symbolSearchPane').show();</script>
   <a target="_blank" href="https://opensource.org/licenses/MIT">
     <img src="https://img.shields.io/badge/license%2dMIT%2dblue" alt="MIT License">
   </a>
-  <a target="_blank" rel="noopener noreferrer" href="https://github.com/chances/xs-d/workflows/xs-d%20CI/badge.svg?branch=master">
+  <a target="_blank" rel="noopener noreferrer" href="https://github.com/chances/xs-d/actions">
     <img src="https://github.com/chances/xs-d/workflows/xs-d%20CI/badge.svg?branch=master" alt="xs-d CI">
   </a>
   <!-- TODO: Add unit and/or integration tests -->
@@ -141,10 +148,19 @@ $('#symbolSearchPane').show();</script>
 				</tr>
 			<tr>
 				<td>
+					<a href="./xs/bindings.html">xs.bindings</a>
+				</td>
+				<td>
+					Bindings to the XS JavaScript Engine <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md">C API</a>
+
+				</td>
+			</tr>
+			<tr>
+				<td>
 					<a href="./xs.html">xs</a>
 				</td>
 				<td>
-					XS JavaScript engine API
+					XS JavaScript Engine API
 
 				</td>
 			</tr>

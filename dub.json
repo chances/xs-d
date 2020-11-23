@@ -1,0 +1,11 @@
+{
+	"name": "xs",
+	"description": "D bindings to the XS JavaScript engine",
+	"authors": [
+		"Chance Snow"
+	],
+	"license": "MIT",
+  "copyright": "Copyright © 2020, Chance Snow",
+  "targetType": "sourceLibrary",
+	"preGenerateCommands": []
+}

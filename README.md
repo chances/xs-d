@@ -14,3 +14,9 @@ D bindings to the XS JavaScript engine.
 ```
 
 See the [API Reference](https://chances.github.io/xs-d) and the official [XS in C](https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md) in the Moddable SDK's documentation.
+
+## License
+
+[MIT Licence](https://opensource.org/licenses/MIT)
+
+Copyright &copy; 2020 Chance Snow. All rights reserved.

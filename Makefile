@@ -26,8 +26,8 @@ EXAMPLES := bin/hello-world
 examples: $(EXAMPLES)
 .PHONY: examples
 
-HELLO_WORLD_SOURCES := $(shell find examples/headless/source -name '*.d')
-bin/headless: $(SOURCES) $(HELLO_WORLD_SOURCES)
+HELLO_WORLD_SOURCES := $(shell find examples/hello-world/source -name '*.d')
+bin/hello-world: $(SOURCES) $(HELLO_WORLD_SOURCES)
 	cd examples/hello-world && dub build
 
 hello-world: bin/hello-world

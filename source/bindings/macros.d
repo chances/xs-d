@@ -794,6 +794,19 @@ inout(xsSlot) xsGlobal(inout xsMachine* the) {
 // 	(the.scratch = (_SLOT), \
 // 	fxGetHostHandle(the, &(the.scratch)))
 
+// Arguments and Variables
+
+enum xsVars(alias xsMachine* the, alias int count) = fxVars(the, count);
+
+enum xsThis(alias xsMachine* the) = the.frame[4];
+enum xsFunction(alias xsMachine* the) = the.frame[3];
+enum xsTarget(alias xsMachine* the) = the.frame[2];
+enum xsResult(alias xsMachine* the) = the.frame[1];
+enum xsArgc(alias xsMachine* the) = the.frame[-1];
+enum xsArg(alias xsMachine* the, alias int index) = (the.frame[-2 - fxCheckArg(the, index)]);
+enum xsVarc(alias xsMachine* the) = the.scope_[0];
+enum xsVar(alias xsMachine* the, alias int index) = (the.scope_[-1 - fxCheckVar(the, index)]);
+
 // Garbage Collector
 
 void xsCollectGarbage(scope xsMachine* the) {

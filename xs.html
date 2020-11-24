@@ -67,6 +67,576 @@ $('#symbolSearchPane').show();</script>
 </p><section></section>
 
 			<section></section>
+			<section>
+				<h2>Functions</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsBoolean" class="public" href="./xs/xsBoolean.html">xsBoolean</a><span class="tableEntryAnnotation">(the, value)</span>
+							</code>
+						</td>
+						<td>Returns a Boolean slot
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsCloneMachine" class="public" href="./xs/xsCloneMachine.html">xsCloneMachine</a><span class="tableEntryAnnotation">(creation, machine, name, context)</span>
+							</code>
+						</td>
+						<td>Clone a <code class="lang-d"><span class="pln">xsMachine</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsCreateMachine" class="public" href="./xs/xsCreateMachine.html">xsCreateMachine</a><span class="tableEntryAnnotation">(creation, name, context)</span>
+							</code>
+						</td>
+						<td>Returns a machine if successful, otherwise <code class="lang-d"><span class="kwd">null</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsDeleteMachine" class="public" href="./xs/xsDeleteMachine.html">xsDeleteMachine</a><span class="tableEntryAnnotation">(the)</span>
+							</code>
+						</td>
+						<td>Free a <code class="lang-d"><span class="pln">xsMachine</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsFalse" class="public" href="./xs/xsFalse.html">xsFalse</a><span class="tableEntryAnnotation">(the)</span>
+							</code>
+						</td>
+						<td>Returns a <code class="lang-d"><span class="kwd">false</span></code> slot
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsGetContext" class="public" href="./xs/xsGetContext.html">xsGetContext</a><span class="tableEntryAnnotation">(the)</span>
+							</code>
+						</td>
+						<td>Returns a context.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsInteger" class="public" href="./xs/xsInteger.html">xsInteger</a><span class="tableEntryAnnotation">(the, value)</span>
+							</code>
+						</td>
+						<td>Returns a Number slot given an <code class="lang-d"><span class="typ">int</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsNull" class="public" href="./xs/xsNull.html">xsNull</a><span class="tableEntryAnnotation">(the)</span>
+							</code>
+						</td>
+						<td>Returns a <code class="lang-d"><span class="kwd">null</span></code> slot
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsNumber" class="public" href="./xs/xsNumber.html">xsNumber</a><span class="tableEntryAnnotation">(the, value)</span>
+							</code>
+						</td>
+						<td>Returns a Number slot given a <code class="lang-d"><span class="typ">float</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsSetContext" class="public" href="./xs/xsSetContext.html">xsSetContext</a><span class="tableEntryAnnotation">(the, context)</span>
+							</code>
+						</td>
+						<td>Sets a context.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsShareMachine" class="public" href="./xs/xsShareMachine.html">xsShareMachine</a><span class="tableEntryAnnotation">(the)</span>
+							</code>
+						</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsString" class="public" href="./xs/xsString.html">xsString</a><span class="tableEntryAnnotation">(the, value)</span>
+							</code>
+						</td>
+						<td>Returns a String slot given a <code class="lang-d"><span class="typ">string</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsStringBuffer" class="public" href="./xs/xsStringBuffer.html">xsStringBuffer</a><span class="tableEntryAnnotation">(the, buffer)</span>
+							</code>
+						</td>
+						<td>Returns a StringBuffer slot given a <code class="lang-d"><span class="typ">string</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsStringBuffer" class="public" href="./xs/xsStringBuffer.html">xsStringBuffer</a><span class="tableEntryAnnotation">(the, buffer, size)</span>
+							</code>
+						</td>
+						<td>Returns a StringBuffer slot given a <code class="lang-d"><span class="typ">char</span><span class="pun">*</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsToBoolean" class="public" href="./xs/xsToBoolean.html">xsToBoolean</a><span class="tableEntryAnnotation">(the, theSlot)</span>
+							</code>
+						</td>
+						<td>Convert a slot to a Boolean value
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsToInteger" class="public" href="./xs/xsToInteger.html">xsToInteger</a><span class="tableEntryAnnotation">(the, theSlot)</span>
+							</code>
+						</td>
+						<td>Convert a slot to a Number value represented as an <code class="lang-d"><span class="typ">int</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsToNumber" class="public" href="./xs/xsToNumber.html">xsToNumber</a><span class="tableEntryAnnotation">(the, theSlot)</span>
+							</code>
+						</td>
+						<td>Convert a slot to a Number value.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsToString" class="public" href="./xs/xsToString.html">xsToString</a><span class="tableEntryAnnotation">(the, theSlot)</span>
+							</code>
+						</td>
+						<td>Convert a slot to a String value.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsToStringBuffer" class="public" href="./xs/xsToStringBuffer.html">xsToStringBuffer</a><span class="tableEntryAnnotation">(the, theSlot, buffer)</span>
+							</code>
+						</td>
+						<td>Convert a slot to a StringBuffer value given a <code class="lang-d"><span class="typ">string</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsToStringBuffer" class="public" href="./xs/xsToStringBuffer.html">xsToStringBuffer</a><span class="tableEntryAnnotation">(the, theSlot, buffer, size)</span>
+							</code>
+						</td>
+						<td>Convert a slot to a StringBuffer value given a <code class="lang-d"><span class="typ">char</span><span class="pun">*</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsTrue" class="public" href="./xs/xsTrue.html">xsTrue</a><span class="tableEntryAnnotation">(the)</span>
+							</code>
+						</td>
+						<td>Returns a <code class="lang-d"><span class="kwd">true</span></code> slot
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsTypeOf" class="public" href="./xs/xsTypeOf.html">xsTypeOf</a><span class="tableEntryAnnotation">(the, theSlot)</span>
+							</code>
+						</td>
+						<td>Returns the <code class="lang-d"><a href="./xs/Type.html"><span class="typ">Type</span></a></code> of a slot.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsUndefined" class="public" href="./xs/xsUndefined.html">xsUndefined</a><span class="tableEntryAnnotation">(the)</span>
+							</code>
+						</td>
+						<td>Returns an <code class="lang-d"><span class="pln">undefined</span></code> slot
+</td>
+					</tr>
+				</table>
+			</section>
+			<section>
+				<h2>Enums</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="Type" class="public" href="./xs/Type.html">Type</a>
+							</code>
+						</td>
+						<td>The type of a slot.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section>
+				<h2>Manifest constants</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Type</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a id="prototypesStackIndex" class="public" href="./xs/prototypesStackIndex.html">
+								<code>prototypesStackIndex</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>Index of standard JavaScript prototypes on a <code class="lang-d"><span class="pln">xsMachine</span></code>'s stack.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="XS_FRAME_COUNT" class="public" href="./xs/XS_FRAME_COUNT.html">
+								<code>XS_FRAME_COUNT</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<a id="XS_NO_ID" class="public" href="./xs/XS_NO_ID.html">
+								<code>XS_NO_ID</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsAggregateErrorPrototype" class="public" href="./xs/xsAggregateErrorPrototype.html">
+								<code>xsAggregateErrorPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AggregateError">AggregateError</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsArrayBufferPrototype" class="public" href="./xs/xsArrayBufferPrototype.html">
+								<code>xsArrayBufferPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer">ArrayBuffer</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsArrayPrototype" class="public" href="./xs/xsArrayPrototype.html">
+								<code>xsArrayPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsBooleanPrototype" class="public" href="./xs/xsBooleanPrototype.html">
+								<code>xsBooleanPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsDataViewPrototype" class="public" href="./xs/xsDataViewPrototype.html">
+								<code>xsDataViewPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView">DataView</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsDatePrototype" class="public" href="./xs/xsDatePrototype.html">
+								<code>xsDatePrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsErrorPrototype" class="public" href="./xs/xsErrorPrototype.html">
+								<code>xsErrorPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsEvalErrorPrototype" class="public" href="./xs/xsEvalErrorPrototype.html">
+								<code>xsEvalErrorPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError">EvalError</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsFunctionPrototype" class="public" href="./xs/xsFunctionPrototype.html">
+								<code>xsFunctionPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsHostPrototype" class="public" href="./xs/xsHostPrototype.html">
+								<code>xsHostPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Host">Host</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsMapPrototype" class="public" href="./xs/xsMapPrototype.html">
+								<code>xsMapPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map">Map</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsNumberPrototype" class="public" href="./xs/xsNumberPrototype.html">
+								<code>xsNumberPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsObjectPrototype" class="public" href="./xs/xsObjectPrototype.html">
+								<code>xsObjectPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsPromisePrototype" class="public" href="./xs/xsPromisePrototype.html">
+								<code>xsPromisePrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsProxyPrototype" class="public" href="./xs/xsProxyPrototype.html">
+								<code>xsProxyPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy">Proxy</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsRangeErrorPrototype" class="public" href="./xs/xsRangeErrorPrototype.html">
+								<code>xsRangeErrorPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError">RangeError</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsReferenceErrorPrototype" class="public" href="./xs/xsReferenceErrorPrototype.html">
+								<code>xsReferenceErrorPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError">ReferenceError</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsRegExpPrototype" class="public" href="./xs/xsRegExpPrototype.html">
+								<code>xsRegExpPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp">RegExp</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsSetPrototype" class="public" href="./xs/xsSetPrototype.html">
+								<code>xsSetPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set">Set</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsStringPrototype" class="public" href="./xs/xsStringPrototype.html">
+								<code>xsStringPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsSymbolPrototype" class="public" href="./xs/xsSymbolPrototype.html">
+								<code>xsSymbolPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsSyntaxErrorPrototype" class="public" href="./xs/xsSyntaxErrorPrototype.html">
+								<code>xsSyntaxErrorPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError">SyntaxError</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsTypedArrayPrototype" class="public" href="./xs/xsTypedArrayPrototype.html">
+								<code>xsTypedArrayPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray">TypedArray</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsTypeErrorPrototype" class="public" href="./xs/xsTypeErrorPrototype.html">
+								<code>xsTypeErrorPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError">TypeError</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsURIErrorPrototype" class="public" href="./xs/xsURIErrorPrototype.html">
+								<code>xsURIErrorPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError">URIError</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsWeakMapPrototype" class="public" href="./xs/xsWeakMapPrototype.html">
+								<code>xsWeakMapPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap">WeakMap</a> prototype.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="xsWeakSetPrototype" class="public" href="./xs/xsWeakSetPrototype.html">
+								<code>xsWeakSetPrototype</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>The <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet">WeakSet</a> prototype.
+</td>
+					</tr>
+				</table>
+			</section>
 			<footer>
 				<table class="license-info">
 					<tr>

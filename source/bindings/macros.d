@@ -33,6 +33,8 @@ debug {
   }
 }
 
+// Slot
+
 /// Returns the `Type` of a slot.
 /// Params:
 /// the=A machine

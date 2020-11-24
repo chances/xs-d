@@ -84,9 +84,13 @@ unittest {
   assert(machine.the.xsTypeOf(global) == JSType.reference);
   assert(machine.the.xsHas(global, machine.the.xsID("Number")));
 
+  assert(!machine.the.xsHas(global, machine.id("foo")));
+  auto foo = machine.the.xsGet(global, machine.id("foo"));
+  assert(machine.the.xsTypeOf(foo) == JSType.undefined);
+
   machine.the.xsSet(global, machine.id("foo"), machine.the.xsInteger(1));
   assert(machine.the.xsHas(global, machine.id("foo")));
-  auto foo = machine.the.xsGet(global, machine.id("foo"));
+  foo = machine.the.xsGet(global, machine.id("foo"));
   assert(machine.the.xsTypeOf(foo) == JSType.integer);
   assert(machine.the.xsToInteger(foo) == 1);
 

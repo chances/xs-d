@@ -2,6 +2,7 @@
 
 [![DUB Package](https://img.shields.io/dub/v/xs-d.svg)](https://code.dlang.org/packages/xs-d)
 [![xs-d CI](https://github.com/chances/xs-d/workflows/xs-d%20CI/badge.svg)](https://github.com/chances/xs-d/actions)
+[![codecov](https://codecov.io/gh/chances/xs-d/branch/master/graph/badge.svg?token=U6BqigvJI6)](https://codecov.io/gh/chances/xs-d)
 
 D bindings to the XS JavaScript engine.
 

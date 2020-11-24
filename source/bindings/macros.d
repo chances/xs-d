@@ -848,6 +848,66 @@ debug {
   }
 }
 
+/* Debugger */
+
+debug {
+  ///
+	void xsDebugger(xsMachine* the, string file = __FILE__, int line = __LINE__) {
+		fxDebugger(the, cast(char*) file.toStringz, line);
+  }
+} else {
+  ///
+	void xsDebugger(xsMachine* the) {
+		fxDebugger(the, NULL, 0);
+  }
+}
+
+///
+void xsTrace(xsMachine* the, string string_) {
+	xsTrace(the, string_.toStringz);
+}
+/// ditto
+void xsTrace(xsMachine* the, const char* string_) {
+	fxReport(the, cast(char*) "%s"c.ptr, cast(char*) string_);
+}
+// TODO: xsTraceCenter
+// void xsTraceCenter(xsMachine* the, const char* string_, _ID) {
+// 	fxBubble(the, 0, string_, 0, _ID);
+// }
+// TODO: xsTraceLeft
+// void xsTraceLeft(xsMachine* the, const char* string_, _ID) {
+// 	fxBubble(the, 1, string_, 0, _ID);
+// }
+// TODO: xsTraceRight
+// void xsTraceRight(xsMachine* the, const char* string_, _ID) {
+// 	fxBubble(the, 2, string_, 0, _ID);
+// }
+// TODO: xsTraceCenterBytes
+// void xsTraceCenterBytes(_BUFFER,_LENGTH,_ID) {
+// 	fxBubble(the, 4, _BUFFER, _LENGTH, _ID);
+// }
+// TODO: xsTraceLeftBytes
+// void xsTraceLeftBytes(_BUFFER,_LENGTH,_ID) {
+// 	fxBubble(the, 5, _BUFFER, _LENGTH, _ID);
+// }
+// TODO: xsTraceRightBytes
+// void xsTraceRightBytes(_BUFFER,_LENGTH,_ID) {
+// 	fxBubble(the, 6, _BUFFER, _LENGTH, _ID);
+// }
+
+// TODO: xsLog
+// void xsLog(xsMachine* the, string format, ...) {
+// 	fxReport(the, cast(char*) format.toStringz, args);
+// }
+
+// TODO: xsLogDebug
+// #if defined(mxDebug) || 1
+// 	#define xsLogDebug(...) \
+// 		fxReport(__VA_ARGS__)
+// #else
+// 	#define xsLogDebug(...)
+// #endif
+
 // Machine
 
 /// Returns a machine if successful, otherwise `null`.

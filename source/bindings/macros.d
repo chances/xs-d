@@ -411,7 +411,7 @@ char* xsName(scope xsMachine* the, xsIndex id) {
 
 /// Tests whether an instance has a property corresponding to a particular ECMAScript property name.
 ///
-/// This macro is similar to the ECMAScript in keyword.
+/// This macro is similar to the ECMAScript `in` keyword.
 ///
 /// Params:
 /// the=A machine

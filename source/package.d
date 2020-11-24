@@ -112,6 +112,18 @@ class Machine {
     return this.value(the.xsNumber(value));
   }
 
+  /// Tests whether an instance has a property corresponding to a particular ECMAScript property name.
+  ///
+  /// This method is similar to the ECMAScript `in` keyword.
+  ///
+  /// Params:
+  /// this_=A reference to the instance to test
+  /// id=The identifier of the property to test
+  /// Returns: `true` if the instance has the property, `false` otherwise
+  bool has(const xsSlot this_, xsIndex id) {
+    return the.xsHas(this_, id);
+  }
+
   /// Get a property or item of an instance.
   ///
   /// Params:
@@ -211,14 +223,14 @@ unittest {
 
   const fooId = machine.id("foo");
   machine.set(global, fooId, machine.integer(1));
-  assert(machine.the.xsHas(global, fooId));
+  assert(machine.has(global, fooId));
   auto foo = machine.get(global, fooId);
   assert(foo.id == machine.toId(foo.slot));
   assert(foo.type == JSType.integer);
   assert(foo.integer == 1);
 
   machine.set(global, machine.id("bar"), machine.boolean(true));
-  assert(machine.the.xsHas(global, machine.id("bar")));
+  assert(machine.has(global, machine.id("bar")));
   const bar = machine.get(global, machine.id("bar"));
   assert(bar.type == JSType.boolean);
   assert(bar.boolean);

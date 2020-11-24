@@ -12,7 +12,7 @@ public import xs.bindings;
 
 /// The type of a slot.
 /// See_Also: <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#slot-types">Slot Types</a>
-enum Type : _Anonymous_0 {
+enum JSType{
   /// JS `undefined`
   undefined = xsUndefinedType,
   /// JS `null`
@@ -35,6 +35,43 @@ enum Type : _Anonymous_0 {
   bigIntX = xsBigIntXType,
   /// JS reference type
   reference = xsReferenceType,
+}
+
+///
+enum JSError {
+  noError = 0,
+  unknownError = 1,
+  evalError = 2,
+  rangeError = 3,
+  referenceError = 4,
+  syntaxError = 5,
+  typeError = 6,
+  uriError = 7,
+  errorCount = 8,
+}
+
+///
+enum MachineError {
+	debuggerExit = 0,
+  notEnoughMemoryExit = 1,
+  stackOverflowExit = 2,
+  fatalCheckExit = 3,
+  deadStripExit = 4,
+  unhandledExceptionExit = 5,
+  noMoreKeysExit = 6,
+  tooMuchComputationExit = 7,
+}
+
+/// The attributes of a property.
+enum Attribute : xsAttribute {
+	default_ = 0,
+	dontDelete = 2,
+	dontEnum = 4,
+	dontSet = 8,
+	static_ = 16,
+	isGetter = 32,
+	isSetter = 64,
+	changeAll = 30
 }
 
 pragma(inline, true):
@@ -70,9 +107,9 @@ debug {
 /// > current scope with the name `the` of type `xsMachine*`.
 ///
 /// See_Also: <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#slot-types">Slot Types</a>
-Type xsTypeOf(xsMachine* the, xsSlot theSlot) {
+JSType xsTypeOf(xsMachine* the, xsSlot theSlot) {
   the.scratch = theSlot;
-  return fxTypeOf(the, &the.scratch).to!uint.to!Type;
+  return fxTypeOf(the, &the.scratch).to!uint.to!JSType;
 }
 
 // Primitives
@@ -333,6 +370,7 @@ enum xsSlot xsProxyPrototype(alias xsMachine* the) = the.stackPrototypes[prototy
 
 /// Creates an array instance, and returns a reference to the new array instance.
 ///
+/// Examples:
 /// In ECMAScript:
 /// ---
 /// new Array(5);
@@ -348,6 +386,7 @@ xsSlot xsNewArray(xsMachine* the, int length) {
 
 /// Creates an object instance, and returns a reference to the new object instance.
 ///
+/// Examples:
 /// In ECMAScript:
 /// ---
 /// new Object();
@@ -365,6 +404,7 @@ xsSlot xsNewObject(xsMachine* the) {
 ///
 /// The `xsIsInstanceOf` macro has no equivalent in ECMAScript; scripts test instances through constructors rather than directly through prototypes. A constructor is a function that has a prototype property that is used to test instances with `isPrototypeOf`.
 ///
+/// Examples:
 /// In ECMAScript:
 /// ---
 /// if (Object.prototype.isPrototypeOf(this)) return new Object();

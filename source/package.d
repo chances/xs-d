@@ -48,7 +48,10 @@ class Machine {
   this(string name, const xsCreation creationOptions = defaultCreation) {
     import std.exception : enforce;
 
-    the = enforce(xsCreateMachine(&creationOptions, name), format!"Could not create JS virtual machine '%s'"(name));
+    the = enforce(
+      xsCreateMachine(&creationOptions, name, cast(void*) this),
+      format!"Could not create JS virtual machine '%s'"(name)
+    );
   }
   ~this() {
     if (the) the.xsDeleteMachine();

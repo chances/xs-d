@@ -704,16 +704,16 @@ enum int XS_FRAME_COUNT = 6;
 /// xsCall(xsThis, 0, xsInteger(2), xsInteger(3));
 /// ---
 xsSlot xsCall(scope xsMachine* the, xsSlot this_, int id, xsSlot[] params ...) {
-	the.xsOverflow(-XS_FRAME_COUNT-0);
-	the.fxPush(this_);
-  // TODO: Push params
   assert(params.length >= 0);
+	the.xsOverflow(-XS_FRAME_COUNT - params.length.to!int);
+	the.fxPush(this_);
+  foreach (param; params) fxPush(the, param);
 	fxCallID(the, id);
-	fxRunCount(the, 0);
+	fxRunCount(the, params.length.to!int);
 	return the.fxPop();
 }
 
-/// Call a Function.
+/// Call a Function, ignoring its result.
 ///
 /// Params:
 /// the=A machine
@@ -721,14 +721,53 @@ xsSlot xsCall(scope xsMachine* the, xsSlot this_, int id, xsSlot[] params ...) {
 /// id=The identifier of the property or item to call
 /// params=The parameter slots to pass to the function
 void xsCall_noResult(scope xsMachine* the, xsSlot this_, int id, xsSlot[] params ...) {
-	the.xsOverflow(-XS_FRAME_COUNT-0);
-	the.fxPush(this_);
-  // TODO: Push params
   assert(params.length >= 0);
+	the.xsOverflow(-XS_FRAME_COUNT - params.length.to!int);
+	the.fxPush(this_);
+  foreach (param; params) fxPush(the, param);
 	fxCallID(the, id);
-	fxRunCount(the, 0);
+	fxRunCount(the, params.length.to!int);
 	the.stack++;
 }
+
+///
+/// Params:
+/// the=A machine
+/// function_=
+/// this_=
+/// params=The parameter slots to pass to the function
+xsSlot xsCallFunction(scope xsMachine* the, xsSlot function_, xsSlot this_, xsSlot[] params ...) {
+  assert(params.length >= 0);
+	xsOverflow(the, -XS_FRAME_COUNT - params.length.to!int);
+	fxPush(the, this_);
+	fxPush(the, function_);
+	fxCall(the);
+	foreach (param; params) fxPush(the, param);
+	fxRunCount(the, params.length.to!int);
+	return fxPop(the);
+}
+
+///
+/// Params:
+/// the=A machine
+/// this_=
+/// id=The identifier of the constructor to call
+/// params=The parameter slots to pass to the constructor
+xsSlot xsNew(scope xsMachine* the, xsSlot this_, int id, xsSlot[] params ...) {
+  assert(params.length >= 0);
+	xsOverflow(the, -XS_FRAME_COUNT - params.length.to!int);
+	fxPush(the, this_);
+	fxNewID(the, id);
+  foreach (param; params) fxPush(the, param);
+	fxRunCount(the, params.length.to!int);
+	return fxPop(the);
+}
+
+// TODO: xsTest
+// #define xsTest(_SLOT) \
+// 	(xsOverflow(-1), \
+// 	fxPush(_SLOT), \
+// 	fxRunTest(the))
 
 // Globals
 
@@ -739,60 +778,87 @@ inout(xsSlot) xsGlobal(inout xsMachine* the) {
 
 // Host Constructors, Functions and Objects
 
+// TODO: xsNewHostConstructor
 // #define xsNewHostConstructor(xsCallback _CALLBACK,_LENGTH,_PROTOTYPE) \
 // 	(xsOverflow(-1), \
 // 	fxPush(_PROTOTYPE), \
 // 	fxNewHostConstructor(the, _CALLBACK, _LENGTH, xsNoID), \
 // 	fxPop())
 
+// TODO: xsNewHostConstructorObject
 // #define xsNewHostConstructorObject(xsCallback _CALLBACK,_LENGTH,_PROTOTYPE, _NAME) \
 // 	(xsOverflow(-1), \
 // 	fxPush(_PROTOTYPE), \
 // 	fxNewHostConstructor(the, _CALLBACK, _LENGTH, _NAME), \
 // 	fxPop())
 
+// TODO: xsNewHostFunction
 // #define xsNewHostFunction(xsCallback _CALLBACK,_LENGTH) \
 // 	(fxNewHostFunction(the, _CALLBACK, _LENGTH, xsNoID), \
 // 	fxPop())
 
+// TODO: xsNewHostFunctionObject
 // #define xsNewHostFunctionObject(xsCallback _CALLBACK,_LENGTH, _NAME) \
 // 	(fxNewHostFunction(the, _CALLBACK, _LENGTH, _NAME), \
 // 	fxPop())
 
+// TODO: xsNewHostInstance
 // #define xsNewHostInstance(_PROTOTYPE) \
 // 	(xsOverflow(-1), \
 // 	fxPush(_PROTOTYPE), \
 // 	fxNewHostInstance(the), \
 // 	fxPop())
 
+// TODO: xsNewHostObject
 // #define xsNewHostObject(xsDestructor destructor) \
 // 	(fxNewHostObject(the, xsDestructor destructor), \
 // 	fxPop())
 
+// TODO: xsGetHostChunk
 // #define xsGetHostChunk(_SLOT) \
 // 	(the.scratch = (_SLOT), \
 // 	fxGetHostChunk(the, &(the.scratch)))
+// TODO: xsSetHostChunk
 // #define xsSetHostChunk(_SLOT,_DATA,_SIZE) \
 // 	(the.scratch = (_SLOT), \
 // 	fxSetHostChunk(the, &(the.scratch), _DATA, _SIZE))
 
+// TODO: xsGetHostData
 // #define xsGetHostData(_SLOT) \
 // 	(the.scratch = (_SLOT), \
 // 	fxGetHostData(the, &(the.scratch)))
+// TODO: xsSetHostData
 // #define xsSetHostData(_SLOT,_DATA) \
 // 	(the.scratch = (_SLOT), \
 // 	fxSetHostData(the, &(the.scratch), _DATA))
 
+// TODO: xsGetHostDestructor
 // #define xsGetHostDestructor(_SLOT) \
 // 	(the.scratch = (_SLOT), \
 // 	fxGetHostDestructor(the, &(the.scratch)))
+// TODO: xsSetHostDestructor
 // #define xsSetHostDestructor(_SLOT,xsDestructor destructor) \
 // 	(the.scratch = (_SLOT), \
 // 	fxSetHostDestructor(the, &(the.scratch), xsDestructor destructor))
 
+// TODO: xsGetHostHandle
 // #define xsGetHostHandle(_SLOT) \
 // 	(the.scratch = (_SLOT), \
 // 	fxGetHostHandle(the, &(the.scratch)))
+
+// TODO: xsGetHostHooks
+// #define xsGetHostHooks(_SLOT) \
+// 	(the->scratch = (_SLOT), \
+// 	fxGetHostHooks(the, &(the->scratch)))
+// TODO: xsSetHostHooks
+// #define xsSetHostHooks(_SLOT,_HOOKS) \
+// 	(the->scratch = (_SLOT), \
+// 	fxSetHostHooks(the, &(the->scratch), _HOOKS))
+
+// TODO: xsBuildHosts
+// #define xsBuildHosts(_COUNT, _BUILDERS) \
+// 	(fxBuildHosts(the, _COUNT, _BUILDERS), \
+// 	fxPop())
 
 // Arguments and Variables
 

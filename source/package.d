@@ -365,9 +365,18 @@ xsSlot xsNewObject(xsMachine* the) {
 ///
 /// The `xsIsInstanceOf` macro has no equivalent in ECMAScript; scripts test instances through constructors rather than directly through prototypes. A constructor is a function that has a prototype property that is used to test instances with `isPrototypeOf`.
 ///
+/// In ECMAScript:
+/// ---
+/// if (Object.prototype.isPrototypeOf(this)) return new Object();
+/// ---
+/// In D:
+/// ---
+/// if (machine.xsIsInstanceOf(xsThis, xsObjectPrototype)) xsResult = machine.xsNewObject();
+/// ---
+///
 /// Returns: `true` if the instance has the prototype, `false` otherwise.
 /// Params:
-/// the=
+/// the=A machine
 /// instance=A reference to the instance to test
 /// prototype=A reference to the prototype to test
 bool xsIsInstanceOf(xsMachine* the, xsSlot instance, xsSlot prototype) {

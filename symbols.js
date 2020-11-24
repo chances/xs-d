@@ -111,6 +111,8 @@ var symbols = [
 {name: 'xs', kind: "module", path: './xs.html', attributes: []},
 {name: 'xs.fxAbort', kind: "functiondeclaration", path: './xs/fxAbort.html', attributes: ["extern(C)"]},
 {name: 'xs.Machine', kind: "classdeclaration", path: './xs/Machine.html', attributes: []},
+{name: 'xs.Machine.collectGarbage', kind: "functiondeclaration", path: './xs/Machine.collectGarbage.html', attributes: []},
 {name: 'xs.Machine.defaultCreation', kind: "variabledeclaration", path: './xs/Machine.defaultCreation.html', attributes: []},
+{name: 'xs.Machine.id', kind: "functiondeclaration", path: './xs/Machine.id.html', attributes: []},
 {name: 'xs.Machine.this', kind: "functiondeclaration", path: './xs/Machine.this.html', attributes: []},
 ];

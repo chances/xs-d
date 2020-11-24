@@ -111,6 +111,8 @@
 <url><loc>http://127.0.0.1/xs.html</loc></url>
 <url><loc>http://127.0.0.1/xs/fxAbort.html</loc></url>
 <url><loc>http://127.0.0.1/xs/Machine.html</loc></url>
+<url><loc>http://127.0.0.1/xs/Machine.collectGarbage.html</loc></url>
 <url><loc>http://127.0.0.1/xs/Machine.defaultCreation.html</loc></url>
+<url><loc>http://127.0.0.1/xs/Machine.id.html</loc></url>
 <url><loc>http://127.0.0.1/xs/Machine.this.html</loc></url>
 </urlset>

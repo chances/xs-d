@@ -6,6 +6,40 @@
 	],
 	"license": "MIT",
   "copyright": "Copyright © 2020, Chance Snow",
-  "targetType": "sourceLibrary",
-	"preGenerateCommands": []
+  "targetPath": "bin",
+  "targetType": "library",
+	"preGenerateCommands": [
+    "make source/bindings/package.d"
+  ],
+  "preBuildCommands": [
+    "make xs"
+  ],
+  "lflags-linux": [
+    "-Lthirdparty/moddable/build/bin/lin/debug"
+  ],
+  "configurations": [
+    {
+      "name": "static",
+      "targetType": "staticLibrary"
+    },
+    {
+      "name": "release",
+      "preBuildCommands": [
+        "make xs-release"
+      ],
+      "lflags-linux": [
+        "-Lthirdparty/moddable/build/bin/lin/release"
+      ]
+    },
+    {
+      "name": "static-release",
+      "targetType": "staticLibrary",
+      "preBuildCommands": [
+        "make xs-release"
+      ],
+      "lflags-linux": [
+        "-Lthirdparty/moddable/build/bin/lin/release"
+      ]
+    }
+  ]
 }

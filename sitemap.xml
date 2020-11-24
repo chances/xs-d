@@ -34,6 +34,8 @@
 <url><loc>http://127.0.0.1/xs/xsErrorPrototype.html</loc></url>
 <url><loc>http://127.0.0.1/xs/xsEvalErrorPrototype.html</loc></url>
 <url><loc>http://127.0.0.1/xs/xsFalse.html</loc></url>
+<url><loc>http://127.0.0.1/xs/xsFindID.html</loc></url>
+<url><loc>http://127.0.0.1/xs/xsFindID.html</loc></url>
 <url><loc>http://127.0.0.1/xs/xsFunctionPrototype.html</loc></url>
 <url><loc>http://127.0.0.1/xs/xsGet.html</loc></url>
 <url><loc>http://127.0.0.1/xs/xsGetArrayBufferData.html</loc></url>
@@ -45,9 +47,14 @@
 <url><loc>http://127.0.0.1/xs/xsHas.html</loc></url>
 <url><loc>http://127.0.0.1/xs/xsHasAt.html</loc></url>
 <url><loc>http://127.0.0.1/xs/xsHostPrototype.html</loc></url>
+<url><loc>http://127.0.0.1/xs/xsID.html</loc></url>
+<url><loc>http://127.0.0.1/xs/xsID.html</loc></url>
 <url><loc>http://127.0.0.1/xs/xsInteger.html</loc></url>
+<url><loc>http://127.0.0.1/xs/xsIsID.html</loc></url>
+<url><loc>http://127.0.0.1/xs/xsIsID.html</loc></url>
 <url><loc>http://127.0.0.1/xs/xsIsInstanceOf.html</loc></url>
 <url><loc>http://127.0.0.1/xs/xsMapPrototype.html</loc></url>
+<url><loc>http://127.0.0.1/xs/xsName.html</loc></url>
 <url><loc>http://127.0.0.1/xs/xsNewArray.html</loc></url>
 <url><loc>http://127.0.0.1/xs/xsNewObject.html</loc></url>
 <url><loc>http://127.0.0.1/xs/xsNull.html</loc></url>
@@ -76,6 +83,7 @@
 <url><loc>http://127.0.0.1/xs/xsSyntaxErrorPrototype.html</loc></url>
 <url><loc>http://127.0.0.1/xs/xsToArrayBuffer.html</loc></url>
 <url><loc>http://127.0.0.1/xs/xsToBoolean.html</loc></url>
+<url><loc>http://127.0.0.1/xs/xsToID.html</loc></url>
 <url><loc>http://127.0.0.1/xs/xsToInteger.html</loc></url>
 <url><loc>http://127.0.0.1/xs/xsToNumber.html</loc></url>
 <url><loc>http://127.0.0.1/xs/xsToString.html</loc></url>

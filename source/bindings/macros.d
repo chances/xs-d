@@ -794,6 +794,24 @@ inout(xsSlot) xsGlobal(inout xsMachine* the) {
 // 	(the.scratch = (_SLOT), \
 // 	fxGetHostHandle(the, &(the.scratch)))
 
+// Garbage Collector
+
+void xsCollectGarbage(scope xsMachine* the) {
+	fxCollectGarbage(the);
+}
+void xsEnableGarbageCollection(scope xsMachine* the, bool enableIt) {
+	fxEnableGarbageCollection(the, enableIt);
+}
+void xsRemember(scope xsMachine* the, xsSlot slot) {
+	fxRemember(the, &slot);
+}
+void xsForget(scope xsMachine* the, xsSlot slot) {
+	fxForget(the, &slot);
+}
+void xsAccess(scope xsMachine* the, xsSlot slot) {
+	fxAccess(the, &slot);
+}
+
 // Exceptions
 
 debug {

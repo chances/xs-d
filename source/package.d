@@ -139,30 +139,63 @@ void xsToStringBuffer(xsMachine* the, xsSlot theSlot, const char* buffer, int si
   fxToStringBuffer(the, &the.scratch, cast(char*) buffer, size);
 }
 
-// TODO: xsArrayBuffer
-// #define xsArrayBuffer(_BUFFER,_SIZE) \
-// 	(fxArrayBuffer(the, &the.scratch, _BUFFER, _SIZE), \
-// 	the.scratch)
-// TODO: xsGetArrayBufferData
-// #define xsGetArrayBufferData(xsSlot theSlot,_OFFSET,_BUFFER,_SIZE) \
-// 	(the.scratch = theSlot, \
-// 	fxGetArrayBufferData(the, &the.scratch, _OFFSET, _BUFFER, _SIZE))
-// TODO: xsGetArrayBufferLength
-// #define xsGetArrayBufferLength(xsSlot theSlot) \
-// 	(the.scratch = theSlot, \
-// 	fxGetArrayBufferLength(the, &the.scratch))
-// TODO: xsSetArrayBufferData
-// #define xsSetArrayBufferData(xsSlot theSlot,_OFFSET,_BUFFER,_SIZE) \
-// 	(the.scratch = theSlot, \
-// 	fxSetArrayBufferData(the, &the.scratch, _OFFSET, _BUFFER, _SIZE))
-// TODO: xsSetArrayBufferLength
-// #define xsSetArrayBufferLength(xsSlot theSlot,_LENGTH) \
-// 	(the.scratch = theSlot, \
-// 	fxSetArrayBufferLength(the, &the.scratch, _LENGTH))
-// TODO: xsToArrayBuffer
-// #define xsToArrayBuffer(xsSlot theSlot) \
-// 	(the.scratch = theSlot, \
-// 	fxToArrayBuffer(the, &the.scratch))
+/// Returns an ArrayBuffer slot.
+/// Params:
+/// size=The size of the data in bytes
+xsSlot xsArrayBuffer(xsMachine* the, void* buffer, int size) {
+  fxArrayBuffer(the, &the.scratch, buffer, size);
+  return the.scratch;
+}
+/// Get the data of an ArrayBuffer.
+/// Params:
+/// theSlot=The ArrayBuffer slot
+/// offset=The starting byte offset to get the data
+/// size=The data size to copy in bytes
+void xsGetArrayBufferData(T)(xsMachine* the, xsSlot theSlot, int offset, out T[] buffer, int size) {
+}
+/// ditto
+void xsGetArrayBufferData(xsMachine* the, xsSlot theSlot, int offset, out void* buffer, int size) {
+  the.scratch = theSlot;
+  fxGetArrayBufferData(the, &the.scratch, offset, buffer, size);
+}
+/// Returns the size of the ArrayBuffer in bytes.
+/// Params:
+/// theSlot=The ArrayBuffer slot
+int xsGetArrayBufferLength(xsMachine* the, xsSlot theSlot) {
+  the.scratch = theSlot;
+  return fxGetArrayBufferLength(the, &the.scratch);
+}
+/// Copies bytes into the ArrayBuffer.
+/// Params:
+/// theSlot=The ArrayBuffer slot
+/// offset=The starting byte offset to get the data
+void xsSetArrayBufferData(T)(xsMachine* the, xsSlot theSlot, int offset, T[] buffer) {
+  xsSetArrayBufferData(the, theSlot, offset, buffer.ptr, T.sizeof * buffer.length.to!int);
+}
+/// ditto
+void xsSetArrayBufferData(xsMachine* the, xsSlot theSlot, int offset, void* buffer, int size) {
+  the.scratch = theSlot;
+  fxSetArrayBufferData(the, &the.scratch, offset, buffer, size);
+}
+/// Set the length of an ArrayBuffer.
+/// Params:
+/// theSlot=The ArrayBuffer slot
+/// length=The size of the ArrayBuffer data in bytes. If the size of the buffer is increased, the new data is initialized to 0.
+void xsSetArrayBufferLength(xsMachine* the, xsSlot theSlot, int length) {
+  the.scratch = theSlot;
+  fxSetArrayBufferLength(the, &the.scratch, length);
+}
+/// Returns a pointer to the ArrayBuffer data.
+///
+/// For speed, the `xsToArrayBuffer` macro returns the value contained in the slot itself, a pointer to the buffer in the memory managed by XS.
+/// Since the XS runtime can compact memory containing string values, the result of the `xsToArrayBuffer` macro cannot be used across or in other macros of XS in C.
+///
+/// Params:
+/// theSlot=The ArrayBuffer slot
+void* xsToArrayBuffer(xsMachine* the, xsSlot theSlot) {
+  the.scratch = theSlot;
+  return fxToArrayBuffer(the, &the.scratch);
+}
 
 // Closures and References
 

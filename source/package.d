@@ -322,19 +322,50 @@ enum xsSlot xsPromisePrototype(alias xsMachine* the) = the.stackPrototypes[proto
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy">Proxy</a> on MDN
 enum xsSlot xsProxyPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 27];
 
-// #define xsNewArray(_LENGTH) \
-// 	(fxNewArray(the,_LENGTH), \
-// 	fxPop())
+/// Creates an array instance, and returns a reference to the new array instance.
+///
+/// In ECMAScript:
+/// ---
+/// new Array(5);
+/// ---
+/// In D:
+/// ---
+/// machine.xsNewArray(5);
+/// ---
+xsSlot xsNewArray(xsMachine* the, int length) {
+	fxNewArray(the, length);
+	return the.fxPop;
+}
 
-// #define xsNewObject() \
-// 	(fxNewObject(the), \
-// 	fxPop())
+/// Creates an object instance, and returns a reference to the new object instance.
+///
+/// In ECMAScript:
+/// ---
+/// new Object();
+/// ---
+/// In D:
+/// ---
+/// machine.xsNewObject();
+/// ---
+xsSlot xsNewObject(xsMachine* the) {
+	fxNewObject(the);
+	return the.fxPop;
+}
 
-// #define xsIsInstanceOf(_SLOT,_PROTOTYPE) \
-// 	(xsOverflow(-2), \
-// 	fxPush(_PROTOTYPE), \
-// 	fxPush(_SLOT), \
-// 	fxIsInstanceOf(the))
+/// Tests whether an instance has a particular prototype, directly or indirectly (that is, one or more levels up in the prototype hierarchy).
+///
+/// The `xsIsInstanceOf` macro has no equivalent in ECMAScript; scripts test instances through constructors rather than directly through prototypes. A constructor is a function that has a prototype property that is used to test instances with `isPrototypeOf`.
+///
+/// Returns: `true` if the instance has the prototype, `false` otherwise.
+/// Params:
+/// instance=A reference to the instance to test
+/// prototype=A reference to the prototype to test
+bool xsIsInstanceOf(xsMachine* the, xsSlot instance, xsSlot prototype) {
+	the.xsOverflow(-2);
+	the.fxPush(prototype);
+	the.fxPush(instance);
+	return fxIsInstanceOf(the).to!bool;
+}
 
 // Identifiers
 

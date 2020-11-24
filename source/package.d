@@ -414,17 +414,18 @@ enum int XS_FRAME_COUNT = 6;
 // Machine
 
 /// Returns a machine if successful, otherwise `null`.
+///
+/// Regarding the parameters of the machine that are specified in the `xsCreation` structure:
+/// $(UL
+///   $(LI A machine manages strings and bytecodes in chunks. The initial chunk size is the initial size of the memory allocated to chunks. The incremental chunk size tells the runtime how to expand the memory allocated to chunks.)
+///   $(LI A machine uses a heap and a stack of slots. The initial heap count is the initial number of slots allocated to the heap. The incremental heap count tells the runtime how to increase the number of slots allocated to the heap. The stack count is the number of slots allocated to the stack.)
+///   $(LI The symbol count is the number of symbols the machine will use. The symbol modulo is the size of the hash table the machine will use for symbols. A symbol binds a string value and an identifier; see `xsID`.)
+/// )
+///
 /// Params:
 /// creation=The parameters of the machine
 /// name=The name of the machine as a string
 /// context=The initial context of the machine, or `null`
-///
-/// Regarding the parameters of the machine that are specified in the `xsCreation` structure:
-/// $(UL
-///   $LI( A machine manages strings and bytecodes in chunks. The initial chunk size is the initial size of the memory allocated to chunks. The incremental chunk size tells the runtime how to expand the memory allocated to chunks.)
-///   $LI( A machine uses a heap and a stack of slots. The initial heap count is the initial number of slots allocated to the heap. The incremental heap count tells the runtime how to increase the number of slots allocated to the heap. The stack count is the number of slots allocated to the stack.)
-///   $LI( The symbol count is the number of symbols the machine will use. The symbol modulo is the size of the hash table the machine will use for symbols. A symbol binds a string value and an identifier; see `xsID`.)
-/// )
 xsMachine* xsCreateMachine(xsCreation* creation, string name, void* context = null) {
   return xsCreateMachine(creation, name.toStringz, context);
 }
@@ -434,10 +435,11 @@ xsMachine* xsCreateMachine(xsCreation* creation, const char* name, void* context
 }
 
 /// Free a `xsMachine`.
-/// Params:
-/// the=A machine
 ///
 /// The destructors of all the host objects are executed, and all the memory allocated by the machine is freed.
+///
+/// Params:
+/// the=A machine
 void xsDeleteMachine(xsMachine* the) {
 	fxDeleteMachine(the);
 }

@@ -23,7 +23,9 @@ jobs:
       id: cache-moddable
       uses: actions/cache@v2
       with:
-        path: thirdparty/moddable
+        path: |
+          thirdparty/moddable
+          thirdparty/moddable.zip
         key: ${{ runner.os }}-moddable-OS201116
     - name: Lint
       run: dub lint

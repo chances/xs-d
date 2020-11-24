@@ -1103,6 +1103,96 @@ void xsSetContext(scope xsMachine* the, void* context) {
 
 // Host
 
+/// Detect whether `T` is the `xsMachine` struct.
+enum bool isXsMachine(T) = __traits(isSame, T, xsMachine);
+
+import std.meta : staticIndexOf, templateAnd, templateNot, templateOr;
+import std.traits : isCallable, Parameters, ParameterIdentifierTuple, ParameterStorageClass,
+  ParameterStorageClassTuple, QualifierOf, ReturnType;
+
+/// `isCallableAsHostZone` parameter requirements helper templates
+private enum bool hasScopeStorage(alias T) = (T & ParameterStorageClass.scope_) == ParameterStorageClass.scope_;
+private template illegallyEscapesScope(Param, alias ParamStorage) {
+  alias notHasScopeStorage = templateNot!(hasScopeStorage!ParamStorage);
+  enum bool illegallyEscapesScope = notHasScopeStorage!ParamStorage && isXsMachine!Param;
+}
+
+/// Detect whether `T` is callable as a Host zone, in lieu of `xsBeginHost` and `xsEndHost`.
+/// See_Also:
+/// $(UL
+///   $(LI `xsHostZone`)
+///   $(LI From the <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#xs-in-c">XS in C</a> Moddable SDK <a href="https://github.com/Moddable-OpenSource/moddable/tree/OS201116/documentation#readme">Documentation</a>:)
+///   $(UL
+///     $(LI <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#host">Host</a>)
+///     $(LI <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#xsbeginhost-and-xsendhost">`beginHost` and `endHost`</a>)
+///   )
+/// )
+template isCallableAsHostZone(T...) if (T.length == 1 && isCallable!T && is (ReturnType!T == void)) {
+  import std.meta : allSatisfy;
+  import std.traits : Parameters;
+
+  alias TParams = Parameters!T;
+  static assert(TParams.length == 1, "A Host zone entry point must have a single parameter of type `scope xsMachine*`");
+  enum bool isCallableAsHostZone = allSatisfy!(isXsMachine, TParams);
+}
+
+/// Used to set up and clean up a stack frame, so that you can use all the macros of XS in C in between, provided in lieu of `xsBeginHost` and `xsEndHost`.
+///
+/// Uncaught exceptions that occur within `Func` do not propagate beyond the execution of `xsHostZone`.
+/// See_Also:
+/// From the <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#xs-in-c">XS in C</a> Moddable SDK <a href="https://github.com/Moddable-OpenSource/moddable/tree/OS201116/documentation#readme">Documentation</a>:
+/// $(UL
+///   $(LI <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#host">Host</a>)
+///   $(LI <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#xsbeginhost-and-xsendhost">`beginHost` and `endHost`</a>)
+/// )
+///
+/// Examples:
+/// ---
+/// long xsWndProc(HWND hwnd, uint m, uint w, long l)
+/// {
+/// 	long result = 0;
+/// 	xsMachine* aMachine = GetWindowLongPtr(hwnd, GWL_USERDATA);
+///   auto zone = void delegate (xsMachine* the) {
+/// 		result = the.xsToInteger(the.xsCall(
+///       the.xsGlobal, xsID_dispatch,
+/// 			the.xsInteger(m), the.xsInteger(w), the.xsInteger(l)
+///     ));
+/// 	}();
+/// 	aMachine.xsHostZone!zone;
+/// 	return result;
+/// }
+/// ---
+void xsHostZone(alias Func)(scope xsMachine* the) if (isCallableAsHostZone!Func) {
+  while(true) {
+    auto hostThe = the;
+    xsJump hostJump = {
+      nextJump: hostThe.firstJump,
+      stack: hostThe.stack,
+      scope_: hostThe.scope_,
+      frame: hostThe.frame,
+      environment: null,
+      code: hostThe.code,
+      flag: 0,
+    };
+    hostThe.firstJump = &hostJump;
+    if (setjmp(hostJump.buffer) == 0) {
+      xsMachine* the = fxBeginHost(the);
+
+      /// Call user-land host code
+      Func(the);
+
+      fxEndHost(the);
+      the = null;
+    } else fxAbort(hostThe, xsUnhandledExceptionExit);
+    hostThe.stack = hostJump.stack;
+    hostThe.scope_ = hostJump.scope_;
+    hostThe.frame = hostJump.frame;
+    hostThe.code = hostJump.code;
+    hostThe.firstJump = hostJump.nextJump;
+    break;
+  }
+}
+
 // TODO: xsArrayCacheBegin
 // #define xsArrayCacheBegin(_ARRAY) \
 // 	(fxPush(_ARRAY), \

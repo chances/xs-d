@@ -796,6 +796,44 @@ inout(xsSlot) xsGlobal(inout xsMachine* the) {
 
 // Exceptions
 
+debug {
+  void xsThrow(scope xsMachine* the, xsSlot slot, string file = __FILE__, int line = __LINE__) {
+    the.stackTop[-2] = slot;
+    fxThrow(the, cast(char*) file.toStringz, line);
+  }
+} else {
+  void xsThrow(scope xsMachine* the, xsSlot slot) {
+    the.stackTop[-2] = slot;
+    fxThrow(the, null, 0);
+  }
+}
+
+// TODO: xsTry
+// #define xsTry \
+// 	xsJump __JUMP__; \
+// 	__JUMP__.nextJump = the->firstJump; \
+// 	__JUMP__.stack = the->stack; \
+// 	__JUMP__.scope = the->scope; \
+// 	__JUMP__.frame = the->frame; \
+// 	__JUMP__.environment = NULL; \
+// 	__JUMP__.code = the->code; \
+// 	__JUMP__.flag = 0; \
+// 	the->firstJump = &__JUMP__; \
+// 	if (setjmp(__JUMP__.buffer) == 0) {
+
+// TODO: xsCatch
+// #define xsCatch \
+// 		the->firstJump = __JUMP__.nextJump; \
+// 	} \
+// 	else for ( \
+// 		the->stack = __JUMP__.stack, \
+// 		the->scope = __JUMP__.scope, \
+// 		the->frame = __JUMP__.frame, \
+// 		the->code = __JUMP__.code, \
+// 		the->firstJump = __JUMP__.nextJump; \
+// 		(__JUMP__.stack); \
+// 		__JUMP__.stack = NULL)
+
 // Errors
 
 debug {

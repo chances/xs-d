@@ -160,6 +160,8 @@ void xsToStringBuffer(xsMachine* the, xsSlot theSlot, const char* buffer, int si
 
 /// Returns an ArrayBuffer slot.
 /// Params:
+/// the=
+/// buffer=
 /// size=The size of the data in bytes
 xsSlot xsArrayBuffer(xsMachine* the, void* buffer, int size) {
   fxArrayBuffer(the, &the.scratch, buffer, size);
@@ -179,6 +181,7 @@ void xsGetArrayBufferData(xsMachine* the, xsSlot theSlot, int offset, out void* 
 }
 /// Returns the size of the ArrayBuffer in bytes.
 /// Params:
+/// the=
 /// theSlot=The ArrayBuffer slot
 int xsGetArrayBufferLength(xsMachine* the, xsSlot theSlot) {
   the.scratch = theSlot;
@@ -186,6 +189,7 @@ int xsGetArrayBufferLength(xsMachine* the, xsSlot theSlot) {
 }
 /// Copies bytes into the ArrayBuffer.
 /// Params:
+/// the=
 /// theSlot=The ArrayBuffer slot
 /// offset=The starting byte offset to get the data
 void xsSetArrayBufferData(T)(xsMachine* the, xsSlot theSlot, int offset, T[] buffer) {
@@ -198,6 +202,7 @@ void xsSetArrayBufferData(xsMachine* the, xsSlot theSlot, int offset, void* buff
 }
 /// Set the length of an ArrayBuffer.
 /// Params:
+/// the=
 /// theSlot=The ArrayBuffer slot
 /// length=The size of the ArrayBuffer data in bytes. If the size of the buffer is increased, the new data is initialized to 0.
 void xsSetArrayBufferLength(xsMachine* the, xsSlot theSlot, int length) {
@@ -210,6 +215,7 @@ void xsSetArrayBufferLength(xsMachine* the, xsSlot theSlot, int length) {
 /// Since the XS runtime can compact memory containing string values, the result of the `xsToArrayBuffer` macro cannot be used across or in other macros of XS in C.
 ///
 /// Params:
+/// the=
 /// theSlot=The ArrayBuffer slot
 void* xsToArrayBuffer(xsMachine* the, xsSlot theSlot) {
   the.scratch = theSlot;
@@ -358,6 +364,7 @@ xsSlot xsNewObject(xsMachine* the) {
 ///
 /// Returns: `true` if the instance has the prototype, `false` otherwise.
 /// Params:
+/// the=
 /// instance=A reference to the instance to test
 /// prototype=A reference to the prototype to test
 bool xsIsInstanceOf(xsMachine* the, xsSlot instance, xsSlot prototype) {

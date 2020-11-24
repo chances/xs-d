@@ -11,6 +11,7 @@
   ],
   "targetPath": "bin",
   "targetType": "library",
+  "systemDependencies": "linux: gio-2.0",
 	"preGenerateCommands": [
     "make source/xs/bindings/package.d"
   ],

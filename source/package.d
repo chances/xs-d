@@ -39,6 +39,25 @@ enum Type : _Anonymous_0 {
 
 pragma(inline, true):
 
+/// Pop a slot off the stack.
+xsSlot fxPop(xsMachine* the) {
+  return *(the.stack++);
+}
+/// Push a slot onto the stack.
+void fxPush(xsMachine* the, xsSlot slot) {
+  *(--the.stack) = (slot);
+}
+
+debug {
+  void xsOverflow(xsMachine* the, int count, string file = __FILE__, int line = __LINE__) {
+	  fxOverflow(the, count, cast(char*) file.toStringz, line);
+  }
+} else {
+  void xsOverflow(xsMachine* the, int count) {
+	  fxOverflow(the, count, null, 0);
+  }
+}
+
 /// Returns the `Type` of a slot.
 /// Params:
 /// the=A reference to the target virtual machine

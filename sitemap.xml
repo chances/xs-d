@@ -9,6 +9,8 @@
 <url><loc>http://127.0.0.1/xs/bindings/macros.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/fxPop.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/fxPush.html</loc></url>
+<url><loc>http://127.0.0.1/xs/bindings/macros/isCallableAsHostZone.html</loc></url>
+<url><loc>http://127.0.0.1/xs/bindings/macros/isXsMachine.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/prototypesStackIndex.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/XS_FRAME_COUNT.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/XS_NO_ID.html</loc></url>
@@ -20,6 +22,7 @@
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsBooleanPrototype.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsCall.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsCall_noResult.html</loc></url>
+<url><loc>http://127.0.0.1/xs/bindings/macros/xsCallFunction.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsCloneMachine.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsCloneMachine.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsCreateMachine.html</loc></url>
@@ -49,6 +52,7 @@
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsHas.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsHasAt.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsHostPrototype.html</loc></url>
+<url><loc>http://127.0.0.1/xs/bindings/macros/xsHostZone.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsID.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsID.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsInteger.html</loc></url>
@@ -57,6 +61,7 @@
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsIsInstanceOf.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsMapPrototype.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsName.html</loc></url>
+<url><loc>http://127.0.0.1/xs/bindings/macros/xsNew.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsNewArray.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsNewObject.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsNull.html</loc></url>
@@ -94,6 +99,7 @@
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsToString.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsToStringBuffer.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsToStringBuffer.html</loc></url>
+<url><loc>http://127.0.0.1/xs/bindings/macros/xsToUnsigned.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsTrace.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsTrace.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsTrue.html</loc></url>
@@ -103,6 +109,7 @@
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsTypeOf.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsUndefined.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsUnknownError.html</loc></url>
+<url><loc>http://127.0.0.1/xs/bindings/macros/xsUnsigned.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsURIError.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsURIErrorPrototype.html</loc></url>
 <url><loc>http://127.0.0.1/xs/bindings/macros/xsWeakMapPrototype.html</loc></url>
@@ -118,6 +125,7 @@
 <url><loc>http://127.0.0.1/xs/JSValue.slot.html</loc></url>
 <url><loc>http://127.0.0.1/xs/JSValue.string_.html</loc></url>
 <url><loc>http://127.0.0.1/xs/JSValue.this.html</loc></url>
+<url><loc>http://127.0.0.1/xs/JSValue.unsigned.html</loc></url>
 <url><loc>http://127.0.0.1/xs/Machine.html</loc></url>
 <url><loc>http://127.0.0.1/xs/Machine.boolean.html</loc></url>
 <url><loc>http://127.0.0.1/xs/Machine.collectGarbage.html</loc></url>
@@ -132,5 +140,6 @@
 <url><loc>http://127.0.0.1/xs/Machine.string_.html</loc></url>
 <url><loc>http://127.0.0.1/xs/Machine.this.html</loc></url>
 <url><loc>http://127.0.0.1/xs/Machine.toId.html</loc></url>
+<url><loc>http://127.0.0.1/xs/Machine.unsigned.html</loc></url>
 <url><loc>http://127.0.0.1/xs/Machine.value.html</loc></url>
 </urlset>

@@ -137,8 +137,16 @@ $('#symbolSearchPane').show();</script>
 								<a id="xsCall_noResult" class="public" href="../../xs/bindings/macros/xsCall_noResult.html">xsCall_noResult</a><span class="tableEntryAnnotation">(the, this_, id, params)</span>
 							</code>
 						</td>
-						<td>Call a Function.
+						<td>Call a Function, ignoring its result.
 </td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsCallFunction" class="public" href="../../xs/bindings/macros/xsCallFunction.html">xsCallFunction</a><span class="tableEntryAnnotation">(the, function_, this_, params)</span>
+							</code>
+						</td>
+						<td></td>
 					</tr>
 					<tr>
 						<td>
@@ -309,6 +317,15 @@ $('#symbolSearchPane').show();</script>
 					<tr>
 						<td>
 							<code>
+								<a id="xsHostZone" class="public" href="../../xs/bindings/macros/xsHostZone.html">xsHostZone</a><span class="tableEntryAnnotation">(the)</span>
+							</code>
+						</td>
+						<td>Used to set up and clean up a stack frame, so that you can use all the macros of XS in C in between, provided in lieu of <code class="lang-d"><span class="pln">xsBeginHost</span></code> and <code class="lang-d"><span class="pln">xsEndHost</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
 								<a id="xsID" class="public" href="../../xs/bindings/macros/xsID.html">xsID</a><span class="tableEntryAnnotation">(the, name)</span>
 							</code>
 						</td>
@@ -344,6 +361,14 @@ $('#symbolSearchPane').show();</script>
 						<td>
 							<code>
 								<a id="xsName" class="public" href="../../xs/bindings/macros/xsName.html">xsName</a><span class="tableEntryAnnotation">(the, id)</span>
+							</code>
+						</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="xsNew" class="public" href="../../xs/bindings/macros/xsNew.html">xsNew</a><span class="tableEntryAnnotation">(the, this_, id, params)</span>
 							</code>
 						</td>
 						<td></td>
@@ -570,6 +595,15 @@ $('#symbolSearchPane').show();</script>
 					<tr>
 						<td>
 							<code>
+								<a id="xsToUnsigned" class="public" href="../../xs/bindings/macros/xsToUnsigned.html">xsToUnsigned</a><span class="tableEntryAnnotation">(the, theSlot)</span>
+							</code>
+						</td>
+						<td>Convert a slot to a Number value represented as an <code class="lang-d"><span class="typ">uint</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
 								<a id="xsTrace" class="public" href="../../xs/bindings/macros/xsTrace.html">xsTrace</a><span class="tableEntryAnnotation">(the, string_)</span>
 							</code>
 						</td>
@@ -621,6 +655,15 @@ $('#symbolSearchPane').show();</script>
 					<tr>
 						<td>
 							<code>
+								<a id="xsUnsigned" class="public" href="../../xs/bindings/macros/xsUnsigned.html">xsUnsigned</a><span class="tableEntryAnnotation">(the, value)</span>
+							</code>
+						</td>
+						<td>Returns a Number slot given an <code class="lang-d"><span class="typ">uint</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
 								<a id="xsURIError" class="public" href="../../xs/bindings/macros/xsURIError.html">xsURIError</a><span class="tableEntryAnnotation">(the, message)</span>
 							</code>
 						</td>
@@ -634,6 +677,28 @@ $('#symbolSearchPane').show();</script>
 					<col class="caption"/>
 					<tr>
 						<th>Name</th><th>Type</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<a id="isCallableAsHostZone" class="public" href="../../xs/bindings/macros/isCallableAsHostZone.html">
+								<code>isCallableAsHostZone</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>Detect whether <code class="lang-d"><span class="pln">T</span></code> is callable as a Host zone, in lieu of <code class="lang-d"><span class="pln">xsBeginHost</span></code> and <code class="lang-d"><span class="pln">xsEndHost</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a id="isXsMachine" class="public" href="../../xs/bindings/macros/isXsMachine.html">
+								<code>isXsMachine</code>
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>Detect whether <code class="lang-d"><span class="pln">T</span></code> is the <code class="lang-d"><span class="pln">xsMachine</span></code> struct.
+</td>
 					</tr>
 					<tr>
 						<td>

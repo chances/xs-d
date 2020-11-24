@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
-		<title>Function xsCall_noResult - xs-d</title>
+		<title>Enum member isCallableAsHostZone - xs-d</title>
 		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
 		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
 		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
@@ -75,35 +75,25 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Function xsCall_noResult</h1><p>Call a Function, ignoring its result.
+			<h1>Enum member isCallableAsHostZone</h1><p>Detect whether <code class="lang-d"><span class="pln">T</span></code> is callable as a Host zone, in lieu of <code class="lang-d"><span class="pln">xsBeginHost</span></code> and <code class="lang-d"><span class="pln">xsEndHost</span></code>.
 </p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="typ">void</span> <span class="pln">xsCall_noResult</span>
-			<span class="pun">(</span>
-			<br/>
-			&nbsp;&nbsp;<span class="kwd">scope </span><span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsMachineRecord</span><span class="pun">*</span> <span class="pln">the</span><span class="pun">,</span>
-			<br/>
-			&nbsp;&nbsp;<span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsSlotRecord</span> <span class="pln">this_</span><span class="pun">,</span>
-			<br/>
-			&nbsp;&nbsp;<span class="typ">int</span> <span class="pln">id</span><span class="pun">,</span>
-			<br/>
-			&nbsp;&nbsp;<span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsSlotRecord</span><span class="pun">[]</span> <span class="pln">params</span><span class="pun">...</span>
-			<br/>
-			<span class="pun">)</span><span class="pun">;</span>
+			<span class="kwd">enum</span> <span class="pln">isCallableAsHostZone</span>(T...)
+			 <span class="pun">=</span> <span class="pln">allSatisfy</span><span class="pun">!(</span><span class="pln">isXsMachine</span><span class="pun">, </span><span class="typ">TParams</span><span class="pun">)</span><span class="pun">;</span>
 					</div>
 				</code>
 			</div>
-			<section></section>
-
-			<section><h2>Parameters</h2>
-<table><col class="caption"><tr><th>Name</th><th>Description</th></tr>
-<tr><td id="the">the</td><td>A machine</td></tr>
-<tr><td id="this_">this_</td><td>A reference to the instance that will have the property or item</td></tr>
-<tr><td id="id">id</td><td>The identifier of the property or item to call</td></tr>
-<tr><td id="params">params</td><td>The parameter slots to pass to the function</td></tr>
-</table>
+			
+			<section><h2>See Also</h2>
+<p><ul><li><code class="lang-d"><a href="../../../xs/bindings/macros/xsHostZone.html"><span class="pln">xsHostZone</span></a></code></li>
+<li>From the <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#xs-in-c">XS in C</a> Moddable SDK <a href="https://github.com/Moddable-OpenSource/moddable/tree/OS201116/documentation#readme">Documentation</a>:</li>
+<ul><li><a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#host">Host</a></li>
+<li><a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#xsbeginhost-and-xsendhost"><code class="lang-d"><span class="pln">beginHost</span></code> and <code class="lang-d"><span class="pln">endHost</span></code></a></li>
+</ul>
+</ul>
+</p>
 </section>
 
 			<footer>

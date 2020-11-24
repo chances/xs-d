@@ -95,19 +95,16 @@ class Machine {
   }
 
   /// Returns a Boolean `JSValue` given a `bool`.
-  /// See_Also: `xsBoolean`
   JSValue boolean(bool value) {
     return this.value(the.xsBoolean(value));
   }
 
   /// Returns a Number `JSValue` given an `int`.
-  /// See_Also: `xsInteger`
   JSValue integer(int value) {
     return this.value(the.xsInteger(value));
   }
 
   /// Returns a Number `JSValue` given a `double`.
-  /// See_Also: `xsNumber`
   JSValue number(double value) {
     return this.value(the.xsNumber(value));
   }

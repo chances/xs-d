@@ -8,7 +8,7 @@
 module xs;
 
 import std.conv : to;
-import std.string : toStringz;
+import std.string : format, toStringz;
 
 public import xs.bindings;
 public import xs.bindings.enums;
@@ -26,4 +26,36 @@ extern(C) void fxAbort(xsMachine* the, int status)
 	else if (status == xsUnhandledExceptionExit) {
 		xsTrace(the, "unhandled exception\n");
 	}
+}
+
+/// A JavaScript virtual machine.
+class Machine {
+  private xsMachine* the;
+
+  /// Default VM creation options.
+  static xsCreation defaultCreation = {
+    initialChunkSize: 128 * 1024 * 1024,
+    incrementalChunkSize: 16 * 1024 * 1024,
+    initialHeapCount: 4 * 1024 * 1024,
+    incrementalHeapCount: 1 * 1024 * 1024,
+    stackCount: 1024,
+    keyCount: 2048+1024,
+    nameModulo: 1993,
+    symbolModulo: 127,
+  };
+
+  /// Create and allocate a new JS VM.
+  this(string name, const xsCreation creationOptions = defaultCreation) {
+    import std.exception : enforce;
+
+    the = enforce(xsCreateMachine(&creationOptions, name), format!"Could not create JS virtual machine '%s'"(name));
+  }
+  ~this() {
+    if (the) the.xsDeleteMachine();
+  }
+}
+
+unittest {
+  const machine = new Machine("test");
+  destroy(machine);
 }

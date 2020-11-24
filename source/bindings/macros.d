@@ -971,12 +971,12 @@ void xsTrace(xsMachine* the, const char* string_) {
 /// 	return 0;
 /// }
 /// ---
-xsMachine* xsCreateMachine(xsCreation* creation, string name, void* context = null) {
-  return xsCreateMachine(creation, name.toStringz, context);
+xsMachine* xsCreateMachine(const xsCreation* creation, string name, void* context = null) {
+  return xsCreateMachine(cast(xsCreation*) creation, name.toStringz, context);
 }
 /// ditto
-xsMachine* xsCreateMachine(xsCreation* creation, const char* name, void* context = null) {
-	return fxCreateMachine(creation, cast(char*) name, context);
+xsMachine* xsCreateMachine(const xsCreation* creation, const char* name, void* context = null) {
+	return fxCreateMachine(cast(xsCreation*) creation, cast(char*) name, context);
 }
 
 /// Free a `xsMachine`.

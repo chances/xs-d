@@ -820,31 +820,31 @@ debug {
 } else {
 	///
   void xsUnknownError(xsMachine* the, string message) {
-    fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.unknownError, cast(char*) message.toStringz);
+    fxThrowMessage(the, null, 0, JSError.unknownError, cast(char*) message.toStringz);
   }
 	///
   void xsEvalError(xsMachine* the, string message) {
-    fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.evalError, cast(char*) message.toStringz);
+    fxThrowMessage(the, null, 0, JSError.evalError, cast(char*) message.toStringz);
   }
 	///
   void xsRangeError(xsMachine* the, string message) {
-    fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.rangeError, cast(char*) message.toStringz);
+    fxThrowMessage(the, null, 0, JSError.rangeError, cast(char*) message.toStringz);
   }
 	///
   void xsReferenceError(xsMachine* the, string message) {
-    fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.referenceError, cast(char*) message.toStringz);
+    fxThrowMessage(the, null, 0, JSError.referenceError, cast(char*) message.toStringz);
   }
 	///
   void xsSyntaxError(xsMachine* the, string message) {
-    fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.syntaxError, cast(char*) message.toStringz);
+    fxThrowMessage(the, null, 0, JSError.syntaxError, cast(char*) message.toStringz);
   }
 	///
   void xsTypeError(xsMachine* the, string message) {
-    fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.typeError, cast(char*) message.toStringz);
+    fxThrowMessage(the, null, 0, JSError.typeError, cast(char*) message.toStringz);
   }
 	///
   void xsURIError(xsMachine* the, string message) {
-    fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.uriError, cast(char*) message.toStringz);
+    fxThrowMessage(the, null, 0, JSError.uriError, cast(char*) message.toStringz);
   }
 }
 
@@ -858,7 +858,7 @@ debug {
 } else {
   ///
 	void xsDebugger(xsMachine* the) {
-		fxDebugger(the, NULL, 0);
+		fxDebugger(the, null, 0);
   }
 }
 

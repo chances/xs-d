@@ -266,21 +266,21 @@ void* xsToArrayBuffer(xsMachine* the, xsSlot theSlot) {
 
 // TODO: xsClosure
 // #define xsClosure(xsMachine* the, _VALUE) \
-// 	(fxClosure(the, &the->scratch, _VALUE), \
-// 	the->scratch)
+// 	(fxClosure(the, &the.scratch, _VALUE), \
+// 	the.scratch)
 // TODO: xsToClosure
 // #define xsToClosure(xsMachine* the, _SLOT) \
-// 	(the->scratch = (_SLOT), \
-// 	fxToClosure(the, &(the->scratch)))
+// 	(the.scratch = (_SLOT), \
+// 	fxToClosure(the, &(the.scratch)))
 
 // TODO: xsReference
 // #define xsReference(xsMachine* the, _VALUE) \
-// 	(fxReference(the, &the->scratch, _VALUE), \
-// 	the->scratch)
+// 	(fxReference(the, &the.scratch, _VALUE), \
+// 	the.scratch)
 // TODO: xsToReference
 // #define xsToReference(xsMachine* the, _SLOT) \
-// 	(the->scratch = (_SLOT), \
-// 	fxToReference(the, &(the->scratch)))
+// 	(the.scratch = (_SLOT), \
+// 	fxToReference(the, &(the.scratch)))
 
 // Instances and Prototypes
 
@@ -431,22 +431,39 @@ bool xsIsInstanceOf(xsMachine* the, xsSlot instance, xsSlot prototype) {
 ///
 enum XS_NO_ID = -1;
 
-// TODO: xsID
-// #define xsID(_NAME) \
-// 	fxID(the, _NAME)
-// TODO: xsFindID
-// #define xsFindID(_NAME) \
-// 	fxFindID(the, _NAME)
-// TODO: xsIsID
-// #define xsIsID(_NAME) \
-// 	fxIsID(the, _NAME)
-// TODO: xsToID
-// #define xsToID(_SLOT) \
-// 	(the->scratch = (_SLOT), \
-// 	fxToID(the, &(the->scratch)))
-// TODO: xsName
-// #define xsName(_ID) \
-// 	fxName(the, _ID)
+///
+xsIndex xsID(xsMachine* the, string name) {
+	return xsID(the, name.toStringz);
+}
+/// ditto
+xsIndex xsID(xsMachine* the, const char* name) {
+	return fxID(the, name);
+}
+///
+xsIndex xsFindID(xsMachine* the, string name) {
+	return xsFindID(the, name.toStringz);
+}
+/// ditto
+xsIndex xsFindID(xsMachine* the, const char* name) {
+	return fxFindID(the, cast(char*) name);
+}
+///
+bool xsIsID(xsMachine* the, string name) {
+	return xsIsID(the, name.toStringz);
+}
+/// ditto
+bool xsIsID(xsMachine* the, const char* name) {
+	return fxIsID(the, cast(char*) name).to!bool;
+}
+///
+void xsToID(xsMachine* the, xsSlot slot) {
+	the.scratch = slot;
+	fxToID(the, &the.scratch);
+}
+///
+char* xsName(xsMachine* the, xsIndex id) {
+	return fxName(the, id);
+}
 
 // Properties
 
@@ -807,29 +824,29 @@ xsSlot xsGlobal(xsMachine* the) {
 // 	fxPop())
 
 // #define xsGetHostChunk(_SLOT) \
-// 	(the->scratch = (_SLOT), \
-// 	fxGetHostChunk(the, &(the->scratch)))
+// 	(the.scratch = (_SLOT), \
+// 	fxGetHostChunk(the, &(the.scratch)))
 // #define xsSetHostChunk(_SLOT,_DATA,_SIZE) \
-// 	(the->scratch = (_SLOT), \
-// 	fxSetHostChunk(the, &(the->scratch), _DATA, _SIZE))
+// 	(the.scratch = (_SLOT), \
+// 	fxSetHostChunk(the, &(the.scratch), _DATA, _SIZE))
 
 // #define xsGetHostData(_SLOT) \
-// 	(the->scratch = (_SLOT), \
-// 	fxGetHostData(the, &(the->scratch)))
+// 	(the.scratch = (_SLOT), \
+// 	fxGetHostData(the, &(the.scratch)))
 // #define xsSetHostData(_SLOT,_DATA) \
-// 	(the->scratch = (_SLOT), \
-// 	fxSetHostData(the, &(the->scratch), _DATA))
+// 	(the.scratch = (_SLOT), \
+// 	fxSetHostData(the, &(the.scratch), _DATA))
 
 // #define xsGetHostDestructor(_SLOT) \
-// 	(the->scratch = (_SLOT), \
-// 	fxGetHostDestructor(the, &(the->scratch)))
+// 	(the.scratch = (_SLOT), \
+// 	fxGetHostDestructor(the, &(the.scratch)))
 // #define xsSetHostDestructor(_SLOT,xsDestructor destructor) \
-// 	(the->scratch = (_SLOT), \
-// 	fxSetHostDestructor(the, &(the->scratch), xsDestructor destructor))
+// 	(the.scratch = (_SLOT), \
+// 	fxSetHostDestructor(the, &(the.scratch), xsDestructor destructor))
 
 // #define xsGetHostHandle(_SLOT) \
-// 	(the->scratch = (_SLOT), \
-// 	fxGetHostHandle(the, &(the->scratch)))
+// 	(the.scratch = (_SLOT), \
+// 	fxGetHostHandle(the, &(the.scratch)))
 
 // Machine
 

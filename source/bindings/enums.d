@@ -24,6 +24,8 @@ enum JSType{
   string = xsStringType,
   /// JS String in ROM
   stringX = xsStringXType,
+  /// Some JS String, either a reference or in ROM
+  someString = xsStringType | xsStringXType,
   /// JS `Symbol`
   symbol = xsSymbolType,
   /// JS `BigInt`

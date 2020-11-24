@@ -94,22 +94,28 @@ class Machine {
     return new JSValue(this, slot);
   }
 
-  /// Returns a Boolean `JSValue` given a `bool`.
+  /// Returns a Boolean `JSValue` given a `bool` value.
   /// See_Also: `xs.bindings.macros.xsBoolean`
   JSValue boolean(bool value) {
     return this.value(the.xsBoolean(value));
   }
 
-  /// Returns a Number `JSValue` given an `int`.
+  /// Returns a Number `JSValue` given an `int` value.
   /// See_Also: `xs.bindings.macros.xsInteger`
   JSValue integer(int value) {
     return this.value(the.xsInteger(value));
   }
 
-  /// Returns a Number `JSValue` given a `double`.
+  /// Returns a Number `JSValue` given a `double` value.
   /// See_Also: `xs.bindings.macros.xsNumber`
   JSValue number(double value) {
     return this.value(the.xsNumber(value));
+  }
+
+  /// Returns a String `JSValue` given a `string` value.
+  /// See_Also: `xs.bindings.macros.xsString`
+  JSValue string_(string value) {
+    return this.value(the.xsString(value));
   }
 
   /// Tests whether an instance has a property corresponding to a particular ECMAScript property name.
@@ -223,6 +229,15 @@ class JSValue {
     enforce(type == JSType.integer, "Value is not an integral Number");
     return machine.the.xsToNumber(slot);
   }
+
+  /// Convert this value to a `string` value.
+  /// See_Also: `xs.bindings.macros.xsToString`
+  string string_() @property const {
+    import std.string : fromStringz;
+
+    enforce((JSType.someString & type) == type, "Value is not a String");
+    return machine.the.xsToString(slot).fromStringz.to!string;
+  }
 }
 
 unittest {
@@ -244,6 +259,12 @@ unittest {
   const bar = machine.get(global, machine.id("bar"));
   assert(bar.type == JSType.boolean);
   assert(bar.boolean);
+
+  machine.set(global, machine.id("foobar"), machine.string_("foobar"));
+  assert(machine.has(global, machine.id("foobar")));
+  const foobar = machine.get(global, machine.id("foobar"));
+  assert(foobar.type == JSType.string);
+  assert(foobar.string_ == "foobar");
 
   machine.collectGarbage();
   destroy(machine);

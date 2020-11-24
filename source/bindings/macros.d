@@ -119,9 +119,9 @@ xsSlot xsStringBuffer(scope xsMachine* the, const char* buffer, int size) {
   return the.scratch;
 }
 /// Convert a slot to a String value.
-void xsToString(scope xsMachine* the, xsSlot theSlot) {
-  the.scratch = theSlot;
-  fxToString(the, &the.scratch);
+char* xsToString(scope xsMachine* the, const xsSlot theSlot) {
+  the.scratch = cast(xsSlot) theSlot;
+  return fxToString(the, &the.scratch);
 }
 /// Convert a slot to a StringBuffer value given a `string`.
 void xsToStringBuffer(scope xsMachine* the, xsSlot theSlot, string buffer) {

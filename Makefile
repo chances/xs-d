@@ -14,7 +14,7 @@ thirdparty/moddable: thirdparty/moddable.zip
 xs: thirdparty/moddable
 	@cd thirdparty/moddable/xs/makefiles/lin && env MODDABLE="$(CWD)/thirdparty/moddable" make -f xsc.mk
 .PHONY : xs
-xs-release:
+xs-release: thirdparty/moddable
 	@cd thirdparty/moddable/xs/makefiles/lin && env MODDABLE="$(CWD)/thirdparty/moddable" make GOAL=release -f xsc.mk
 .PHONY : xs-release
 

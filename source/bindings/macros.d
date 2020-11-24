@@ -13,22 +13,22 @@ import xs.bindings.enums;
 pragma(inline, true):
 
 /// Pop a slot off the stack.
-xsSlot fxPop(xsMachine* the) {
+xsSlot fxPop(scope xsMachine* the) {
   return *(the.stack++);
 }
 /// Push a slot onto the stack.
-void fxPush(xsMachine* the, xsSlot slot) {
+void fxPush(scope xsMachine* the, xsSlot slot) {
   *(--the.stack) = slot;
 }
 
 debug {
   ///
-  void xsOverflow(xsMachine* the, int count, string file = __FILE__, int line = __LINE__) {
+  void xsOverflow(scope xsMachine* the, int count, string file = __FILE__, int line = __LINE__) {
 	  fxOverflow(the, count, cast(char*) file.toStringz, line);
   }
 } else {
   ///
-  void xsOverflow(xsMachine* the, int count) {
+  void xsOverflow(scope xsMachine* the, int count) {
 	  fxOverflow(the, count, null, 0);
   }
 }
@@ -43,7 +43,7 @@ debug {
 /// > current scope with the name `the` of type `xsMachine*`.
 ///
 /// See_Also: <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#slot-types">Slot Types</a>
-JSType xsTypeOf(xsMachine* the, const xsSlot theSlot) {
+JSType xsTypeOf(scope xsMachine* the, const xsSlot theSlot) {
   the.scratch = cast(xsSlot) theSlot;
   return fxTypeOf(the, &the.scratch).to!uint.to!JSType;
 }
@@ -51,84 +51,84 @@ JSType xsTypeOf(xsMachine* the, const xsSlot theSlot) {
 // Primitives
 
 /// Returns an `undefined` slot
-xsSlot xsUndefined(xsMachine* the) {
+xsSlot xsUndefined(scope xsMachine* the) {
   fxUndefined(the, &the.scratch);
   return the.scratch;
 }
 /// Returns a `null` slot
-xsSlot xsNull(xsMachine* the) {
+xsSlot xsNull(scope xsMachine* the) {
   fxNull(the, &the.scratch);
   return the.scratch;
 }
 /// Returns a `false` slot
-xsSlot xsFalse(xsMachine* the) {
+xsSlot xsFalse(scope xsMachine* the) {
   fxBoolean(the, &the.scratch, 0);
   return the.scratch;
 }
 /// Returns a `true` slot
-xsSlot xsTrue(xsMachine* the) {
+xsSlot xsTrue(scope xsMachine* the) {
   fxBoolean(the, &the.scratch, 1);
   return the.scratch;
 }
 
 /// Returns a Boolean slot
-xsSlot xsBoolean(xsMachine* the, bool value) {
+xsSlot xsBoolean(scope xsMachine* the, bool value) {
   fxBoolean(the, &the.scratch, value);
   return the.scratch;
 }
 /// Convert a slot to a Boolean value
-bool xsToBoolean(xsMachine* the, xsSlot theSlot) {
-  the.scratch = theSlot;
+bool xsToBoolean(scope xsMachine* the, const xsSlot theSlot) {
+  the.scratch = cast(xsSlot) theSlot;
   return fxToBoolean(the, &the.scratch).to!bool;
 }
 
 /// Returns a Number slot given an `int`.
-xsSlot xsInteger(xsMachine* the, int value) {
+xsSlot xsInteger(scope xsMachine* the, int value) {
   fxInteger(the, &the.scratch, value);
   return the.scratch;
 }
 /// Convert a slot to a Number value represented as an `int`.
-xsIntegerValue xsToInteger(xsMachine* the, xsSlot theSlot) {
-  the.scratch = theSlot;
+xsIntegerValue xsToInteger(scope xsMachine* the, const xsSlot theSlot) {
+  the.scratch = cast(xsSlot) theSlot;
   return fxToInteger(the, &the.scratch);
 }
 
-/// Returns a Number slot given a `float`.
-xsSlot xsNumber(xsMachine* the, float value) {
+/// Returns a Number slot given a `double`.
+xsSlot xsNumber(scope xsMachine* the, double value) {
   fxNumber(the, &the.scratch, value);
   return the.scratch;
 }
 /// Convert a slot to a Number value.
-double xsToNumber(xsMachine* the, xsSlot theSlot) {
-  the.scratch = theSlot;
+double xsToNumber(scope xsMachine* the, const xsSlot theSlot) {
+  the.scratch = cast(xsSlot) theSlot;
   return fxToNumber(the, &the.scratch);
 }
 
 /// Returns a String slot given a `string`.
-xsSlot xsString(xsMachine* the, string value) {
+xsSlot xsString(scope xsMachine* the, string value) {
   fxString(the, &the.scratch, cast(char*) value.toStringz);
   return the.scratch;
 }
 /// Returns a StringBuffer slot given a `string`.
-xsSlot xsStringBuffer(xsMachine* the, string buffer) {
+xsSlot xsStringBuffer(scope xsMachine* the, string buffer) {
   return xsStringBuffer(the, buffer.toStringz, buffer.length.to!int);
 }
 /// Returns a StringBuffer slot given a `char*`.
-xsSlot xsStringBuffer(xsMachine* the, const char* buffer, int size) {
+xsSlot xsStringBuffer(scope xsMachine* the, const char* buffer, int size) {
   fxStringBuffer(the, &the.scratch, cast(char*) buffer, size);
   return the.scratch;
 }
 /// Convert a slot to a String value.
-void xsToString(xsMachine* the, xsSlot theSlot) {
+void xsToString(scope xsMachine* the, xsSlot theSlot) {
   the.scratch = theSlot;
   fxToString(the, &the.scratch);
 }
 /// Convert a slot to a StringBuffer value given a `string`.
-void xsToStringBuffer(xsMachine* the, xsSlot theSlot, string buffer) {
+void xsToStringBuffer(scope xsMachine* the, xsSlot theSlot, string buffer) {
   xsToStringBuffer(the, theSlot, buffer.toStringz, buffer.length.to!int);
 }
 /// Convert a slot to a StringBuffer value given a `char*`.
-void xsToStringBuffer(xsMachine* the, xsSlot theSlot, const char* buffer, int size) {
+void xsToStringBuffer(scope xsMachine* the, xsSlot theSlot, const char* buffer, int size) {
   the.scratch = theSlot;
   fxToStringBuffer(the, &the.scratch, cast(char*) buffer, size);
 }
@@ -138,7 +138,7 @@ void xsToStringBuffer(xsMachine* the, xsSlot theSlot, const char* buffer, int si
 /// the=A machine
 /// buffer=
 /// size=The size of the data in bytes
-xsSlot xsArrayBuffer(xsMachine* the, void* buffer, int size) {
+xsSlot xsArrayBuffer(scope xsMachine* the, void* buffer, int size) {
   fxArrayBuffer(the, &the.scratch, buffer, size);
   return the.scratch;
 }
@@ -147,11 +147,11 @@ xsSlot xsArrayBuffer(xsMachine* the, void* buffer, int size) {
 /// theSlot=The ArrayBuffer slot
 /// offset=The starting byte offset to get the data
 /// size=The data size to copy in bytes
-void xsGetArrayBufferData(T)(xsMachine* the, xsSlot theSlot, int offset, out T[] buffer, int size) {
-  the.xsGetArrayBufferData(theSlot, offset, buffer.ptr, size);
+void xsGetArrayBufferData(T)(scope xsMachine* the, xsSlot theSlot, int offset, out T[] buffer, int size) {
+  xsGetArrayBufferData(the, theSlot, offset, buffer.ptr, size);
 }
 /// ditto
-void xsGetArrayBufferData(xsMachine* the, xsSlot theSlot, int offset, out void* buffer, int size) {
+void xsGetArrayBufferData(scope xsMachine* the, xsSlot theSlot, int offset, out void* buffer, int size) {
   the.scratch = theSlot;
   fxGetArrayBufferData(the, &the.scratch, offset, buffer, size);
 }
@@ -159,7 +159,7 @@ void xsGetArrayBufferData(xsMachine* the, xsSlot theSlot, int offset, out void* 
 /// Params:
 /// the=A machine
 /// theSlot=The ArrayBuffer slot
-int xsGetArrayBufferLength(xsMachine* the, xsSlot theSlot) {
+int xsGetArrayBufferLength(scope ref xsMachine* the, xsSlot theSlot) {
   the.scratch = theSlot;
   return fxGetArrayBufferLength(the, &the.scratch);
 }
@@ -168,11 +168,11 @@ int xsGetArrayBufferLength(xsMachine* the, xsSlot theSlot) {
 /// the=A machine
 /// theSlot=The ArrayBuffer slot
 /// offset=The starting byte offset to get the data
-void xsSetArrayBufferData(T)(xsMachine* the, xsSlot theSlot, int offset, T[] buffer) {
+void xsSetArrayBufferData(T)(scope xsMachine* the, xsSlot theSlot, int offset, T[] buffer) {
   xsSetArrayBufferData(the, theSlot, offset, buffer.ptr, T.sizeof * buffer.length.to!int);
 }
 /// ditto
-void xsSetArrayBufferData(xsMachine* the, xsSlot theSlot, int offset, void* buffer, int size) {
+void xsSetArrayBufferData(scope xsMachine* the, xsSlot theSlot, int offset, void* buffer, int size) {
   the.scratch = theSlot;
   fxSetArrayBufferData(the, &the.scratch, offset, buffer, size);
 }
@@ -181,7 +181,7 @@ void xsSetArrayBufferData(xsMachine* the, xsSlot theSlot, int offset, void* buff
 /// the=A machine
 /// theSlot=The ArrayBuffer slot
 /// length=The size of the ArrayBuffer data in bytes. If the size of the buffer is increased, the new data is initialized to 0.
-void xsSetArrayBufferLength(xsMachine* the, xsSlot theSlot, int length) {
+void xsSetArrayBufferLength(scope xsMachine* the, xsSlot theSlot, int length) {
   the.scratch = theSlot;
   fxSetArrayBufferLength(the, &the.scratch, length);
 }
@@ -193,7 +193,7 @@ void xsSetArrayBufferLength(xsMachine* the, xsSlot theSlot, int length) {
 /// Params:
 /// the=A machine
 /// theSlot=The ArrayBuffer slot
-void* xsToArrayBuffer(xsMachine* the, xsSlot theSlot) {
+void* xsToArrayBuffer(scope xsMachine* the, xsSlot theSlot) {
   the.scratch = theSlot;
   return fxToArrayBuffer(the, &the.scratch);
 }
@@ -201,20 +201,20 @@ void* xsToArrayBuffer(xsMachine* the, xsSlot theSlot) {
 // Closures and References
 
 // TODO: xsClosure
-// #define xsClosure(xsMachine* the, _VALUE) \
+// #define xsClosure(scope xsMachine* the, _VALUE) \
 // 	(fxClosure(the, &the.scratch, _VALUE), \
 // 	the.scratch)
 // TODO: xsToClosure
-// #define xsToClosure(xsMachine* the, _SLOT) \
+// #define xsToClosure(scope xsMachine* the, _SLOT) \
 // 	(the.scratch = (_SLOT), \
 // 	fxToClosure(the, &(the.scratch)))
 
 // TODO: xsReference
-// #define xsReference(xsMachine* the, _VALUE) \
+// #define xsReference(scope xsMachine* the, _VALUE) \
 // 	(fxReference(the, &the.scratch, _VALUE), \
 // 	the.scratch)
 // TODO: xsToReference
-// #define xsToReference(xsMachine* the, _SLOT) \
+// #define xsToReference(scope xsMachine* the, _SLOT) \
 // 	(the.scratch = (_SLOT), \
 // 	fxToReference(the, &(the.scratch)))
 
@@ -314,7 +314,7 @@ enum xsSlot xsProxyPrototype(alias xsMachine* the) = the.stackPrototypes[prototy
 /// ---
 /// machine.xsNewArray(5);
 /// ---
-xsSlot xsNewArray(xsMachine* the, int length) {
+xsSlot xsNewArray(scope xsMachine* the, int length) {
 	fxNewArray(the, length);
 	return the.fxPop;
 }
@@ -330,7 +330,7 @@ xsSlot xsNewArray(xsMachine* the, int length) {
 /// ---
 /// machine.xsNewObject();
 /// ---
-xsSlot xsNewObject(xsMachine* the) {
+xsSlot xsNewObject(scope xsMachine* the) {
 	fxNewObject(the);
 	return the.fxPop;
 }
@@ -354,7 +354,7 @@ xsSlot xsNewObject(xsMachine* the) {
 /// the=A machine
 /// instance=A reference to the instance to test
 /// prototype=A reference to the prototype to test
-bool xsIsInstanceOf(xsMachine* the, xsSlot instance, xsSlot prototype) {
+bool xsIsInstanceOf(scope xsMachine* the, xsSlot instance, xsSlot prototype) {
 	the.xsOverflow(-2);
 	the.fxPush(prototype);
 	the.fxPush(instance);
@@ -367,36 +367,36 @@ bool xsIsInstanceOf(xsMachine* the, xsSlot instance, xsSlot prototype) {
 enum XS_NO_ID = -1;
 
 ///
-xsIndex xsID(xsMachine* the, string name) {
+xsIndex xsID(scope xsMachine* the, string name) {
 	return xsID(the, name.toStringz);
 }
 /// ditto
-xsIndex xsID(xsMachine* the, const char* name) {
+xsIndex xsID(scope xsMachine* the, const char* name) {
 	return fxID(the, name);
 }
 ///
-xsIndex xsFindID(xsMachine* the, string name) {
+xsIndex xsFindID(scope xsMachine* the, string name) {
 	return xsFindID(the, name.toStringz);
 }
 /// ditto
-xsIndex xsFindID(xsMachine* the, const char* name) {
+xsIndex xsFindID(scope xsMachine* the, const char* name) {
 	return fxFindID(the, cast(char*) name);
 }
 ///
-bool xsIsID(xsMachine* the, string name) {
+bool xsIsID(scope xsMachine* the, string name) {
 	return xsIsID(the, name.toStringz);
 }
 /// ditto
-bool xsIsID(xsMachine* the, const char* name) {
+bool xsIsID(scope xsMachine* the, const char* name) {
 	return fxIsID(the, cast(char*) name).to!bool;
 }
 ///
-xsIndex xsToID(xsMachine* the, const xsSlot slot) {
+xsIndex xsToID(scope xsMachine* the, const xsSlot slot) {
 	the.scratch = cast(xsSlot) slot;
 	return fxToID(the, &the.scratch);
 }
 ///
-char* xsName(xsMachine* the, xsIndex id) {
+char* xsName(scope xsMachine* the, xsIndex id) {
 	return fxName(the, id);
 }
 
@@ -428,7 +428,7 @@ char* xsName(xsMachine* the, xsIndex id) {
 /// ---
 /// if (xsHas(xsThis, xsID_foo));
 /// ---
-bool xsHas(xsMachine* the, const xsSlot this_, int id) {
+bool xsHas(scope xsMachine* the, const xsSlot this_, int id) {
 	the.xsOverflow(-1);
 	the.fxPush(cast(xsSlot) this_);
 	return fxHasID(the, id).to!bool;
@@ -451,11 +451,11 @@ bool xsHas(xsMachine* the, const xsSlot this_, int id) {
 /// ---
 /// if (xsHasAt(xsThis, xsInteger(7)));
 /// ---
-bool xsHasAt(xsMachine* the, xsSlot this_, xsSlot key) {
+bool xsHasAt(scope xsMachine* the, xsSlot this_, xsSlot key) {
 	the.xsOverflow(-2);
 	the.fxPush(this_);
 	the.fxPush(key);
-	return the.fxHasAt.to!bool;
+	return fxHasAt(the).to!bool;
 }
 
 /// Get a property or item of an instance.
@@ -480,7 +480,7 @@ bool xsHasAt(xsMachine* the, xsSlot this_, xsSlot key) {
 /// xsGet(xsThis, xsID_foo);
 /// xsGet(xsThis, 0);
 /// ---
-xsSlot xsGet(xsMachine* the, const xsSlot this_, int id) {
+xsSlot xsGet(scope xsMachine* the, const xsSlot this_, int id) {
 	the.xsOverflow(-1);
 	the.fxPush(cast(xsSlot) this_);
 	fxGetID(the, id);
@@ -507,7 +507,7 @@ xsSlot xsGet(xsMachine* the, const xsSlot this_, int id) {
 /// xsVar(0) = xsGet(xsThis, xsID_foo);
 /// xsVar(1) = xsGetAt(xsVar(0), xsInteger(3));
 /// ---
-xsSlot xsGetAt(xsMachine* the, xsSlot this_, xsSlot key) {
+xsSlot xsGetAt(scope xsMachine* the, xsSlot this_, xsSlot key) {
 	the.xsOverflow(-2);
 	the.fxPush(this_);
 	the.fxPush(key);
@@ -515,7 +515,7 @@ xsSlot xsGetAt(xsMachine* the, xsSlot this_, xsSlot key) {
 	return the.fxPop();
 }
 
-/// set a property or item of an instance.
+/// Set a property or item of an instance.
 ///
 /// Params:
 /// the=A machine
@@ -536,7 +536,7 @@ xsSlot xsGetAt(xsMachine* the, xsSlot this_, xsSlot key) {
 /// xsSet(xsThis, xsID_foo, xsInteger(1));
 /// xsSet(xsThis, 0, xsInteger(2));
 /// ---
-void xsSet(xsMachine* the, const xsSlot this_, int id, const xsSlot slot) {
+void xsSet(scope xsMachine* the, const xsSlot this_, int id, const xsSlot slot) {
 	the.xsOverflow(-2);
 	the.fxPush(cast(xsSlot) slot);
 	the.fxPush(cast(xsSlot) this_);
@@ -563,7 +563,7 @@ void xsSet(xsMachine* the, const xsSlot this_, int id, const xsSlot slot) {
 /// xsVar(0) = xsGet(xsThis, xsID_foo);
 /// xsSetAt(xsVar(0), xsInteger(3), xsInteger(7));
 /// ---
-void xsSetAt(xsMachine* the, xsSlot this_, xsSlot key, xsSlot slot) {
+void xsSetAt(scope xsMachine* the, xsSlot this_, xsSlot key, xsSlot slot) {
 	the.xsOverflow(-3);
 	the.fxPush(slot);
 	the.fxPush(this_);
@@ -589,7 +589,7 @@ void xsSetAt(xsMachine* the, xsSlot this_, xsSlot key, xsSlot slot) {
 /// ---
 /// machine.xsDefine(xsThis, xsID_foo, xsInteger(7), xsDefault);
 /// ---
-void xsDefine(xsMachine* the, xsSlot this_, int id, xsSlot slot, Attribute attributes) {
+void xsDefine(scope xsMachine* the, xsSlot this_, int id, xsSlot slot, Attribute attributes) {
 	the.xsOverflow(-2);
 	the.fxPush(slot);
 	the.fxPush(this_);
@@ -598,7 +598,7 @@ void xsDefine(xsMachine* the, xsSlot this_, int id, xsSlot slot, Attribute attri
 }
 
 ///
-void xsDefineAt(xsMachine* the, xsSlot this_, xsSlot key, xsSlot slot, Attribute attributes) {
+void xsDefineAt(scope xsMachine* the, xsSlot this_, xsSlot key, xsSlot slot, Attribute attributes) {
 	the.xsOverflow(-3);
 	the.fxPush(slot);
 	the.fxPush(this_);
@@ -629,7 +629,7 @@ void xsDefineAt(xsMachine* the, xsSlot this_, xsSlot key, xsSlot slot, Attribute
 /// xsDelete(xsThis, xsID_foo);
 /// xsDelete(xsThis, 0);
 /// ---
-void xsDelete(xsMachine* the, xsSlot this_, int key) {
+void xsDelete(scope xsMachine* the, xsSlot this_, int key) {
 	the.xsOverflow(-1);
 	the.fxPush(this_);
 	fxDeleteID(the, key);
@@ -656,7 +656,7 @@ void xsDelete(xsMachine* the, xsSlot this_, int key) {
 /// xsDeleteAt(xsThis, xsID_foo);
 /// xsDeleteAt(xsThis, xsInteger(0));
 /// ---
-void xsDeleteAt(xsMachine* the, xsSlot this_, xsSlot key) {
+void xsDeleteAt(scope xsMachine* the, xsSlot this_, xsSlot key) {
 	the.xsOverflow(-2);
 	the.fxPush(this_);
 	the.fxPush(key);
@@ -692,7 +692,7 @@ enum int XS_FRAME_COUNT = 6;
 /// xsCall(xsThis, xsID_foo, xsInteger(1));
 /// xsCall(xsThis, 0, xsInteger(2), xsInteger(3));
 /// ---
-xsSlot xsCall(xsMachine* the, xsSlot this_, int id, xsSlot[] params ...) {
+xsSlot xsCall(scope xsMachine* the, xsSlot this_, int id, xsSlot[] params ...) {
 	the.xsOverflow(-XS_FRAME_COUNT-0);
 	the.fxPush(this_);
   // TODO: Push params
@@ -709,7 +709,7 @@ xsSlot xsCall(xsMachine* the, xsSlot this_, int id, xsSlot[] params ...) {
 /// this_=A reference to the instance that will have the property or item
 /// id=The identifier of the property or item to call
 /// params=The parameter slots to pass to the function
-void xsCall_noResult(xsMachine* the, xsSlot this_, int id, xsSlot[] params ...) {
+void xsCall_noResult(scope xsMachine* the, xsSlot this_, int id, xsSlot[] params ...) {
 	the.xsOverflow(-XS_FRAME_COUNT-0);
 	the.fxPush(this_);
   // TODO: Push params
@@ -789,60 +789,60 @@ inout(xsSlot) xsGlobal(inout xsMachine* the) {
 
 debug {
 	///
-  void xsUnknownError(xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
+  void xsUnknownError(scope xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
     fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.unknownError, cast(char*) message.toStringz);
   }
 	///
-  void xsEvalError(xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
+  void xsEvalError(scope xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
     fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.evalError, cast(char*) message.toStringz);
   }
 	///
-  void xsRangeError(xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
+  void xsRangeError(scope xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
     fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.rangeError, cast(char*) message.toStringz);
   }
 	///
-  void xsReferenceError(xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
+  void xsReferenceError(scope xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
     fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.referenceError, cast(char*) message.toStringz);
   }
 	///
-  void xsSyntaxError(xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
+  void xsSyntaxError(scope xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
     fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.syntaxError, cast(char*) message.toStringz);
   }
 	///
-  void xsTypeError(xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
+  void xsTypeError(scope xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
     fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.typeError, cast(char*) message.toStringz);
   }
 	///
-  void xsURIError(xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
+  void xsURIError(scope xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
     fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.uriError, cast(char*) message.toStringz);
   }
 } else {
 	///
-  void xsUnknownError(xsMachine* the, string message) {
+  void xsUnknownError(scope xsMachine* the, string message) {
     fxThrowMessage(the, null, 0, JSError.unknownError, cast(char*) message.toStringz);
   }
 	///
-  void xsEvalError(xsMachine* the, string message) {
+  void xsEvalError(scope xsMachine* the, string message) {
     fxThrowMessage(the, null, 0, JSError.evalError, cast(char*) message.toStringz);
   }
 	///
-  void xsRangeError(xsMachine* the, string message) {
+  void xsRangeError(scope xsMachine* the, string message) {
     fxThrowMessage(the, null, 0, JSError.rangeError, cast(char*) message.toStringz);
   }
 	///
-  void xsReferenceError(xsMachine* the, string message) {
+  void xsReferenceError(scope xsMachine* the, string message) {
     fxThrowMessage(the, null, 0, JSError.referenceError, cast(char*) message.toStringz);
   }
 	///
-  void xsSyntaxError(xsMachine* the, string message) {
+  void xsSyntaxError(scope xsMachine* the, string message) {
     fxThrowMessage(the, null, 0, JSError.syntaxError, cast(char*) message.toStringz);
   }
 	///
-  void xsTypeError(xsMachine* the, string message) {
+  void xsTypeError(scope xsMachine* the, string message) {
     fxThrowMessage(the, null, 0, JSError.typeError, cast(char*) message.toStringz);
   }
 	///
-  void xsURIError(xsMachine* the, string message) {
+  void xsURIError(scope xsMachine* the, string message) {
     fxThrowMessage(the, null, 0, JSError.uriError, cast(char*) message.toStringz);
   }
 }
@@ -851,34 +851,34 @@ debug {
 
 debug {
   ///
-	void xsDebugger(xsMachine* the, string file = __FILE__, int line = __LINE__) {
+	void xsDebugger(scope xsMachine* the, string file = __FILE__, int line = __LINE__) {
 		fxDebugger(the, cast(char*) file.toStringz, line);
   }
 } else {
   ///
-	void xsDebugger(xsMachine* the) {
+	void xsDebugger(scope xsMachine* the) {
 		fxDebugger(the, null, 0);
   }
 }
 
 ///
-void xsTrace(xsMachine* the, string string_) {
+void xsTrace(scope xsMachine* the, string string_) {
 	xsTrace(the, string_.toStringz);
 }
 /// ditto
-void xsTrace(xsMachine* the, const char* string_) {
+void xsTrace(scope xsMachine* the, const char* string_) {
 	fxReport(the, cast(char*) "%s"c.ptr, cast(char*) string_);
 }
 // TODO: xsTraceCenter
-// void xsTraceCenter(xsMachine* the, const char* string_, _ID) {
+// void xsTraceCenter(scope xsMachine* the, const char* string_, _ID) {
 // 	fxBubble(the, 0, string_, 0, _ID);
 // }
 // TODO: xsTraceLeft
-// void xsTraceLeft(xsMachine* the, const char* string_, _ID) {
+// void xsTraceLeft(scope xsMachine* the, const char* string_, _ID) {
 // 	fxBubble(the, 1, string_, 0, _ID);
 // }
 // TODO: xsTraceRight
-// void xsTraceRight(xsMachine* the, const char* string_, _ID) {
+// void xsTraceRight(scope xsMachine* the, const char* string_, _ID) {
 // 	fxBubble(the, 2, string_, 0, _ID);
 // }
 // TODO: xsTraceCenterBytes
@@ -895,7 +895,7 @@ void xsTrace(xsMachine* the, const char* string_) {
 // }
 
 // TODO: xsLog
-// void xsLog(xsMachine* the, string format, ...) {
+// void xsLog(scope xsMachine* the, string format, ...) {
 // 	fxReport(the, cast(char*) format.toStringz, args);
 // }
 
@@ -1032,7 +1032,7 @@ xsMachine* xsCreateMachine(const xsCreation* creation, const char* name, void* c
 /// 	return 0;
 /// }
 /// ---
-void xsDeleteMachine(xsMachine* the) {
+void xsDeleteMachine(scope xsMachine* the) {
 	fxDeleteMachine(the);
 }
 
@@ -1063,7 +1063,7 @@ xsMachine* xsCloneMachine(xsCreation* creation, xsMachine* machine, const char* 
 ///
 /// Params:
 /// the=A machine
-void xsShareMachine(xsMachine* the) {
+void xsShareMachine(scope xsMachine* the) {
 	fxShareMachine(the);
 }
 
@@ -1075,7 +1075,7 @@ void xsShareMachine(xsMachine* the) {
 ///
 /// Params:
 /// the=A machine
-void* xsGetContext(xsMachine* the) {
+void* xsGetContext(scope xsMachine* the) {
 	return the.context;
 }
 
@@ -1086,7 +1086,7 @@ void* xsGetContext(xsMachine* the) {
 /// Params:
 /// the=A machine
 /// context=A context
-void xsSetContext(xsMachine* the, void* context) {
+void xsSetContext(scope xsMachine* the, void* context) {
 	the.context = (context);
 }
 

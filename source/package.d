@@ -65,17 +65,31 @@ class Machine {
     const slot = the.xsGlobal;
     return slot;
   }
+
+  /// See_Also: `xs.bindings.macros.xsID`
+  xsIndex id(string name) {
+    return the.xsID(name);
+  }
+
+  /// Collect garbage values from this VM.
+  void collectGarbage() {
+    fxCollectGarbage(the);
+  }
 }
-
-
 
 unittest {
   auto machine = new Machine("test");
   const global = machine.global;
   assert(machine.the.xsToID(global));
   assert(machine.the.xsTypeOf(global) == JSType.reference);
-
   assert(machine.the.xsHas(global, machine.the.xsID("Number")));
 
+  machine.the.xsSet(global, machine.id("foo"), machine.the.xsInteger(1));
+  assert(machine.the.xsHas(global, machine.id("foo")));
+  auto foo = machine.the.xsGet(global, machine.id("foo"));
+  assert(machine.the.xsTypeOf(foo) == JSType.integer);
+  assert(machine.the.xsToInteger(foo) == 1);
+
+  machine.collectGarbage();
   destroy(machine);
 }

@@ -77,9 +77,9 @@ xsSlot xsBoolean(xsMachine* the, bool value) {
   return the.scratch;
 }
 /// Convert a slot to a Boolean value
-void xsToBoolean(xsMachine* the, xsSlot theSlot) {
+bool xsToBoolean(xsMachine* the, xsSlot theSlot) {
   the.scratch = theSlot;
-  fxToBoolean(the, &the.scratch);
+  return fxToBoolean(the, &the.scratch).to!bool;
 }
 
 /// Returns a Number slot given an `int`.
@@ -88,9 +88,9 @@ xsSlot xsInteger(xsMachine* the, int value) {
   return the.scratch;
 }
 /// Convert a slot to a Number value represented as an `int`.
-void xsToInteger(xsMachine* the, xsSlot theSlot) {
+xsIntegerValue xsToInteger(xsMachine* the, xsSlot theSlot) {
   the.scratch = theSlot;
-  fxToInteger(the, &the.scratch);
+  return fxToInteger(the, &the.scratch);
 }
 
 /// Returns a Number slot given a `float`.
@@ -99,9 +99,9 @@ xsSlot xsNumber(xsMachine* the, float value) {
   return the.scratch;
 }
 /// Convert a slot to a Number value.
-void xsToNumber(xsMachine* the, xsSlot theSlot) {
+double xsToNumber(xsMachine* the, xsSlot theSlot) {
   the.scratch = theSlot;
-  fxToNumber(the, &the.scratch);
+  return fxToNumber(the, &the.scratch);
 }
 
 /// Returns a String slot given a `string`.
@@ -480,9 +480,9 @@ bool xsHasAt(xsMachine* the, xsSlot this_, xsSlot key) {
 /// xsGet(xsThis, xsID_foo);
 /// xsGet(xsThis, 0);
 /// ---
-xsSlot xsGet(xsMachine* the, xsSlot this_, int id) {
+xsSlot xsGet(xsMachine* the, const xsSlot this_, int id) {
 	the.xsOverflow(-1);
-	the.fxPush(this_);
+	the.fxPush(cast(xsSlot) this_);
 	fxGetID(the, id);
 	return the.fxPop();
 }
@@ -536,10 +536,10 @@ xsSlot xsGetAt(xsMachine* the, xsSlot this_, xsSlot key) {
 /// xsSet(xsThis, xsID_foo, xsInteger(1));
 /// xsSet(xsThis, 0, xsInteger(2));
 /// ---
-void xsSet(xsMachine* the, xsSlot this_, int id, xsSlot slot) {
+void xsSet(xsMachine* the, const xsSlot this_, int id, const xsSlot slot) {
 	the.xsOverflow(-2);
-	the.fxPush(slot);
-	the.fxPush(this_);
+	the.fxPush(cast(xsSlot) slot);
+	the.fxPush(cast(xsSlot) this_);
 	fxSetID(the, id);
 	the.stack++;
 }

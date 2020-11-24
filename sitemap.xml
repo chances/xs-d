@@ -116,6 +116,7 @@
 <url><loc>http://127.0.0.1/xs/JSValue.integer.html</loc></url>
 <url><loc>http://127.0.0.1/xs/JSValue.number.html</loc></url>
 <url><loc>http://127.0.0.1/xs/JSValue.slot.html</loc></url>
+<url><loc>http://127.0.0.1/xs/JSValue.string_.html</loc></url>
 <url><loc>http://127.0.0.1/xs/JSValue.this.html</loc></url>
 <url><loc>http://127.0.0.1/xs/Machine.html</loc></url>
 <url><loc>http://127.0.0.1/xs/Machine.boolean.html</loc></url>
@@ -128,6 +129,7 @@
 <url><loc>http://127.0.0.1/xs/Machine.nameOf.html</loc></url>
 <url><loc>http://127.0.0.1/xs/Machine.number.html</loc></url>
 <url><loc>http://127.0.0.1/xs/Machine.set.html</loc></url>
+<url><loc>http://127.0.0.1/xs/Machine.string_.html</loc></url>
 <url><loc>http://127.0.0.1/xs/Machine.this.html</loc></url>
 <url><loc>http://127.0.0.1/xs/Machine.toId.html</loc></url>
 <url><loc>http://127.0.0.1/xs/Machine.value.html</loc></url>

@@ -131,7 +131,7 @@ class Machine {
   /// Params:
   /// this_=A reference to the instance that will have the property or item
   /// id=The identifier of the property or item to set
-  /// slot=The value of the property or item to set
+  /// value=The value of the property or item to set
   /// See_Also: `xsSet`
   void set(const xsSlot this_, xsIndex id, const JSValue value) {
     the.xsSet(this_, id, value.slot);

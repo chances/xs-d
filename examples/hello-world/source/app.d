@@ -8,7 +8,7 @@ void main()
 {
 	writeln("XS Example - Hello, world!");
 
-  auto machine = new Machine("test");
+  auto machine = new Machine("Hello, world!");
   const global = machine.global;
 
   destroy(machine);

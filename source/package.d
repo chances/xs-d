@@ -265,20 +265,20 @@ void* xsToArrayBuffer(xsMachine* the, xsSlot theSlot) {
 // Closures and References
 
 // TODO: xsClosure
-// #define xsClosure(_VALUE) \
+// #define xsClosure(xsMachine* the, _VALUE) \
 // 	(fxClosure(the, &the->scratch, _VALUE), \
 // 	the->scratch)
 // TODO: xsToClosure
-// #define xsToClosure(_SLOT) \
+// #define xsToClosure(xsMachine* the, _SLOT) \
 // 	(the->scratch = (_SLOT), \
 // 	fxToClosure(the, &(the->scratch)))
 
 // TODO: xsReference
-// #define xsReference(_VALUE) \
+// #define xsReference(xsMachine* the, _VALUE) \
 // 	(fxReference(the, &the->scratch, _VALUE), \
 // 	the->scratch)
 // TODO: xsToReference
-// #define xsToReference(_SLOT) \
+// #define xsToReference(xsMachine* the, _SLOT) \
 // 	(the->scratch = (_SLOT), \
 // 	fxToReference(the, &(the->scratch)))
 
@@ -457,101 +457,379 @@ enum XS_NO_ID = -1;
 // 	fxEnumerate(the), \
 // 	fxPop())
 
-// TODO: xsHas
-// #define xsHas(_THIS,_ID) \
-// 	(xsOverflow(-1), \
-// 	fxPush(_THIS), \
-// 	fxHasID(the, _ID))
+/// Tests whether an instance has a property corresponding to a particular ECMAScript property name.
+///
+/// This macro is similar to the ECMAScript in keyword.
+///
+/// Params:
+/// the=A machine
+/// this_=A reference to the instance to test
+/// id=The identifier of the property to test
+/// Returns: `true` if the instance has the property, `false` otherwise
+///
+/// Examples:
+/// In ECMAScript:
+/// ---
+/// if ("foo" in this)
+/// ---
+/// In D:
+/// ---
+/// if (xsHas(xsThis, xsID_foo));
+/// ---
+bool xsHas(xsMachine* the, xsSlot this_, int id) {
+	the.xsOverflow(-1);
+	the.fxPush(this_);
+	return fxHasID(the, id).to!bool;
+}
 
-// TODO: xsHasAt
-// #define xsHasAt(_THIS,_AT) \
-// 	(xsOverflow(-2), \
-// 	fxPush(_THIS), \
-// 	fxPush(_AT), \
-// 	fxHasAt(the))
+/// Tests whether an instance has a property corresponding to a particular ECMAScript property key.
+///
+/// Params:
+/// the=A machine
+/// this_=A reference to the instance to test
+/// key=The key of the property to test
+/// Returns: `true` if the instance has the property, `false` otherwise
+///
+/// Examples:
+/// In ECMAScript:
+/// ---
+/// if (7 in this)
+/// ---
+/// In D:
+/// ---
+/// if (xsHasAt(xsThis, xsInteger(7)));
+/// ---
+bool xsHasAt(xsMachine* the, xsSlot this_, xsSlot key) {
+	the.xsOverflow(-2);
+	the.fxPush(this_);
+	the.fxPush(key);
+	return the.fxHasAt.to!bool;
+}
 
-// TODO: xsGet
-// #define xsGet(_THIS,_ID) \
-// 	(xsOverflow(-1), \
-// 	fxPush(_THIS), \
-// 	fxGetID(the, _ID), \
-// 	fxPop())
+/// Get a property or item of an instance.
+///
+/// Params:
+/// the=A machine
+/// this_=A reference to the instance that has the property or item
+/// id=The identifier of the property or item to get
+/// Returns:
+/// A slot containing what is contained in the property or item, or `xsUndefined` if the property or item is not defined by the instance or its prototypes
+///
+/// Examples:
+/// In ECMAScript:
+/// ---
+/// foo
+/// this.foo
+/// this[0]
+/// ---
+/// In D:
+/// ---
+/// xsGet(xsGlobal, xsID_foo);
+/// xsGet(xsThis, xsID_foo);
+/// xsGet(xsThis, 0);
+/// ---
+xsSlot xsGet(xsMachine* the, xsSlot this_, int id) {
+	the.xsOverflow(-1);
+	the.fxPush(this_);
+	fxGetID(the, id);
+	return the.fxPop();
+}
 
-// TODO: xsGetAt
-// #define xsGetAt(_THIS,_AT) \
-// 	(xsOverflow(-2), \
-// 	fxPush(_THIS), \
-// 	fxPush(_AT), \
-// 	fxGetAt(the), \
-// 	fxPop())
+/// Get a property or item of an array instance with a specified name, index or symbol.
+///
+/// Params:
+/// the=A machine
+/// this_=A reference to the object that has the property or item
+/// key=The key of the property or item to get
+/// Returns:
+/// A slot containing what is contained in the property or item, or xsUndefined if the property or item is not defined by the instance or its prototypes
+///
+/// Examples:
+/// In ECMAScript:
+/// ---
+/// this.foo[3]
+/// ---
+/// In D:
+/// ---
+/// xsVars(2);
+/// xsVar(0) = xsGet(xsThis, xsID_foo);
+/// xsVar(1) = xsGetAt(xsVar(0), xsInteger(3));
+/// ---
+xsSlot xsGetAt(xsMachine* the, xsSlot this_, xsSlot key) {
+	the.xsOverflow(-2);
+	the.fxPush(this_);
+	the.fxPush(key);
+	fxGetAt(the);
+	return the.fxPop();
+}
 
-// TODO: xsSet
-// #define xsSet(_THIS,_ID,_SLOT) \
-// 	(xsOverflow(-2), \
-// 	fxPush(_SLOT), \
-// 	fxPush(_THIS), \
-// 	fxSetID(the, _ID), \
-// 	the->stack++)
+/// set a property or item of an instance.
+///
+/// Params:
+/// the=A machine
+/// this_=A reference to the instance that will have the property or item
+/// id=The identifier of the property or item to set
+/// slot=The value of the property or item to set
+///
+/// Examples:
+/// In ECMAScript:
+/// ---
+/// foo = 0
+/// this.foo = 1
+/// this[0] = 2
+/// ---
+/// In D:
+/// ---
+/// xsSet(xsGlobal, xsID_foo, xsInteger(0));
+/// xsSet(xsThis, xsID_foo, xsInteger(1));
+/// xsSet(xsThis, 0, xsInteger(2));
+/// ---
+void xsSet(xsMachine* the, xsSlot this_, int id, xsSlot slot) {
+	the.xsOverflow(-2);
+	the.fxPush(slot);
+	the.fxPush(this_);
+	fxSetID(the, id);
+	the.stack++;
+}
 
-// TODO: xsSetAt
-// #define xsSetAt(_THIS,_AT,_SLOT) \
-// 	(xsOverflow(-3), \
-// 	fxPush(_SLOT), \
-// 	fxPush(_THIS), \
-// 	fxPush(_AT), \
-// 	fxSetAt(the), \
-// 	the->stack++)
+/// Set a property or item of an array instance by key.
+///
+/// Params:
+/// the=A machine
+/// this_=A reference to the object that has the property or item
+/// key=The key of the property or item to set
+/// slot=The value of the property or item to set
+///
+/// Examples:
+/// In ECMAScript:
+/// ---
+/// this.foo[3] = 7
+/// ---
+/// In D:
+/// ---
+/// xsVars(1);
+/// xsVar(0) = xsGet(xsThis, xsID_foo);
+/// xsSetAt(xsVar(0), xsInteger(3), xsInteger(7));
+/// ---
+void xsSetAt(xsMachine* the, xsSlot this_, xsSlot key, xsSlot slot) {
+	the.xsOverflow(-3);
+	the.fxPush(slot);
+	the.fxPush(this_);
+	the.fxPush(key);
+	fxSetAt(the);
+	the.stack++;
+}
 
-// TODO: xsDefine
-// #define xsDefine(_THIS,_ID,_SLOT,_ATTRIBUTES) \
-// 	(xsOverflow(-2), \
-// 	fxPush(_SLOT), \
-// 	fxPush(_THIS), \
-// 	fxDefineID(the, _ID, _ATTRIBUTES, _ATTRIBUTES | xsDontDelete | xsDontEnum | xsDontSet), \
-// 	the->stack++)
+/// For theAttributes, specify the constants corresponding to the attributes you want to set (the others being cleared).
+///
+/// The `xsDontDelete`, `xsDontEnum`, and `xsDontSet` attributes correspond to the ECMAScript DontDelete, DontEnum, and ReadOnly attributes.
+/// By default a property can be deleted, enumerated, and set.
+///
+/// When a property is created, if the prototype of the instance has a property with the same name, its attributes are inherited;
+/// otherwise, by default, a property can be deleted, enumerated, and set, and can be used by scripts.
+///
+/// Examples:
+/// In ECMAScript:
+/// ---
+/// Object.defineProperty(this, "foo", 7, { writable: true, enumerable: true, configurable: true });
+/// ---
+/// In D:
+/// ---
+/// machine.xsDefine(xsThis, xsID_foo, xsInteger(7), xsDefault);
+/// ---
+void xsDefine(xsMachine* the, xsSlot this_, int id, xsSlot slot, Attribute attributes) {
+	the.xsOverflow(-2);
+	the.fxPush(slot);
+	the.fxPush(this_);
+	fxDefineID(the, id, attributes, attributes | xsDontDelete | xsDontEnum | xsDontSet);
+	the.stack++;
+}
 
-// TODO: xsDefineAt
-// #define xsDefineAt(_THIS,_AT,_SLOT,_ATTRIBUTES) \
-// 	(xsOverflow(-3), \
-// 	fxPush(_SLOT), \
-// 	fxPush(_THIS), \
-// 	fxPush(_AT), \
-// 	fxDefineAt(the, _ATTRIBUTES, _ATTRIBUTES | xsDontDelete | xsDontEnum | xsDontSet), \
-// 	the->stack++)
+///
+void xsDefineAt(xsMachine* the, xsSlot this_, xsSlot key, xsSlot slot, Attribute attributes) {
+	the.xsOverflow(-3);
+	the.fxPush(slot);
+	the.fxPush(this_);
+	the.fxPush(key);
+	fxDefineAt(the, attributes, attributes | xsDontDelete | xsDontEnum | xsDontSet);
+	the.stack++;
+}
 
-// TODO: xsDelete
-// #define xsDelete(_THIS,_ID) \
-// 	(xsOverflow(-1), \
-// 	fxPush(_THIS), \
-// 	fxDeleteID(the, _ID), \
-// 	the->stack++)
+/// Delete a property or item of an instance.
+///
+/// If the property or item is not defined by the instance, this macro has no effect.
+///
+/// Params:
+/// the=A machine
+/// this_=A reference to the instance that has the property or item
+/// key=The key of the property or item to delete
+///
+/// Examples:
+/// In ECMAScript:
+/// ---
+/// delete foo
+/// delete this.foo
+/// delete this[0]
+/// ---
+/// In D:
+/// ---
+/// xsDelete(xsGlobal, xsID_foo);
+/// xsDelete(xsThis, xsID_foo);
+/// xsDelete(xsThis, 0);
+/// ---
+void xsDelete(xsMachine* the, xsSlot this_, int key) {
+	the.xsOverflow(-1);
+	the.fxPush(this_);
+	fxDeleteID(the, key);
+	the.stack++;
+}
 
-// TODO: xsDeleteAt
-// #define xsDeleteAt(_THIS,_AT) \
-// 	(xsOverflow(-2), \
-// 	fxPush(_THIS), \
-// 	fxPush(_AT), \
-// 	fxDeleteAt(the), \
-// 	the->stack++)
+/// Delete a property or item of an instance by key.
+///
+/// If the property or item is not defined by the instance, this macro has no effect.
+///
+/// Params:
+/// the=A machine
+/// this_=A reference to the instance that has the property or item
+/// key=The key of the property or item to delete
+///
+/// Examples:
+/// In ECMAScript:
+/// ---
+/// delete this.foo
+/// delete this[0]
+/// ---
+/// In D:
+/// ---
+/// xsDeleteAt(xsThis, xsID_foo);
+/// xsDeleteAt(xsThis, xsInteger(0));
+/// ---
+void xsDeleteAt(xsMachine* the, xsSlot this_, xsSlot key) {
+	the.xsOverflow(-2);
+	the.fxPush(this_);
+	the.fxPush(key);
+	fxDeleteAt(the);
+	the.stack++;
+}
 
 ///
 enum int XS_FRAME_COUNT = 6;
 
-// TODO: xsCall with D-lang variadic arguments
-// #define xsCall0(_THIS,_ID) \
-// 	(xsOverflow(-XS_FRAME_COUNT-0), \
-// 	fxPush(_THIS), \
-// 	fxCallID(the, _ID), \
-// 	fxRunCount(the, 0), \
+/// Call a Function.
+///
+/// When a property or item of an instance is a reference to a function, you can call the function with the `xsCall` template.
+/// If the property or item is not defined by the instance or its prototypes or is not a reference to a function, `xsCall` throws an exception.
+///
+/// Params:
+/// the=A machine
+/// this_=A reference to the instance that will have the property or item
+/// id=The identifier of the property or item to call
+/// params=The parameter slots to pass to the function
+/// Returns: The function's return value slot.
+///
+/// Examples:
+/// In ECMAScript:
+/// ---
+/// foo()
+/// this.foo(1)
+/// this[0](2, 3)
+/// ---
+/// In D:
+/// ---
+/// xsCall(xsGlobal, xsID_foo);
+/// xsCall(xsThis, xsID_foo, xsInteger(1));
+/// xsCall(xsThis, 0, xsInteger(2), xsInteger(3));
+/// ---
+xsSlot xsCall(xsMachine* the, xsSlot this_, int id, xsSlot[] params ...) {
+	the.xsOverflow(-XS_FRAME_COUNT-0);
+	the.fxPush(this_);
+  // TODO: Push params
+  assert(params.length >= 0);
+	fxCallID(the, id);
+	fxRunCount(the, 0);
+	return the.fxPop();
+}
+
+/// Call a Function.
+///
+/// Params:
+/// the=A machine
+/// this_=A reference to the instance that will have the property or item
+/// id=The identifier of the property or item to call
+/// params=The parameter slots to pass to the function
+void xsCall_noResult(xsMachine* the, xsSlot this_, int id, xsSlot[] params ...) {
+	the.xsOverflow(-XS_FRAME_COUNT-0);
+	the.fxPush(this_);
+  // TODO: Push params
+  assert(params.length >= 0);
+	fxCallID(the, id);
+	fxRunCount(the, 0);
+	the.stack++;
+}
+
+/* Globals */
+
+///
+xsSlot xsGlobal(xsMachine* the) {
+  return the.stackTop[-1];
+}
+
+/* Host Constructors, Functions and Objects */
+
+// #define xsNewHostConstructor(xsCallback _CALLBACK,_LENGTH,_PROTOTYPE) \
+// 	(xsOverflow(-1), \
+// 	fxPush(_PROTOTYPE), \
+// 	fxNewHostConstructor(the, _CALLBACK, _LENGTH, xsNoID), \
 // 	fxPop())
 
-// TODO: xsCall_noResult with D-lang variadic arguments
-// #define xsCall0_noResult(_THIS,_ID) \
-// 	(xsOverflow(-XS_FRAME_COUNT-0), \
-// 	fxPush(_THIS), \
-// 	fxCallID(the, _ID), \
-// 	fxRunCount(the, 0), \
-// 	the->stack++)
+// #define xsNewHostConstructorObject(xsCallback _CALLBACK,_LENGTH,_PROTOTYPE, _NAME) \
+// 	(xsOverflow(-1), \
+// 	fxPush(_PROTOTYPE), \
+// 	fxNewHostConstructor(the, _CALLBACK, _LENGTH, _NAME), \
+// 	fxPop())
+
+// #define xsNewHostFunction(xsCallback _CALLBACK,_LENGTH) \
+// 	(fxNewHostFunction(the, _CALLBACK, _LENGTH, xsNoID), \
+// 	fxPop())
+
+// #define xsNewHostFunctionObject(xsCallback _CALLBACK,_LENGTH, _NAME) \
+// 	(fxNewHostFunction(the, _CALLBACK, _LENGTH, _NAME), \
+// 	fxPop())
+
+// #define xsNewHostInstance(_PROTOTYPE) \
+// 	(xsOverflow(-1), \
+// 	fxPush(_PROTOTYPE), \
+// 	fxNewHostInstance(the), \
+// 	fxPop())
+
+// #define xsNewHostObject(xsDestructor destructor) \
+// 	(fxNewHostObject(the, xsDestructor destructor), \
+// 	fxPop())
+
+// #define xsGetHostChunk(_SLOT) \
+// 	(the->scratch = (_SLOT), \
+// 	fxGetHostChunk(the, &(the->scratch)))
+// #define xsSetHostChunk(_SLOT,_DATA,_SIZE) \
+// 	(the->scratch = (_SLOT), \
+// 	fxSetHostChunk(the, &(the->scratch), _DATA, _SIZE))
+
+// #define xsGetHostData(_SLOT) \
+// 	(the->scratch = (_SLOT), \
+// 	fxGetHostData(the, &(the->scratch)))
+// #define xsSetHostData(_SLOT,_DATA) \
+// 	(the->scratch = (_SLOT), \
+// 	fxSetHostData(the, &(the->scratch), _DATA))
+
+// #define xsGetHostDestructor(_SLOT) \
+// 	(the->scratch = (_SLOT), \
+// 	fxGetHostDestructor(the, &(the->scratch)))
+// #define xsSetHostDestructor(_SLOT,xsDestructor destructor) \
+// 	(the->scratch = (_SLOT), \
+// 	fxSetHostDestructor(the, &(the->scratch), xsDestructor destructor))
+
+// #define xsGetHostHandle(_SLOT) \
+// 	(the->scratch = (_SLOT), \
+// 	fxGetHostHandle(the, &(the->scratch)))
 
 // Machine
 
@@ -713,7 +991,7 @@ void xsShareMachine(xsMachine* the) {
 	fxShareMachine(the);
 }
 
-/* Context */
+// Context
 
 /// Returns a context.
 ///
@@ -735,3 +1013,58 @@ void* xsGetContext(xsMachine* the) {
 void xsSetContext(xsMachine* the, void* context) {
 	the.context = (context);
 }
+
+// Host
+
+// TODO: xsArrayCacheBegin
+// #define xsArrayCacheBegin(_ARRAY) \
+// 	(fxPush(_ARRAY), \
+// 	fxArrayCacheBegin(the, the.stack), \
+// 	the.stack++)
+// TODO: xsArrayCacheEnd
+// #define xsArrayCacheEnd(_ARRAY) \
+// 	(fxPush(_ARRAY), \
+// 	fxArrayCacheEnd(the, the.stack), \
+// 	the.stack++)
+// TODO: xsArrayCacheItem
+// #define xsArrayCacheItem(_ARRAY,_ITEM) \
+// 	(fxPush(_ARRAY), \
+// 	fxPush(_ITEM), \
+// 	fxArrayCacheItem(the, the.stack + 1, the.stack), \
+// 	the.stack += 2)
+
+// TODO: xsDemarshall
+// #define xsDemarshall(_DATA) \
+// 	(fxDemarshall(the, (_DATA), 0), \
+// 	fxPop())
+// TODO: xsDemarshallAlien
+// #define xsDemarshallAlien(_DATA) \
+// 	(fxDemarshall(the, (_DATA), 1), \
+// 	fxPop())
+// TODO: xsMarshall
+// #define xsMarshall(_SLOT) \
+// 	(xsOverflow(-1), \
+// 	fxPush(_SLOT), \
+// 	fxMarshall(the, 0))
+// TODO: xsMarshallAlien
+// #define xsMarshallAlien(_SLOT) \
+// 	(xsOverflow(-1), \
+// 	fxPush(_SLOT), \
+// 	fxMarshall(the, 1))
+
+// TODO: xsIsProfiling
+// #define xsIsProfiling() \
+// 	fxIsProfiling(the)
+// TODO: xsStartProfiling
+// #define xsStartProfiling() \
+// 	fxStartProfiling(the)
+// TODO: xsStopProfiling
+// #define xsStopProfiling() \
+// 	fxStopProfiling(the)
+
+// TODO: xsAwaitImport
+// #define xsAwaitImport(_NAME,_FLAG) \
+// 	(xsOverflow(-1), \
+// 	fxStringX(the, --the.stack, (xsStringValue)_NAME), \
+// 	fxAwaitImport(the, _FLAG), \
+// 	fxPop())

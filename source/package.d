@@ -106,6 +106,12 @@ class Machine {
     return this.value(the.xsInteger(value));
   }
 
+  /// Returns a Number `JSValue` given an `uint` value.
+  /// See_Also: `xs.bindings.macros.xsUnsigned`
+  JSValue unsigned(uint value) {
+    return this.value(the.xsUnsigned(value));
+  }
+
   /// Returns a Number `JSValue` given a `double` value.
   /// See_Also: `xs.bindings.macros.xsNumber`
   JSValue number(double value) {
@@ -223,10 +229,17 @@ class JSValue {
     return machine.the.xsToInteger(slot);
   }
 
+  /// Convert this value to an `uint` value.
+  /// See_Also: `xs.bindings.macros.xsToUnsigned`
+  uint unsigned() @property const {
+    enforce(type == JSType.integer, "Value is not an integral Number");
+    return machine.the.xsToUnsigned(slot);
+  }
+
   /// Convert this value to a `double` value.
   /// See_Also: `xs.bindings.macros.xsToNumber`
   double number() @property const {
-    enforce(type == JSType.integer, "Value is not an integral Number");
+    enforce(type == JSType.integer, "Value is not a Number");
     return machine.the.xsToNumber(slot);
   }
 
@@ -253,6 +266,12 @@ unittest {
   assert(foo.type == JSType.integer);
   assert(foo.integer == 1);
   assert(foo.number == 1);
+
+  machine.set(global, foo.id, machine.unsigned(100));
+  foo = machine.get(global, foo.id);
+  assert(foo.type == JSType.integer);
+  assert(foo.unsigned == 100);
+  assert(foo.number == 100);
 
   machine.set(global, machine.id("bar"), machine.boolean(true));
   assert(machine.has(global, machine.id("bar")));

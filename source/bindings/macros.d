@@ -93,6 +93,17 @@ xsIntegerValue xsToInteger(scope xsMachine* the, const xsSlot theSlot) {
   return fxToInteger(the, &the.scratch);
 }
 
+/// Returns a Number slot given an `uint`.
+xsSlot xsUnsigned(scope xsMachine* the, uint value) {
+  fxUnsigned(the, &the.scratch, value);
+  return the.scratch;
+}
+/// Convert a slot to a Number value represented as an `uint`.
+xsUnsignedValue xsToUnsigned(scope xsMachine* the, const xsSlot theSlot) {
+  the.scratch = cast(xsSlot) theSlot;
+  return fxToUnsigned(the, &the.scratch);
+}
+
 /// Returns a Number slot given a `double`.
 xsSlot xsNumber(scope xsMachine* the, double value) {
   fxNumber(the, &the.scratch, value);

@@ -28,9 +28,13 @@ extern(C) void fxAbort(xsMachine* the, int status)
 	}
 }
 
+private {
+  alias constSlot = const(xsSlot);
+}
+
 /// A JavaScript virtual machine.
 class Machine {
-  private xsMachine* the;
+  package xsMachine* the;
 
   /// Default VM creation options.
   static xsCreation defaultCreation = {
@@ -56,9 +60,22 @@ class Machine {
   ~this() {
     if (the) the.xsDeleteMachine();
   }
+
+  constSlot global() @property const {
+    const slot = the.xsGlobal;
+    return slot;
+  }
 }
 
+
+
 unittest {
-  const machine = new Machine("test");
+  auto machine = new Machine("test");
+  const global = machine.global;
+  assert(machine.the.xsToID(global));
+  assert(machine.the.xsTypeOf(global) == JSType.reference);
+
+  assert(machine.the.xsHas(global, machine.the.xsID("Number")));
+
   destroy(machine);
 }

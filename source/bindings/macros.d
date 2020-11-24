@@ -18,7 +18,7 @@ xsSlot fxPop(xsMachine* the) {
 }
 /// Push a slot onto the stack.
 void fxPush(xsMachine* the, xsSlot slot) {
-  *(--the.stack) = (slot);
+  *(--the.stack) = slot;
 }
 
 debug {
@@ -43,8 +43,8 @@ debug {
 /// > current scope with the name `the` of type `xsMachine*`.
 ///
 /// See_Also: <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#slot-types">Slot Types</a>
-JSType xsTypeOf(xsMachine* the, xsSlot theSlot) {
-  the.scratch = theSlot;
+JSType xsTypeOf(xsMachine* the, const xsSlot theSlot) {
+  the.scratch = cast(xsSlot) theSlot;
   return fxTypeOf(the, &the.scratch).to!uint.to!JSType;
 }
 
@@ -246,8 +246,7 @@ enum xsSlot xsDatePrototype(alias xsMachine* the) = the.stackPrototypes[prototyp
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp">RegExp</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp">RegExp</a> on MDN
 enum xsSlot xsRegExpPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 8];
-/// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Host">Host</a> prototype instance created by the XS runtime.
-/// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Host">Host</a> on MDN
+/// Returns a reference to the Host prototype instance created by the XS runtime.
 enum xsSlot xsHostPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 9];
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a> on MDN
@@ -392,9 +391,9 @@ bool xsIsID(xsMachine* the, const char* name) {
 	return fxIsID(the, cast(char*) name).to!bool;
 }
 ///
-void xsToID(xsMachine* the, xsSlot slot) {
-	the.scratch = slot;
-	fxToID(the, &the.scratch);
+xsIndex xsToID(xsMachine* the, const xsSlot slot) {
+	the.scratch = cast(xsSlot) slot;
+	return fxToID(the, &the.scratch);
 }
 ///
 char* xsName(xsMachine* the, xsIndex id) {
@@ -429,9 +428,9 @@ char* xsName(xsMachine* the, xsIndex id) {
 /// ---
 /// if (xsHas(xsThis, xsID_foo));
 /// ---
-bool xsHas(xsMachine* the, xsSlot this_, int id) {
+bool xsHas(xsMachine* the, const xsSlot this_, int id) {
 	the.xsOverflow(-1);
-	the.fxPush(this_);
+	the.fxPush(cast(xsSlot) this_);
 	return fxHasID(the, id).to!bool;
 }
 
@@ -723,7 +722,7 @@ void xsCall_noResult(xsMachine* the, xsSlot this_, int id, xsSlot[] params ...) 
 // Globals
 
 ///
-xsSlot xsGlobal(xsMachine* the) {
+inout(xsSlot) xsGlobal(inout xsMachine* the) {
   return the.stackTop[-1];
 }
 

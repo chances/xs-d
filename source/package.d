@@ -90,6 +90,12 @@ unittest {
   assert(machine.the.xsTypeOf(foo) == JSType.integer);
   assert(machine.the.xsToInteger(foo) == 1);
 
+  machine.the.xsSet(global, machine.id("bar"), machine.the.xsBoolean(true));
+  assert(machine.the.xsHas(global, machine.id("bar")));
+  auto bar = machine.the.xsGet(global, machine.id("bar"));
+  assert(machine.the.xsTypeOf(bar) == JSType.boolean);
+  assert(machine.the.xsToBoolean(bar));
+
   machine.collectGarbage();
   destroy(machine);
 }

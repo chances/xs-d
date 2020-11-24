@@ -203,16 +203,25 @@ class JSValue {
     return (cast(xsMachine*) machine.the).xsTypeOf(slot);
   }
 
+  /// Convert this value to a `bool` value.
+  /// See_Also: `xs.bindings.macros.xsToBoolean`
+  bool boolean() @property const {
+    enforce(type == JSType.boolean, "Value is not a Boolean");
+    return machine.the.xsToBoolean(slot);
+  }
+
+  /// Convert this value to an `int` value.
   /// See_Also: `xs.bindings.macros.xsToInteger`
   int integer() @property const {
     enforce(type == JSType.integer, "Value is not an integral Number");
     return machine.the.xsToInteger(slot);
   }
 
-  /// See_Also: `xs.bindings.macros.xsToBoolean`
-  bool boolean() @property const {
-    enforce(type == JSType.boolean, "Value is not a Boolean");
-    return machine.the.xsToBoolean(slot);
+  /// Convert this value to a `double` value.
+  /// See_Also: `xs.bindings.macros.xsToNumber`
+  double number() @property const {
+    enforce(type == JSType.integer, "Value is not an integral Number");
+    return machine.the.xsToNumber(slot);
   }
 }
 
@@ -228,6 +237,7 @@ unittest {
   assert(foo.id == machine.toId(foo.slot));
   assert(foo.type == JSType.integer);
   assert(foo.integer == 1);
+  assert(foo.number == 1);
 
   machine.set(global, machine.id("bar"), machine.boolean(true));
   assert(machine.has(global, machine.id("bar")));

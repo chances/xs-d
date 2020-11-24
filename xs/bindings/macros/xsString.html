@@ -2,10 +2,10 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
-		<title>Module xs - xs-d</title>
-		<link rel="stylesheet" type="text/css" href="./styles/ddox.css"/>
-		<link rel="stylesheet" href="./prettify/prettify.css" type="text/css"/>
-		<script type="text/javascript" src="./scripts/jquery.js">/**/</script><script type="text/javascript" src="./scripts/ddox.js">/**/</script>
+		<title>Function xsString - xs-d</title>
+		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
+		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
 	</head>
 	<body onload="setupDdox();">
 <style>
@@ -44,28 +44,28 @@
 				<form action="#" method="GET">
 					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
 				</form>
-				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="./symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "./";
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../../";
 $('#symbolSearchPane').show();</script>
 			</div>
 			<ul class="tree-view">
 				<li class="tree-view ">
-					<div class="package selected">
-						<a href="./xs.html">xs</a>
+					<div class="package ">
+						<a href="../../../xs.html">xs</a>
 					</div>
 			<ul class="tree-view">
-				<li class="tree-view collapsed">
+				<li class="tree-view ">
 					<div class="package ">
-						<a href="./xs/bindings.html">bindings</a>
+						<a href="../../../xs/bindings.html">bindings</a>
 					</div>
 			<ul class="tree-view">
 				<li>
 					<div class="module ">
-						<a href="./xs/bindings/enums.html">enums</a>
+						<a href="../../../xs/bindings/enums.html">enums</a>
 					</div>
 				</li>
 				<li>
-					<div class="module ">
-						<a href="./xs/bindings/macros.html">macros</a>
+					<div class="module selected">
+						<a href="../../../xs/bindings/macros.html">macros</a>
 					</div>
 				</li>
 			</ul>
@@ -75,12 +75,24 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Module xs</h1><p>XS JavaScript Engine API
-</p><section><p>See the <a href="https://chances.github.io/xs-d">API Reference</a> and the official <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md">XS in C</a> in the Moddable SDK's documentation.
+			<h1>Function xsString</h1><p>Returns a String slot given a <code class="lang-d"><span class="typ">string</span></code>.
 </p>
-</section>
-
-			<section></section>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsSlotRecord</span> <span class="pln">xsString</span>
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsMachineRecord</span><span class="pun">*</span> <span class="pln">the</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="typ">string</span> <span class="pln">value</span>
+			<br/>
+			<span class="pun">)</span><span class="pun">;</span>
+					</div>
+				</code>
+			</div>
+			
+			
 			<footer>
 				<table class="license-info">
 					<tr>

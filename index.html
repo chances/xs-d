@@ -53,10 +53,22 @@ $('#symbolSearchPane').show();</script>
 						<a href="./xs.html">xs</a>
 					</div>
 			<ul class="tree-view">
-				<li>
-					<div class="module ">
+				<li class="tree-view collapsed">
+					<div class="package ">
 						<a href="./xs/bindings.html">bindings</a>
 					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="./xs/bindings/enums.html">enums</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="./xs/bindings/macros.html">macros</a>
+					</div>
+				</li>
+			</ul>
 				</li>
 			</ul>
 				</li>
@@ -149,10 +161,28 @@ $('#symbolSearchPane').show();</script>
 				</tr>
 			<tr>
 				<td>
+					<a href="./xs/bindings/enums.html">xs.bindings.enums</a>
+				</td>
+				<td>
+					Enumerations adapted from constants in <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/xs/includes/xs.h">xs.h</a>.
+
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<a href="./xs/bindings/macros.html">xs.bindings.macros</a>
+				</td>
+				<td>
+					Implements <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/xs/includes/xs.h#L156-L1244">macros from xs.h</a> as idiomatic D.
+
+				</td>
+			</tr>
+			<tr>
+				<td>
 					<a href="./xs/bindings.html">xs.bindings</a>
 				</td>
 				<td>
-					Bindings to the XS JavaScript Engine <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md">C API</a>
+					Bindings to the XS JavaScript Engine <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md">C API</a>.
 
 				</td>
 			</tr>

@@ -6,6 +6,9 @@
 	],
 	"license": "MIT",
   "copyright": "Copyright © 2020, Chance Snow",
+  "subPackages": [
+    "examples/hello-world"
+  ],
   "targetPath": "bin",
   "targetType": "library",
 	"preGenerateCommands": [

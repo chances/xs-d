@@ -1,0 +1,17 @@
+{
+  "name": "hello-world",
+  "description": "Hello, world example of the XS JavaScript engine",
+	"authors": [
+		"Chance Snow"
+	],
+	"license": "MIT",
+  "copyright": "Copyright © 2020, Chance Snow",
+  "targetPath": "../../bin",
+  "targetType": "executable",
+  "systemDependencies": "linux: gio-2.0",
+  "dependencies": {
+    "xs": {
+      "path": "../.."
+    }
+  }
+}

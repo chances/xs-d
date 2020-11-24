@@ -1,7 +1,7 @@
 CWD := $(shell pwd)
 SOURCES := $(shell find source -name '*.d')
 TARGET_OS := $(shell uname -s)
-LIBS_PATH := bin/wgpu-64-debug
+LIBS_PATH := lib
 
 .DEFAULT_GOAL := docs
 all: docs
@@ -13,9 +13,23 @@ thirdparty/moddable: thirdparty/moddable.zip
 	@mv thirdparty/moddable-OS201116 thirdparty/moddable
 xs: thirdparty/moddable
 	@cd thirdparty/moddable/xs/makefiles/lin && env MODDABLE="$(CWD)/thirdparty/moddable" make -f xsc.mk
+	@cd thirdparty/moddable/xs/makefiles/lin && env MODDABLE="$(CWD)/thirdparty/moddable" make -f xsid.mk
+	@cd thirdparty/moddable/xs/makefiles/lin && env MODDABLE="$(CWD)/thirdparty/moddable" make -f xsl.mk
+	@cd thirdparty/moddable/xs/makefiles/lin && env MODDABLE="$(CWD)/thirdparty/moddable" make -f xst.mk
+	@cd thirdparty/moddable/build/makefiles/lin && env MODDABLE="$(CWD)/thirdparty/moddable" make -f tools.mk
+	@rm -f lib/libxs.a
+	ar cr lib/libxs.a \
+		thirdparty/moddable/build/tmp/lin/debug/xsl/xsDefaults.o \
+		`find thirdparty/moddable/build/tmp/lin/debug/lib -name '*.o' ! -name 'xsc.c.o' ! -name 'xsmc.c.o'`
 .PHONY : xs
 xs-release: thirdparty/moddable
 	@cd thirdparty/moddable/xs/makefiles/lin && env MODDABLE="$(CWD)/thirdparty/moddable" make GOAL=release -f xsc.mk
+	@cd thirdparty/moddable/xs/makefiles/lin && env MODDABLE="$(CWD)/thirdparty/moddable" make GOAL=release -f xsid.mk
+	@cd thirdparty/moddable/xs/makefiles/lin && env MODDABLE="$(CWD)/thirdparty/moddable" make GOAL=release -f xsl.mk
+	@cd thirdparty/moddable/xs/makefiles/lin && env MODDABLE="$(CWD)/thirdparty/moddable" make GOAL=release -f xst.mk
+	@cd thirdparty/moddable/build/makefiles/lin && env MODDABLE="$(CWD)/thirdparty/moddable" make GOAL=release -f tools.mk
+	@rm -f lib/libxs.a
+	ar cr lib/libxs.a `find thirdparty/moddable/build/tmp/lin/release/xst -name '*.o' ! -name 'xst.o'`
 .PHONY : xs-release
 
 source/bindings/package.d:

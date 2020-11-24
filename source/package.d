@@ -13,3 +13,17 @@ import std.string : toStringz;
 public import xs.bindings;
 public import xs.bindings.enums;
 public import xs.bindings.macros;
+
+///
+extern(C) void fxAbort(xsMachine* the, int status)
+{
+	if (status == xsNotEnoughMemoryExit)
+		the.xsUnknownError("not enough memory");
+	else if (status == xsStackOverflowExit)
+		the.xsUnknownError("stack overflow");
+	else if (status == xsDeadStripExit)
+		the.xsUnknownError("dead strip");
+	else if (status == xsUnhandledExceptionExit) {
+		xsTrace(the, "unhandled exception\n");
+	}
+}

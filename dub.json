@@ -14,10 +14,19 @@
   "preBuildCommands": [
     "make xs"
   ],
-  "lflags-linux": [
-    "-Lthirdparty/moddable/build/bin/lin/debug"
+  "lflags-posix": [
+    "-L$PACKAGE_DIR/lib"
+  ],
+  "libs": [
+    "xs"
+  ],
+  "libs-linux": [
+    "gio-2.0"
   ],
   "configurations": [
+    {
+      "name": "library"
+    },
     {
       "name": "static",
       "targetType": "staticLibrary"
@@ -26,9 +35,6 @@
       "name": "release",
       "preBuildCommands": [
         "make xs-release"
-      ],
-      "lflags-linux": [
-        "-Lthirdparty/moddable/build/bin/lin/release"
       ]
     },
     {
@@ -36,9 +42,6 @@
       "targetType": "staticLibrary",
       "preBuildCommands": [
         "make xs-release"
-      ],
-      "lflags-linux": [
-        "-Lthirdparty/moddable/build/bin/lin/release"
       ]
     }
   ]

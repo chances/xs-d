@@ -19,6 +19,12 @@ jobs:
     # - name: Install *nix Dependencies
     #   if: runner.os == 'Linux'
     #   run: sudo apt-get install --quiet -y libglfw3 libglfw3-dev
+    - name: Cache Moddable SDK
+      id: cache-moddable
+      uses: actions/cache@v2
+      with:
+        path: thirdparty/moddable
+        key: ${{ runner.os }}-moddable-OS201116
     - name: Lint
       run: dub lint
     - name: Test

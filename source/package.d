@@ -8,6 +8,7 @@
 module xs;
 
 import std.conv : to;
+import std.exception : enforce;
 import std.string : format, toStringz;
 
 public import xs.bindings;
@@ -15,7 +16,7 @@ public import xs.bindings.enums;
 public import xs.bindings.macros;
 
 ///
-extern(C) void fxAbort(xsMachine* the, int status)
+extern(C) void fxAbort(scope xsMachine* the, int status)
 {
 	if (status == xsNotEnoughMemoryExit)
 		the.xsUnknownError("not enough memory");
@@ -34,7 +35,7 @@ private {
 
 /// A JavaScript virtual machine.
 class Machine {
-  package xsMachine* the;
+  private xsMachine* the_;
 
   /// Default VM creation options.
   static xsCreation defaultCreation = {
@@ -48,17 +49,19 @@ class Machine {
     symbolModulo: 127,
   };
 
-  /// Create and allocate a new JS VM.
+  /// Create and allocate a new JavaScript VM.
   this(string name, const xsCreation creationOptions = defaultCreation) {
-    import std.exception : enforce;
-
-    the = enforce(
+    the_ = enforce(
       xsCreateMachine(&creationOptions, name, cast(void*) this),
       format!"Could not create JS virtual machine '%s'"(name)
     );
   }
   ~this() {
     if (the) the.xsDeleteMachine();
+  }
+
+  xsMachine* the() @property const {
+    return cast(xsMachine*) the_;
   }
 
   constSlot global() @property const {
@@ -69,6 +72,69 @@ class Machine {
   /// See_Also: `xs.bindings.macros.xsID`
   xsIndex id(string name) {
     return the.xsID(name);
+  }
+
+  ///
+  xsIndex toId(const xsSlot slot) inout {
+    auto the = cast(xsMachine*) the;
+    return the.xsToID(slot);
+  }
+
+  ///
+  string nameOf(xsIndex id) inout {
+    import std.string : fromStringz;
+
+    auto the = cast(xsMachine*) the;
+    auto namePtr = the.xsName(id);
+    return namePtr.fromStringz.to!string;
+  }
+
+  /// Returns a `JSValue` given a value slot.
+  JSValue value(xsSlot slot) {
+    return new JSValue(this, slot);
+  }
+
+  /// Returns a Boolean `JSValue` given a `bool`.
+  /// See_Also: `xsBoolean`
+  JSValue boolean(bool value) {
+    return this.value(the.xsBoolean(value));
+  }
+
+  /// Returns a Number `JSValue` given an `int`.
+  /// See_Also: `xsInteger`
+  JSValue integer(int value) {
+    return this.value(the.xsInteger(value));
+  }
+
+  /// Returns a Number `JSValue` given a `double`.
+  /// See_Also: `xsNumber`
+  JSValue number(double value) {
+    return this.value(the.xsNumber(value));
+  }
+
+  /// Get a property or item of an instance.
+  ///
+  /// Params:
+  /// this_=A reference to the instance that has the property or item
+  /// id=The identifier of the property or item to get
+  /// Returns:
+  /// A `JSValue` containing what is contained in the property or item.
+  /// `JSValue.type` will equal `JSType.undefined` if the property or item is not defined by the instance or its prototypes.
+  /// See_Also: `xsGet`
+  JSValue get(const xsSlot this_, xsIndex id) {
+    enforce(the.xsHas(this_, id), format!"property `%s[%s]` does not exist"(nameOf(toId(this_)), nameOf(id)));
+    return new JSValue(this, the.xsGet(this_, id));
+  }
+
+  /// Set a property or item of an instance.
+  ///
+  /// Params:
+  /// this_=A reference to the instance that will have the property or item
+  /// id=The identifier of the property or item to set
+  /// slot=The value of the property or item to set
+  /// See_Also: `xsSet`
+  void set(const xsSlot this_, xsIndex id, const JSValue value) {
+    the.xsSet(this_, id, value.slot);
   }
 
   /// Collect garbage values from this VM.
@@ -99,6 +165,63 @@ unittest {
   auto bar = machine.the.xsGet(global, machine.id("bar"));
   assert(machine.the.xsTypeOf(bar) == JSType.boolean);
   assert(machine.the.xsToBoolean(bar));
+
+  machine.collectGarbage();
+  destroy(machine);
+}
+
+/// A JavaScript value reference.
+class JSValue {
+  private Machine machine;
+
+  /// ID of this value in it's `Machine`.
+  /// See_Also: `Machine.id`, `Machine.toId`
+  const xsIndex id;
+  /// Machine slot of this value.
+  const xsSlot slot;
+
+  /// Construct a reference to a slot value belonging to `machine`.
+  this(Machine machine, const xsSlot value) {
+    this.machine = machine;
+    id = machine.toId(value);
+    slot = value;
+  }
+
+  JSType type() @property inout {
+    return (cast(xsMachine*) machine.the).xsTypeOf(slot);
+  }
+
+  /// See_Also: `fxToInteger`
+  int integer() @property const {
+    enforce(type == JSType.integer, "Value is not an integral Number");
+    return machine.the.xsToInteger(slot);
+  }
+
+  /// See_Also: `fxToBoolean`
+  bool boolean() @property const {
+    enforce(type == JSType.boolean, "Value is not a Boolean");
+    return machine.the.xsToBoolean(slot);
+  }
+}
+
+unittest {
+  auto machine = new Machine("test");
+  const global = machine.global;
+  assert(machine.toId(global));
+
+  const fooId = machine.id("foo");
+  machine.set(global, fooId, machine.integer(1));
+  assert(machine.the.xsHas(global, fooId));
+  auto foo = machine.get(global, fooId);
+  assert(foo.id == machine.toId(foo.slot));
+  assert(foo.type == JSType.integer);
+  assert(foo.integer == 1);
+
+  machine.set(global, machine.id("bar"), machine.boolean(true));
+  assert(machine.the.xsHas(global, machine.id("bar")));
+  auto bar = machine.get(global, machine.id("bar"));
+  assert(bar.type == JSType.boolean);
+  assert(bar.boolean);
 
   machine.collectGarbage();
   destroy(machine);

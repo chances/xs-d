@@ -6,7 +6,7 @@
 module xs.bindings.macros;
 
 import std.conv : to;
-import std.string : toStringz;
+import std.string : format, toStringz;
 import xs.bindings;
 import xs.bindings.enums;
 
@@ -858,7 +858,25 @@ debug {
   }
 }
 
-/* Debugger */
+// Platform
+
+debug {
+	void xsAssert(scope xsMachine* the, bool it, string file = __FILE__, int line = __LINE__) {
+		if (!(it)) fxThrowMessage(the, cast(char*) file.toStringz, line, XS_UNKNOWN_ERROR, cast(char*) format!"%s"(it).toStringz);
+  }
+	void xsErrorPrintf(scope xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
+		fxThrowMessage(the, cast(char*) file.toStringz, line, XS_UNKNOWN_ERROR, cast(char*) format!"%s"(message).toStringz);
+  }
+} else {
+	void xsAssert(scope xsMachine* the, bool it) {
+		if (!(it)) fxThrowMessage(the, null, 0, XS_UNKNOWN_ERROR, cast(char*) format!"%s"(it).toStringz);
+  }
+	void xsErrorPrintf(scope xsMachine* the, string message) {
+		fxThrowMessage(the, null, 0, XS_UNKNOWN_ERROR, cast(char*) format!"%s"(message).toStringz);
+  }
+}
+
+// Debugger
 
 debug {
   ///

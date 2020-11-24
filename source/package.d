@@ -95,16 +95,19 @@ class Machine {
   }
 
   /// Returns a Boolean `JSValue` given a `bool`.
+  /// See_Also: `xs.bindings.macros.xsBoolean`
   JSValue boolean(bool value) {
     return this.value(the.xsBoolean(value));
   }
 
   /// Returns a Number `JSValue` given an `int`.
+  /// See_Also: `xs.bindings.macros.xsInteger`
   JSValue integer(int value) {
     return this.value(the.xsInteger(value));
   }
 
   /// Returns a Number `JSValue` given a `double`.
+  /// See_Also: `xs.bindings.macros.xsNumber`
   JSValue number(double value) {
     return this.value(the.xsNumber(value));
   }
@@ -117,7 +120,7 @@ class Machine {
   /// Returns:
   /// A `JSValue` containing what is contained in the property or item.
   /// `JSValue.type` will equal `JSType.undefined` if the property or item is not defined by the instance or its prototypes.
-  /// See_Also: `xsGet`
+  /// See_Also: `xs.bindings.macros.xsGet`
   JSValue get(const xsSlot this_, xsIndex id) {
     enforce(the.xsHas(this_, id), format!"property `%s[%s]` does not exist"(nameOf(toId(this_)), nameOf(id)));
     return new JSValue(this, the.xsGet(this_, id));
@@ -129,7 +132,7 @@ class Machine {
   /// this_=A reference to the instance that will have the property or item
   /// id=The identifier of the property or item to set
   /// value=The value of the property or item to set
-  /// See_Also: `xsSet`
+  /// See_Also: `xs.bindings.macros.xsSet`
   void set(const xsSlot this_, xsIndex id, const JSValue value) {
     the.xsSet(this_, id, value.slot);
   }
@@ -188,13 +191,13 @@ class JSValue {
     return (cast(xsMachine*) machine.the).xsTypeOf(slot);
   }
 
-  /// See_Also: `fxToInteger`
+  /// See_Also: `xs.bindings.macros.xsToInteger`
   int integer() @property const {
     enforce(type == JSType.integer, "Value is not an integral Number");
     return machine.the.xsToInteger(slot);
   }
 
-  /// See_Also: `fxToBoolean`
+  /// See_Also: `xs.bindings.macros.xsToBoolean`
   bool boolean() @property const {
     enforce(type == JSType.boolean, "Value is not a Boolean");
     return machine.the.xsToBoolean(slot);
@@ -216,7 +219,7 @@ unittest {
 
   machine.set(global, machine.id("bar"), machine.boolean(true));
   assert(machine.the.xsHas(global, machine.id("bar")));
-  auto bar = machine.get(global, machine.id("bar"));
+  const bar = machine.get(global, machine.id("bar"));
   assert(bar.type == JSType.boolean);
   assert(bar.boolean);
 

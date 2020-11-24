@@ -1,6 +1,6 @@
 // Auto-generated. DO NOT EDIT!
 
-/// Bindings to the XS JavaScript Engine <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md">C API</a>
+/// Bindings to the XS JavaScript Engine <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md">C API</a>.
 ///
 /// Authors: Chance Snow
 /// Copyright: Copyright © 2020 Chance Snow. All rights reserved.

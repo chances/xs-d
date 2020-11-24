@@ -720,14 +720,14 @@ void xsCall_noResult(xsMachine* the, xsSlot this_, int id, xsSlot[] params ...) 
 	the.stack++;
 }
 
-/* Globals */
+// Globals
 
 ///
 xsSlot xsGlobal(xsMachine* the) {
   return the.stackTop[-1];
 }
 
-/* Host Constructors, Functions and Objects */
+// Host Constructors, Functions and Objects
 
 // #define xsNewHostConstructor(xsCallback _CALLBACK,_LENGTH,_PROTOTYPE) \
 // 	(xsOverflow(-1), \
@@ -783,6 +783,70 @@ xsSlot xsGlobal(xsMachine* the) {
 // #define xsGetHostHandle(_SLOT) \
 // 	(the.scratch = (_SLOT), \
 // 	fxGetHostHandle(the, &(the.scratch)))
+
+// Exceptions
+
+// Errors
+
+debug {
+	///
+  void xsUnknownError(xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
+    fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.unknownError, cast(char*) message.toStringz);
+  }
+	///
+  void xsEvalError(xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
+    fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.evalError, cast(char*) message.toStringz);
+  }
+	///
+  void xsRangeError(xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
+    fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.rangeError, cast(char*) message.toStringz);
+  }
+	///
+  void xsReferenceError(xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
+    fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.referenceError, cast(char*) message.toStringz);
+  }
+	///
+  void xsSyntaxError(xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
+    fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.syntaxError, cast(char*) message.toStringz);
+  }
+	///
+  void xsTypeError(xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
+    fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.typeError, cast(char*) message.toStringz);
+  }
+	///
+  void xsURIError(xsMachine* the, string message, string file = __FILE__, int line = __LINE__) {
+    fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.uriError, cast(char*) message.toStringz);
+  }
+} else {
+	///
+  void xsUnknownError(xsMachine* the, string message) {
+    fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.unknownError, cast(char*) message.toStringz);
+  }
+	///
+  void xsEvalError(xsMachine* the, string message) {
+    fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.evalError, cast(char*) message.toStringz);
+  }
+	///
+  void xsRangeError(xsMachine* the, string message) {
+    fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.rangeError, cast(char*) message.toStringz);
+  }
+	///
+  void xsReferenceError(xsMachine* the, string message) {
+    fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.referenceError, cast(char*) message.toStringz);
+  }
+	///
+  void xsSyntaxError(xsMachine* the, string message) {
+    fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.syntaxError, cast(char*) message.toStringz);
+  }
+	///
+  void xsTypeError(xsMachine* the, string message) {
+    fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.typeError, cast(char*) message.toStringz);
+  }
+	///
+  void xsURIError(xsMachine* the, string message) {
+    fxThrowMessage(the, cast(char*) file.toStringz, line, JSError.uriError, cast(char*) message.toStringz);
+  }
+}
 
 // Machine
 

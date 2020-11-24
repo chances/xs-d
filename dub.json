@@ -9,7 +9,7 @@
   "targetPath": "bin",
   "targetType": "library",
 	"preGenerateCommands": [
-    "make source/bindings/package.d"
+    "make source/xs/bindings/package.d"
   ],
   "preBuildCommands": [
     "make xs"

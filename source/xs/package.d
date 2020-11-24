@@ -15,18 +15,31 @@ public import xs.bindings;
 public import xs.bindings.enums;
 public import xs.bindings.macros;
 
+/// A rudimentary Host VM abortion implementation that throws error messages back into the JS VM.
 ///
-extern(C) void fxAbort(scope xsMachine* the, int status)
-{
-	if (status == xsNotEnoughMemoryExit)
-		the.xsUnknownError("not enough memory");
-	else if (status == xsStackOverflowExit)
-		the.xsUnknownError("stack overflow");
-	else if (status == xsDeadStripExit)
-		the.xsUnknownError("dead strip");
-	else if (status == xsUnhandledExceptionExit) {
-		xsTrace(the, "unhandled exception\n");
-	}
+/// You <strong>MUST</strong> either mixin the template in your Host application or provide your own implementation.
+///
+/// Examples:
+/// ---
+/// mixin defaultFxAbort;
+/// ---
+mixin template defaultFxAbort() {
+  extern(C) void fxAbort(scope xsMachine* the, int status)
+  {
+    if (status == xsNotEnoughMemoryExit)
+      the.xsUnknownError("not enough memory");
+    else if (status == xsStackOverflowExit)
+      the.xsUnknownError("stack overflow");
+    else if (status == xsDeadStripExit)
+      the.xsUnknownError("dead strip");
+    else if (status == xsUnhandledExceptionExit) {
+      xsTrace(the, "unhandled exception\n");
+    }
+  }
+}
+
+version (unittest) {
+  mixin defaultFxAbort;
 }
 
 private {

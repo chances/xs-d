@@ -32,9 +32,9 @@ xs-release: thirdparty/moddable
 	ar cr lib/libxs.a `find thirdparty/moddable/build/tmp/lin/release/xst -name '*.o' ! -name 'xst.o'`
 .PHONY : xs-release
 
-source/bindings/package.d:
-	dub run dpp -- --preprocess-only --no-sys-headers --ignore-macros --include-path "$(CWD)/thirdparty/moddable/xs/includes" source/bindings/xs.dpp
-	@mv source/bindings/xs.d source/bindings/package.d
+source/xs/bindings/package.d:
+	dub run dpp -- --preprocess-only --no-sys-headers --ignore-macros --include-path "$(CWD)/thirdparty/moddable/xs/includes" source/xs/bindings/xs.dpp
+	@mv source/bindings/xs.d source/xs/bindings/package.d
 
 EXAMPLES := bin/hello-world
 examples: $(EXAMPLES)
@@ -79,7 +79,7 @@ docs: docs/sitemap.xml
 .PHONY: docs
 
 clean:
-	rm -f source/bindings/package.d
+	rm -f source/xs/bindings/package.d
 	rm -f bin/headless
 	rm -f $(EXAMPLES)
 	rm -f docs.json

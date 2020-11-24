@@ -49,10 +49,12 @@ void fxPush(xsMachine* the, xsSlot slot) {
 }
 
 debug {
+  ///
   void xsOverflow(xsMachine* the, int count, string file = __FILE__, int line = __LINE__) {
 	  fxOverflow(the, count, cast(char*) file.toStringz, line);
   }
 } else {
+  ///
   void xsOverflow(xsMachine* the, int count) {
 	  fxOverflow(the, count, null, 0);
   }
@@ -60,7 +62,7 @@ debug {
 
 /// Returns the `Type` of a slot.
 /// Params:
-/// the=A reference to the target virtual machine
+/// the=A machine
 /// theSlot=The slot to test
 /// Returns: The `Type` of a `theSlot`.
 ///
@@ -160,7 +162,7 @@ void xsToStringBuffer(xsMachine* the, xsSlot theSlot, const char* buffer, int si
 
 /// Returns an ArrayBuffer slot.
 /// Params:
-/// the=
+/// the=A machine
 /// buffer=
 /// size=The size of the data in bytes
 xsSlot xsArrayBuffer(xsMachine* the, void* buffer, int size) {
@@ -173,6 +175,7 @@ xsSlot xsArrayBuffer(xsMachine* the, void* buffer, int size) {
 /// offset=The starting byte offset to get the data
 /// size=The data size to copy in bytes
 void xsGetArrayBufferData(T)(xsMachine* the, xsSlot theSlot, int offset, out T[] buffer, int size) {
+  the.xsGetArrayBufferData(theSlot, offset, buffer.ptr, size);
 }
 /// ditto
 void xsGetArrayBufferData(xsMachine* the, xsSlot theSlot, int offset, out void* buffer, int size) {
@@ -181,7 +184,7 @@ void xsGetArrayBufferData(xsMachine* the, xsSlot theSlot, int offset, out void* 
 }
 /// Returns the size of the ArrayBuffer in bytes.
 /// Params:
-/// the=
+/// the=A machine
 /// theSlot=The ArrayBuffer slot
 int xsGetArrayBufferLength(xsMachine* the, xsSlot theSlot) {
   the.scratch = theSlot;
@@ -189,7 +192,7 @@ int xsGetArrayBufferLength(xsMachine* the, xsSlot theSlot) {
 }
 /// Copies bytes into the ArrayBuffer.
 /// Params:
-/// the=
+/// the=A machine
 /// theSlot=The ArrayBuffer slot
 /// offset=The starting byte offset to get the data
 void xsSetArrayBufferData(T)(xsMachine* the, xsSlot theSlot, int offset, T[] buffer) {
@@ -202,7 +205,7 @@ void xsSetArrayBufferData(xsMachine* the, xsSlot theSlot, int offset, void* buff
 }
 /// Set the length of an ArrayBuffer.
 /// Params:
-/// the=
+/// the=A machine
 /// theSlot=The ArrayBuffer slot
 /// length=The size of the ArrayBuffer data in bytes. If the size of the buffer is increased, the new data is initialized to 0.
 void xsSetArrayBufferLength(xsMachine* the, xsSlot theSlot, int length) {
@@ -215,7 +218,7 @@ void xsSetArrayBufferLength(xsMachine* the, xsSlot theSlot, int length) {
 /// Since the XS runtime can compact memory containing string values, the result of the `xsToArrayBuffer` macro cannot be used across or in other macros of XS in C.
 ///
 /// Params:
-/// the=
+/// the=A machine
 /// theSlot=The ArrayBuffer slot
 void* xsToArrayBuffer(xsMachine* the, xsSlot theSlot) {
   the.scratch = theSlot;
@@ -516,6 +519,54 @@ enum int XS_FRAME_COUNT = 6;
 /// creation=The parameters of the machine
 /// name=The name of the machine as a string
 /// context=The initial context of the machine, or `null`
+///
+/// Examples:
+/// The following example illustrates the use of `xsCreateMachine` and `xsDeleteMachine`.
+/// ---
+/// int main(int argc, char* argv[]) {
+///   typedef struct {
+///   	int argc;
+///   	char** argv;
+///   } xsContext;
+///
+///   void xsMainContext(xsMachine* theMachine, int argc, char* argv[])
+///   {
+///   	xsContext* aContext;
+///
+///   	aContext = malloc(sizeof(xsContext));
+///   	if (aContext) {
+///   		aContext->argc = argc;
+///   		aContext->argv = argv;
+///   		xsSetContext(theMachine, aContext);
+///   		xsSetContext(theMachine, NULL);
+///   		free(aContext);
+///   	}
+///   	else
+///   		fprintf(stderr, "### Cannot allocate context\n");
+///   }
+///
+/// 	xsCreation aCreation = {
+/// 		128 * 1024 * 1024,	/* initialChunkSize */
+/// 		16 * 1024 * 1024, 	/* incrementalChunkSize */
+/// 		4 * 1024 * 1024, 	/* initialHeapCount */
+/// 		1 * 1024 * 1024,	/* incrementalHeapCount */
+/// 		1024,			/* stack count */
+/// 		2048+1024,		/* key count */
+/// 		1993,			/* name modulo */
+/// 		127			/* symbol modulo */
+/// 	};
+/// 	xsMachine* aMachine;
+///
+/// 	aMachine = xsCreateMachine(&aCreation, "machine", NULL);
+/// 	if (aMachine) {
+/// 		xsMainContext(aMachine, argc, argv);
+/// 		xsDeleteMachine(aMachine);
+/// 	}
+/// 	else
+/// 		fprintf(stderr, "### Cannot allocate machine\n");
+/// 	return 0;
+/// }
+/// ---
 xsMachine* xsCreateMachine(xsCreation* creation, string name, void* context = null) {
   return xsCreateMachine(creation, name.toStringz, context);
 }
@@ -530,6 +581,54 @@ xsMachine* xsCreateMachine(xsCreation* creation, const char* name, void* context
 ///
 /// Params:
 /// the=A machine
+///
+/// Examples:
+/// The following example illustrates the use of `xsCreateMachine` and `xsDeleteMachine`.
+/// ---
+/// int main(int argc, char* argv[]) {
+///   typedef struct {
+///   	int argc;
+///   	char** argv;
+///   } xsContext;
+///
+///   void xsMainContext(xsMachine* theMachine, int argc, char* argv[])
+///   {
+///   	xsContext* aContext;
+///
+///   	aContext = malloc(sizeof(xsContext));
+///   	if (aContext) {
+///   		aContext->argc = argc;
+///   		aContext->argv = argv;
+///   		xsSetContext(theMachine, aContext);
+///   		xsSetContext(theMachine, NULL);
+///   		free(aContext);
+///   	}
+///   	else
+///   		fprintf(stderr, "### Cannot allocate context\n");
+///   }
+///
+/// 	xsCreation aCreation = {
+/// 		128 * 1024 * 1024,	/* initialChunkSize */
+/// 		16 * 1024 * 1024, 	/* incrementalChunkSize */
+/// 		4 * 1024 * 1024, 	/* initialHeapCount */
+/// 		1 * 1024 * 1024,	/* incrementalHeapCount */
+/// 		1024,			/* stack count */
+/// 		2048+1024,		/* key count */
+/// 		1993,			/* name modulo */
+/// 		127			/* symbol modulo */
+/// 	};
+/// 	xsMachine* aMachine;
+///
+/// 	aMachine = xsCreateMachine(&aCreation, "machine", NULL);
+/// 	if (aMachine) {
+/// 		xsMainContext(aMachine, argc, argv);
+/// 		xsDeleteMachine(aMachine);
+/// 	}
+/// 	else
+/// 		fprintf(stderr, "### Cannot allocate machine\n");
+/// 	return 0;
+/// }
+/// ---
 void xsDeleteMachine(xsMachine* the) {
 	fxDeleteMachine(the);
 }

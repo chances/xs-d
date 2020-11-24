@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Function xsIsInstanceOf - xs-d</title>
+		<link rel="stylesheet" type="text/css" href="../styles/ddox.css"/>
+		<link rel="stylesheet" href="../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../scripts/jquery.js">/**/</script><script type="text/javascript" src="../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+<style>
+#main-nav > h1 {
+  display: flex;
+  align-items: flex-end;
+}
+#main-nav > h1 > span {
+  padding-bottom: 0.25em;
+}
+#logo {
+  margin-right: 0.5rem;
+  max-width: 4rem;
+}
+</style>
+<nav id="main-nav">
+  <h1 style="max-width: 9em;">
+    XS JavaScript Engine D Bindings
+  </h1>
+  <ul style="list-style: none; padding: 0;">
+    <li>
+      <a href="https://chances.github.io/xs-d">API Reference</a>
+    </li>
+    <li>
+      <a href="https://code.dlang.org/packages/xs">Download</a>
+    </li>
+    <li>
+      <a href="https://github.com/chances/xs-d#readme">Open Source on GitHub</a>
+    </li>
+  </ul>
+  <h2>API Reference</h2>
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package selected">
+						<a href="../xs.html">xs</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../xs/bindings.html">bindings</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Function xsIsInstanceOf</h1><p>Tests whether an instance has a particular prototype, directly or indirectly (that is, one or more levels up in the prototype hierarchy).
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="typ">bool</span> <span class="pln">xsIsInstanceOf</span>
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsMachineRecord</span><span class="pun">*</span> <span class="pln">the</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsSlotRecord</span> <span class="pln">instance</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsSlotRecord</span> <span class="pln">prototype</span>
+			<br/>
+			<span class="pun">)</span><span class="pun">;</span>
+					</div>
+				</code>
+			</div>
+			<section><p>The <code class="lang-d"><span class="pln">xsIsInstanceOf</span></code> macro has no equivalent in ECMAScript; scripts test instances through constructors rather than directly through prototypes. A constructor is a function that has a prototype property that is used to test instances with <code class="lang-d"><span class="pln">isPrototypeOf</span></code>.
+</p>
+</section>
+
+			<section><h2>Examples</h2>
+<p>In ECMAScript:
+</p>
+<pre class="code"><code class="lang-d"><span class="kwd">if </span><span class="pun">(</span><span class="typ">Object<wbr/></span><span class="pun">.</span><span class="pln">prototype<wbr/></span><span class="pun">.</span><span class="pln">isPrototypeOf</span><span class="pun">(</span><span class="kwd">this</span><span class="pun">)) </span><span class="kwd">return new </span><span class="typ">Object</span><span class="pun">();</span></code></pre>
+<p>In D:
+</p>
+<pre class="code"><code class="lang-d"><span class="kwd">if </span><span class="pun">(</span><span class="pln">machine<wbr/></span><span class="pun">.</span><span class="pln">xsIsInstanceOf</span><span class="pun">(</span><span class="pln">xsThis</span><span class="pun">, <a href="../xs/xsObjectPrototype.html"></span><span class="pln">xsObjectPrototype</span></a><span class="pun">)) </span><span class="pln">xsResult </span><span class="pun">= </span><span class="pln">machine<wbr/></span><span class="pun">.</span><span class="pln">xsNewObject</span><span class="pun">();</span></code></pre>
+</section>
+<section><h2>Returns</h2>
+<p><code class="lang-d"><span class="kwd">true</span></code> if the instance has the prototype, <code class="lang-d"><span class="kwd">false</span></code> otherwise.
+</p>
+</section>
+<section><h2>Parameters</h2>
+<table><col class="caption"><tr><th>Name</th><th>Description</th></tr>
+<tr><td id="the">the</td><td>A machine</td></tr>
+<tr><td id="instance">instance</td><td>A reference to the instance to test</td></tr>
+<tr><td id="prototype">prototype</td><td>A reference to the prototype to test</td></tr>
+</table>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							<p>Chance Snow
+</p>
+
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							<p>Copyright © 2020 Chance Snow. All rights reserved.
+</p>
+
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							<p><a href="https://opensource.org/licenses/MIT">MIT License</a>
+</p>
+
+						</td>
+					</tr>
+				</table>
+<div style="display: flex; justify-content: space-between; margin-top: 2em;">
+  <a href="https://github.com/chances/xs-d#readme">GitHub</a>
+  <span class="faint" style="float: right;">Generated using <a href="https://code.dlang.org/packages/ddox">DDOX</a></span>
+</div>
+			</footer>
+		</div>
+	</body>
+</html>

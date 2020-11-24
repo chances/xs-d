@@ -93,19 +93,67 @@ $('#symbolSearchPane').show();</script>
 					</div>
 				</code>
 			</div>
-			
+			<section><p>Regarding the parameters of the machine that are specified in the <code class="lang-d"><span class="pln">xsCreation</span></code> structure:
+<ul><li>A machine manages strings and bytecodes in chunks. The initial chunk size is the initial size of the memory allocated to chunks. The incremental chunk size tells the runtime how to expand the memory allocated to chunks.</li>
+<li>A machine uses a heap and a stack of slots. The initial heap count is the initial number of slots allocated to the heap. The incremental heap count tells the runtime how to increase the number of slots allocated to the heap. The stack count is the number of slots allocated to the stack.</li>
+<li>The symbol count is the number of symbols the machine will use. The symbol modulo is the size of the hash table the machine will use for symbols. A symbol binds a string value and an identifier; see <code class="lang-d"><span class="pln">xsID</span></code>.</li>
+</ul>
+</p>
+</section>
+
 			<section><h2>Parameters</h2>
 <table><col class="caption"><tr><th>Name</th><th>Description</th></tr>
 <tr><td id="creation">creation</td><td>The parameters of the machine</td></tr>
 <tr><td id="name">name</td><td>The name of the machine as a string</td></tr>
-<tr><td id="context">context</td><td>The initial context of the machine, or <code class="lang-d"><span class="kwd">null</span></code>
-
-Regarding the parameters of the machine that are specified in the <code class="lang-d"><span class="pln">xsCreation</span></code> structure:
-<ul>$LI( A machine manages strings and bytecodes in chunks. The initial chunk size is the initial size of the memory allocated to chunks. The incremental chunk size tells the runtime how to expand the memory allocated to chunks.)
-$LI( A machine uses a heap and a stack of slots. The initial heap count is the initial number of slots allocated to the heap. The incremental heap count tells the runtime how to increase the number of slots allocated to the heap. The stack count is the number of slots allocated to the stack.)
-$LI( The symbol count is the number of symbols the machine will use. The symbol modulo is the size of the hash table the machine will use for symbols. A symbol binds a string value and an identifier; see <code class="lang-d"><span class="pln">xsID</span></code>.)
-</ul></td></tr>
+<tr><td id="context">context</td><td>The initial context of the machine, or <code class="lang-d"><span class="kwd">null</span></code></td></tr>
 </table>
+</section>
+<section><h2>Examples</h2>
+<p>The following example illustrates the use of <code class="lang-d"><span class="pln">xsCreateMachine</span></code> and <code class="lang-d"><a href="../xs/xsDeleteMachine.html"><span class="pln">xsDeleteMachine</span></a></code>.
+</p>
+<pre class="code"><code class="lang-d"><span class="typ">int </span><span class="pln">main</span><span class="pun">(</span><span class="typ">int </span><span class="pln">argc</span><span class="pun">, </span><span class="typ">char</span><span class="pun">* </span><span class="pln">argv</span><span class="pun">[]) {
+</span><span class="kwd">typedef struct </span><span class="pun">{
+</span><span class="typ">int </span><span class="pln">argc</span><span class="pun">;
+</span><span class="typ">char</span><span class="pun">** </span><span class="pln">argv</span><span class="pun">;
+} </span><span class="pln">xsContext</span><span class="pun">;
+
+</span><span class="typ">void </span><span class="pln">xsMainContext</span><span class="pun">(</span><span class="pln">xsMachine</span><span class="pun">* </span><span class="pln">theMachine</span><span class="pun">, </span><span class="typ">int </span><span class="pln">argc</span><span class="pun">, </span><span class="typ">char</span><span class="pun">* </span><span class="pln">argv</span><span class="pun">[])
+{
+</span><span class="pln">xsContext</span><span class="pun">* </span><span class="pln">aContext</span><span class="pun">;
+
+</span><span class="pln">aContext </span><span class="pun">= </span><span class="pln">malloc</span><span class="pun">(</span><span class="pln">sizeof</span><span class="pun">(</span><span class="pln">xsContext</span><span class="pun">));
+</span><span class="kwd">if </span><span class="pun">(</span><span class="pln">aContext</span><span class="pun">) {
+</span><span class="pln">aContext</span><span class="pun">-&gt;</span><span class="pln">argc </span><span class="pun">= </span><span class="pln">argc</span><span class="pun">;
+</span><span class="pln">aContext</span><span class="pun">-&gt;</span><span class="pln">argv </span><span class="pun">= </span><span class="pln">argv</span><span class="pun">;
+<a href="../xs/xsSetContext.html"></span><span class="pln">xsSetContext</span></a><span class="pun">(</span><span class="pln">theMachine</span><span class="pun">, </span><span class="pln">aContext</span><span class="pun">);
+<a href="../xs/xsSetContext.html"></span><span class="pln">xsSetContext</span></a><span class="pun">(</span><span class="pln">theMachine</span><span class="pun">, </span><span class="pln">NULL</span><span class="pun">);
+</span><span class="pln">free</span><span class="pun">(</span><span class="pln">aContext</span><span class="pun">);
+}
+</span><span class="kwd">else
+</span><span class="pln">fprintf</span><span class="pun">(</span><span class="pln">stderr</span><span class="pun">, </span><span class="str">"### Cannot allocate context\n"</span><span class="pun">);
+}
+
+</span><span class="pln">xsCreation aCreation </span><span class="pun">= {
+</span><span class="lit">128 </span><span class="pun">* </span><span class="lit">1024 </span><span class="pun">* </span><span class="lit">1024</span><span class="pun">,	</span><span class="com">/* initialChunkSize */
+</span><span class="lit">16 </span><span class="pun">* </span><span class="lit">1024 </span><span class="pun">* </span><span class="lit">1024</span><span class="pun">, 	</span><span class="com">/* incrementalChunkSize */
+</span><span class="lit">4 </span><span class="pun">* </span><span class="lit">1024 </span><span class="pun">* </span><span class="lit">1024</span><span class="pun">, 	</span><span class="com">/* initialHeapCount */
+</span><span class="lit">1 </span><span class="pun">* </span><span class="lit">1024 </span><span class="pun">* </span><span class="lit">1024</span><span class="pun">,	</span><span class="com">/* incrementalHeapCount */
+</span><span class="lit">1024</span><span class="pun">,			</span><span class="com">/* stack count */
+</span><span class="lit">2048</span><span class="pun">+</span><span class="lit">1024</span><span class="pun">,		</span><span class="com">/* key count */
+</span><span class="lit">1993</span><span class="pun">,			</span><span class="com">/* name modulo */
+</span><span class="lit">127			</span><span class="com">/* symbol modulo */
+</span><span class="pun">};
+</span><span class="pln">xsMachine</span><span class="pun">* </span><span class="pln">aMachine</span><span class="pun">;
+
+</span><span class="pln">aMachine </span><span class="pun">= </span><span class="pln">xsCreateMachine</span><span class="pun">(&amp;</span><span class="pln">aCreation</span><span class="pun">, </span><span class="str">"machine"</span><span class="pun">, </span><span class="pln">NULL</span><span class="pun">);
+</span><span class="kwd">if </span><span class="pun">(</span><span class="pln">aMachine</span><span class="pun">) {
+</span><span class="pln">xsMainContext</span><span class="pun">(</span><span class="pln">aMachine</span><span class="pun">, </span><span class="pln">argc</span><span class="pun">, </span><span class="pln">argv</span><span class="pun">);
+<a href="../xs/xsDeleteMachine.html"></span><span class="pln">xsDeleteMachine</span></a><span class="pun">(</span><span class="pln">aMachine</span><span class="pun">);
+}
+</span><span class="kwd">else
+</span><span class="pln">fprintf</span><span class="pun">(</span><span class="pln">stderr</span><span class="pun">, </span><span class="str">"### Cannot allocate machine\n"</span><span class="pun">);
+</span><span class="kwd">return </span><span class="lit">0</span><span class="pun">;
+}</span></code></pre>
 </section>
 
 			<footer>

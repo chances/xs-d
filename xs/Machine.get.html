@@ -2,10 +2,10 @@
 <html>
 	<head>
 		<meta charset="UTF-8"/>
-		<title>Function xsNewObject - xs-d</title>
-		<link rel="stylesheet" type="text/css" href="../../../styles/ddox.css"/>
-		<link rel="stylesheet" href="../../../prettify/prettify.css" type="text/css"/>
-		<script type="text/javascript" src="../../../scripts/jquery.js">/**/</script><script type="text/javascript" src="../../../scripts/ddox.js">/**/</script>
+		<title>Function Machine.get - xs-d</title>
+		<link rel="stylesheet" type="text/css" href="../styles/ddox.css"/>
+		<link rel="stylesheet" href="../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../scripts/jquery.js">/**/</script><script type="text/javascript" src="../scripts/ddox.js">/**/</script>
 	</head>
 	<body onload="setupDdox();">
 <style>
@@ -44,28 +44,28 @@
 				<form action="#" method="GET">
 					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
 				</form>
-				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../../../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../../../";
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../";
 $('#symbolSearchPane').show();</script>
 			</div>
 			<ul class="tree-view">
 				<li class="tree-view ">
-					<div class="package ">
-						<a href="../../../xs.html">xs</a>
+					<div class="package selected">
+						<a href="../xs.html">xs</a>
 					</div>
 			<ul class="tree-view">
-				<li class="tree-view ">
+				<li class="tree-view collapsed">
 					<div class="package ">
-						<a href="../../../xs/bindings.html">bindings</a>
+						<a href="../xs/bindings.html">bindings</a>
 					</div>
 			<ul class="tree-view">
 				<li>
 					<div class="module ">
-						<a href="../../../xs/bindings/enums.html">enums</a>
+						<a href="../xs/bindings/enums.html">enums</a>
 					</div>
 				</li>
 				<li>
-					<div class="module selected">
-						<a href="../../../xs/bindings/macros.html">macros</a>
+					<div class="module ">
+						<a href="../xs/bindings/macros.html">macros</a>
 					</div>
 				</li>
 			</ul>
@@ -75,15 +75,17 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Function xsNewObject</h1><p>Creates an object instance, and returns a reference to the new object instance.
+			<h1>Function Machine.get</h1><p>Get a property or item of an instance.
 </p>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsSlotRecord</span> <span class="pln">xsNewObject</span>
+			<a href="../xs/JSValue.html"><span class="typ">JSValue</span></a> <span class="pln">get</span>
 			<span class="pun">(</span>
 			<br/>
-			&nbsp;&nbsp;<span class="kwd">scope </span><span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsMachineRecord</span><span class="pun">*</span> <span class="pln">the</span>
+			&nbsp;&nbsp;<span class="kwd">const</span><span class="pun">(</span><span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsSlotRecord</span><span class="pun">)</span> <span class="pln">this_</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="typ">short</span> <span class="pln">id</span>
 			<br/>
 			<span class="pun">)</span><span class="pun">;</span>
 					</div>
@@ -91,13 +93,20 @@ $('#symbolSearchPane').show();</script>
 			</div>
 			<section></section>
 
-			<section><h2>Examples</h2>
-<p>In ECMAScript:
+			<section><h2>Parameters</h2>
+<table><col class="caption"><tr><th>Name</th><th>Description</th></tr>
+<tr><td id="this_">this_</td><td>A reference to the instance that has the property or item</td></tr>
+<tr><td id="id">id</td><td>The identifier of the property or item to get</td></tr>
+</table>
+</section>
+<section><h2>Returns</h2>
+<p>A <code class="lang-d"><a href="../xs/JSValue.html"><span class="typ">JSValue</span></a></code> containing what is contained in the property or item.
+<code class="lang-d"><span class="typ">JSValue<wbr/></span><span class="pun">.</span><span class="pln">type</span></code> will equal <code class="lang-d"><span class="typ">JSType<wbr/></span><span class="pun">.</span><span class="pln">undefined</span></code> if the property or item is not defined by the instance or its prototypes.
 </p>
-<pre class="code"><code class="lang-d"><span class="kwd">new </span><span class="typ">Object</span><span class="pun">();</span></code></pre>
-<p>In D:
+</section>
+<section><h2>See Also</h2>
+<p><code class="lang-d"><span class="pln">xsGet</span></code>
 </p>
-<pre class="code"><code class="lang-d"><span class="pln">machine<wbr/></span><span class="pun">.</span><span class="pln">xsNewObject</span><span class="pun">();</span></code></pre>
 </section>
 
 			<footer>

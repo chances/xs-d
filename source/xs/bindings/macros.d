@@ -520,10 +520,10 @@ xsSlot xsGet(scope xsMachine* the, const xsSlot this_, int id) {
 /// xsVar(0) = xsGet(xsThis, xsID_foo);
 /// xsVar(1) = xsGetAt(xsVar(0), xsInteger(3));
 /// ---
-xsSlot xsGetAt(scope xsMachine* the, xsSlot this_, xsSlot key) {
+xsSlot xsGetAt(scope xsMachine* the, const xsSlot this_, const xsSlot key) {
 	the.xsOverflow(-2);
-	the.fxPush(this_);
-	the.fxPush(key);
+	the.fxPush(cast(xsSlot) this_);
+	the.fxPush(cast(xsSlot) key);
 	fxGetAt(the);
 	return the.fxPop();
 }
@@ -549,7 +549,7 @@ xsSlot xsGetAt(scope xsMachine* the, xsSlot this_, xsSlot key) {
 /// xsSet(xsThis, xsID_foo, xsInteger(1));
 /// xsSet(xsThis, 0, xsInteger(2));
 /// ---
-void xsSet(scope xsMachine* the, const xsSlot this_, int id, const xsSlot slot) {
+void xsSet(scope xsMachine* the, const xsSlot this_, xsIndex id, const xsSlot slot) {
 	the.xsOverflow(-2);
 	the.fxPush(cast(xsSlot) slot);
 	the.fxPush(cast(xsSlot) this_);
@@ -576,11 +576,11 @@ void xsSet(scope xsMachine* the, const xsSlot this_, int id, const xsSlot slot) 
 /// xsVar(0) = xsGet(xsThis, xsID_foo);
 /// xsSetAt(xsVar(0), xsInteger(3), xsInteger(7));
 /// ---
-void xsSetAt(scope xsMachine* the, xsSlot this_, xsSlot key, xsSlot slot) {
+void xsSetAt(scope xsMachine* the, const xsSlot this_, const xsSlot key, const xsSlot slot) {
 	the.xsOverflow(-3);
-	the.fxPush(slot);
-	the.fxPush(this_);
-	the.fxPush(key);
+	the.fxPush(cast(xsSlot) slot);
+	the.fxPush(cast(xsSlot) this_);
+	the.fxPush(cast(xsSlot) key);
 	fxSetAt(the);
 	the.stack++;
 }
@@ -642,9 +642,9 @@ void xsDefineAt(scope xsMachine* the, xsSlot this_, xsSlot key, xsSlot slot, Att
 /// xsDelete(xsThis, xsID_foo);
 /// xsDelete(xsThis, 0);
 /// ---
-void xsDelete(scope xsMachine* the, xsSlot this_, int key) {
+void xsDelete(scope xsMachine* the, const xsSlot this_, int key) {
 	the.xsOverflow(-1);
-	the.fxPush(this_);
+	the.fxPush(cast(xsSlot) this_);
 	fxDeleteID(the, key);
 	the.stack++;
 }
@@ -669,10 +669,10 @@ void xsDelete(scope xsMachine* the, xsSlot this_, int key) {
 /// xsDeleteAt(xsThis, xsID_foo);
 /// xsDeleteAt(xsThis, xsInteger(0));
 /// ---
-void xsDeleteAt(scope xsMachine* the, xsSlot this_, xsSlot key) {
+void xsDeleteAt(scope xsMachine* the, const xsSlot this_, const xsSlot key) {
 	the.xsOverflow(-2);
-	the.fxPush(this_);
-	the.fxPush(key);
+	the.fxPush(cast(xsSlot) this_);
+	the.fxPush(cast(xsSlot) key);
 	fxDeleteAt(the);
 	the.stack++;
 }
@@ -705,11 +705,11 @@ enum int XS_FRAME_COUNT = 6;
 /// xsCall(xsThis, xsID_foo, xsInteger(1));
 /// xsCall(xsThis, 0, xsInteger(2), xsInteger(3));
 /// ---
-xsSlot xsCall(scope xsMachine* the, xsSlot this_, int id, xsSlot[] params ...) {
+xsSlot xsCall(scope xsMachine* the, const xsSlot this_, xsIndex id, const xsSlot[] params ...) {
   assert(params.length >= 0);
 	the.xsOverflow(-XS_FRAME_COUNT - params.length.to!int);
-	the.fxPush(this_);
-  foreach (param; params) fxPush(the, param);
+	the.fxPush(cast(xsSlot) this_);
+  foreach (param; params) fxPush(the, cast(xsSlot) param);
 	fxCallID(the, id);
 	fxRunCount(the, params.length.to!int);
 	return the.fxPop();
@@ -722,11 +722,11 @@ xsSlot xsCall(scope xsMachine* the, xsSlot this_, int id, xsSlot[] params ...) {
 /// this_=A reference to the instance that will have the property or item
 /// id=The identifier of the property or item to call
 /// params=The parameter slots to pass to the function
-void xsCall_noResult(scope xsMachine* the, xsSlot this_, int id, xsSlot[] params ...) {
+void xsCall_noResult(scope xsMachine* the, const xsSlot this_, xsIndex id, const xsSlot[] params ...) {
   assert(params.length >= 0);
 	the.xsOverflow(-XS_FRAME_COUNT - params.length.to!int);
-	the.fxPush(this_);
-  foreach (param; params) fxPush(the, param);
+	the.fxPush(cast(xsSlot) this_);
+  foreach (param; params) fxPush(the, cast(xsSlot) param);
 	fxCallID(the, id);
 	fxRunCount(the, params.length.to!int);
 	the.stack++;

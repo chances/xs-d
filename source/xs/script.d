@@ -39,7 +39,7 @@ class Script {
 	const string path;
 
   /// Construct a new script given its source code.
-  this(Machine machine, string path, const(byte[]) source) {
+  this(Machine machine, string path, const(ubyte[]) source) {
     this.machine = machine;
     this.script = txScript();
 
@@ -76,7 +76,9 @@ class Script {
     try {
       machine.the.xsHostZone!zone;
     } catch (JSException unhandledInVm) {
-      throw new JSException(unhandledInVm.msg, this, unhandledInVm.file, unhandledInVm.line);
+      // TODO: Get the JS error that was thrown
+      const JSValue exception = null;
+      throw new JSException(unhandledInVm.msg, this, exception, unhandledInVm.file, unhandledInVm.line);
     }
   }
 }

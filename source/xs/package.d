@@ -17,30 +17,39 @@ public import xs.bindings.macros;
 public import xs.bindings.structs;
 public import xs.script;
 
+private enum mdn = "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects";
+
 /// Thrown when a JS VM is aborted with the `xsUnhandledExceptionExit` status.
 class JSException : Exception {
   /// The JS script or module file from which the exception was thrown.
   const string scriptFile;
   /// The line of the JS script or module file from which the exception was thrown.
   const ulong scriptLine;
+  /// The exception value that was thrown from the VM.
+  const JSValue exception;
 
   private const Script script_ = null;
 
   /// Constructs a new instace of JSException.
-  this(string msg, string file = __FILE__, ulong line = cast(ulong)__LINE__) {
+  this(string msg, const JSValue exception = null, string file = __FILE__, ulong line = cast(ulong)__LINE__) {
     super(msg, file, line);
 
     scriptFile = "NATIVE_CODE";
     scriptLine = 0;
+    this.exception = exception;
   }
   /// Constructs a new instace of JSException given the `Script` from which this exception was thrown.
-  this(string msg, const Script script, string file = __FILE__, ulong line = cast(ulong)__LINE__) {
+  this(
+    string msg, const Script script, const JSValue exception = null,
+    string file = __FILE__, ulong line = cast(ulong)__LINE__
+  ) {
     super(msg, file, line);
 
     this.script_ = script;
     scriptFile = script.path;
     // TODO: Get the thrown line from the VM
     scriptLine = 0;
+    this.exception = exception;
   }
 
   /// The `Script` from which this exception was thrown.
@@ -137,7 +146,7 @@ class Machine {
   }
 
   /// See_Also: `xs.bindings.macros.xsID`
-  xsIndex id(string name) {
+  xsIndex id(string name) inout {
     return the.xsID(name);
   }
 
@@ -263,7 +272,7 @@ unittest {
 
 /// A JavaScript value reference.
 class JSValue {
-  private Machine machine;
+  protected Machine _machine;
 
   /// ID of this value in it's `Machine`.
   /// See_Also: `Machine.id`, `Machine.toId`
@@ -273,9 +282,13 @@ class JSValue {
 
   /// Construct a reference to a slot value belonging to `machine`.
   this(Machine machine, const xsSlot value) {
-    this.machine = machine;
+    this._machine = machine;
     id = machine.toId(value);
     slot = value;
+  }
+
+  Machine machine() @property const {
+    return cast(Machine) _machine;
   }
 
   JSType type() @property inout {
@@ -451,14 +464,16 @@ class JSObject : JSValue {
   /// machine=A `Machine`.
   /// name=The function's name
   /// parameterNames=The names of the function's parameters.
-  /// body=The script to use as the function's body.
+  /// body_=The script to use as the function's body.
   /// path=A URL for the script's source file. This is only used when reporting exceptions. Pass `null` if you do not care to include source file information in exceptions.
   /// startingLineNumber=An integer value specifying the script's starting line number in the file located at `path`. This is only used when reporting exceptions.
-  /// exception=A pointer to a JSValue in which to store a syntax error exception, if any. Pass `null` if you do not care to store a syntax error exception.
+  ///
+  /// Throws: `JSException` when a JS VM is aborted with the `xsUnhandledExceptionExit` status. For example, when a syntax error exception is thrown.
   static JSObject makeFunction(
-    Machine machine, string name, string[] parameterNames, string body, string path, uint startingLineNumber,
-    out JSValue exception
+    Machine machine, string name, string[] parameterNames, string body_, string path, uint startingLineNumber
   ) {
+    assert(machine);
+    assert(name.length, "Functions must have names");
     assert(0, "Not implemented");
   }
 
@@ -469,6 +484,7 @@ class JSObject : JSValue {
   ///
   /// See_Also: `isCallableAsHostZone`
   static JSObject makeFunction(Func)(Machine machine) if (isCallableAsHostZone!Func) {
+    assert(machine);
     assert(0, "Not implemented");
   }
 
@@ -488,19 +504,47 @@ class JSObject : JSValue {
   }
 
   /// Gets this object’s prototype.
+  /// Returns: The prototype of the given object. If there are no inherited properties, `null` is returned.
+  /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getPrototypeOf">`Object.getPrototypeOf`</a> on MDN
   JSValue prototype() @property const {
-    return null;
+    auto the = machine.the;
+    auto prototype = xsCall(the, xsObjectPrototype!the, machine.id("getPrototypeOf"), slot);
+    if (prototype == the.xsNull) return null;
+    return new JSValue(machine, prototype);
   }
 
   /// Sets this object’s prototype.
-  void prototype(JSValue value) @property {
-    return;
+  ///
+  /// Params:
+  /// value=This Object's new prototype, or `null`.
+  /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/setPrototypeOf">`Object.setPrototypeOf`</a> on MDN
+  void prototype(const JSValue value = null) @property {
+    auto the = machine.the;
+    assert(xsIsInstanceOf(the, value.slot, xsObjectPrototype!the), "Value isn't an Object." ~
+      "\n\tSee " ~ mdn ~ "/Object/setPrototypeOf#Description"
+    );
+    assert(extensible, "This Object's prototype is non-extensible." ~
+      "\n\tSee " ~ mdn ~ "/Object/setPrototypeOf#Description"
+    );
+    xsCall(
+      the, xsObjectPrototype!the, machine.id("setPrototypeOf"),
+      slot,
+      value is null ? the.xsNull : value.slot
+    );
+  }
+
+  /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isExtensible">`Object.isExtensible`</a> on MDN
+  bool extensible() @property const {
+    auto the = machine.the;
+    assert(xsIsInstanceOf(the, slot, xsObjectPrototype!the));
+    auto result = xsCall(the, xsObjectPrototype!the, machine.id("isExtensible"), slot);
+    return new JSValue(machine, result).boolean;
   }
 
   /// Whether this Object can be called as a constructor.
   bool constructor() @property const {
     auto the = machine.the;
-    return xsIsInstanceOf(the, slot, xsObjectPrototype!the);
+    return xsIsInstanceOf(the, slot, xsFunctionPrototype!the);
   }
 
   /// Whether this Object can be called as a function.
@@ -509,13 +553,14 @@ class JSObject : JSValue {
   }
 
   /// The names of this Object’s enumerable properties.
+  /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyNames">`Object.getOwnPropertyNames`</a> on MDN
   string[] propertyNames() @property const {
     return [];
   }
 
   /// Tests whether this Object has a given property.
   bool hasProperty(string key) {
-    return xsHas(machine.the, slot, machine.id(key));
+    return machine.has(slot, machine.id(key));
   }
 
   /// Tests whether this Object has a property given its numeric index.
@@ -525,47 +570,76 @@ class JSObject : JSValue {
 
   /// Gets a property from this Object.
   JSValue getProperty(string key) {
-    return null;
+    return machine.get(slot, machine.id(key));
   }
 
   /// Gets a property from this Object given its numeric index.
   JSValue getPropertyAt(uint id) {
-    return null;
+    return new JSValue(machine, xsGetAt(machine.the, slot, machine.the.xsUnsigned(id)));
   }
 
   /// Sets a property from this Object.
-  void setProperty(string key) {
-    return;
+  void setProperty(string key, const JSValue value) {
+    machine.set(slot, machine.id(key), value);
   }
 
   /// Sets a property from this Object given its numeric index.
-  void setPropertyAt(uint id) {
-    return;
+  void setPropertyAt(uint id, const JSValue value) {
+    xsSetAt(machine.the, slot, machine.the.xsUnsigned(id), value.slot);
   }
 
   /// Deletes a property from this Object.
-  bool deleteProperty() {
-    return false;
+  bool deleteProperty(string key) {
+    xsDelete(machine.the, slot, machine.id(key));
+    return hasProperty(key);
+  }
+
+  /// Deletes a property from this Object given its numeric index.
+  bool deletePropertyAt(uint id) {
+    auto value = getPropertyAt(id);
+    xsDeleteAt(machine.the, slot, machine.the.xsUnsigned(id));
+    return !hasPropertyAt(id) || getPropertyAt(id).slot != value.slot;
   }
 
   /// Calls this Object as a constructor.
-  JSObject callAsContructor(JSValue[] params ...) {
-    assert(0, "Not implemented");
+  ///
+  /// Params:
+  /// target=A reference to the Object that has this constructor
+  /// params=The parameter values to pass to the constructor
+  JSObject callAsContructor(JSObject target, JSValue[] params ...) {
+    assert(constructor);
+    auto the = machine.the;
+    auto result = xsNew(the, target.slot, machine.toId(slot), params.map!(p => p.slot).array);
+    if (result == the.xsNull) return null;
+    assert(xsIsInstanceOf(the, result, xsObjectPrototype!the));
+    return new JSObject(machine, result);
   }
 
   /// Calls this Object as a Function.
-  JSValue callAsFunction(JSValue[] params ...) {
-    assert(0, "Not implemented");
+  ///
+  /// Params:
+  /// target=A reference to the Object that has this function
+  /// params=The parameter values to pass to the function
+  JSValue callAsFunction(JSObject target, JSValue[] params ...) {
+    assert(function_);
+    auto result = xsCall(machine.the, target.slot, machine.toId(slot), params.map!(p => p.slot).array);
+    if (result == machine.the.xsNull) return null;
+    return new JSValue(machine, result);
   }
 
   /// Calls this Object as a Function.
-  void callAsFunction_noResult(JSValue[] params ...) {
-    assert(0, "Not implemented");
+  ///
+  /// Params:
+  /// target=A reference to the Object that has this function
+  /// params=The parameter values to pass to the function
+  void callAsFunction_noResult(JSObject target, JSValue[] params ...) {
+    assert(function_);
+    xsCall_noResult(machine.the, target.slot, machine.toId(slot), params.map!(p => p.slot).array);
   }
 }
 
 /// A set of JSObject property attributes. Combine multiple attributes with bitwise OR.
-enum PropertyAttributes {
+enum PropertyAttributes : xsAttribute {
   /// Specifies that a property has no special attributes.
   none = 0,
   /// Specifies that a property is read-only.

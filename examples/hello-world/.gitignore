@@ -1,3 +1,9 @@
+# Generated Sources
+source/hello.d
+source/hello.xs.c
+source/hello.xs.h
+
+# DUB
 .dub
 docs.json
 __dummy.html

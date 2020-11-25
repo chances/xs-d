@@ -9,6 +9,9 @@
   "targetPath": "../../bin",
   "targetType": "executable",
   "systemDependencies": "linux: gio-2.0",
+  "preGenerateCommands": [
+    "make source/hello.d"
+  ],
   "dependencies": {
     "xs": {
       "path": "../.."

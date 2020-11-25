@@ -11,5 +11,7 @@ void main()
   auto machine = new Machine("Hello, world!");
   const global = machine.global;
 
+  // TODO: Run `trace("hello world\n");` in the VM
+
   destroy(machine);
 }

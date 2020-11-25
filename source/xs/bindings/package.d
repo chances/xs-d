@@ -12,6 +12,10 @@ import core.stdc.stdarg: va_list;
 static import core.simd;
 static import std.conv;
 
+enum XS_MAJOR_VERSION = 10;
+enum XS_MINOR_VERSION = 4;
+enum XS_PATCH_VERSION = 0;
+
 struct Int128 { long lower; long upper; }
 struct UInt128 { ulong lower; ulong upper; }
 

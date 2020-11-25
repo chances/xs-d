@@ -14,6 +14,9 @@ import std.string : format, toStringz;
 public import xs.bindings;
 public import xs.bindings.enums;
 public import xs.bindings.macros;
+public import xs.bindings.structs;
+
+// TODO: https://github.com/Moddable-OpenSource/moddable/blob/5639abb24b6d725554969dc0be5822edb54a4a08/documentation/xs/XS%20Platforms.md#eval
 
 /// A rudimentary Host VM abortion implementation that throws error messages back into the JS VM.
 ///

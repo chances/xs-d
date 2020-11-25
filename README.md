@@ -21,3 +21,12 @@ See the [API Reference](https://chances.github.io/xs-d) and the official [XS in 
 [MIT Licence](https://opensource.org/licenses/MIT)
 
 Copyright &copy; 2020 Chance Snow. All rights reserved.
+
+### Moddable SDK
+
+See the [Moddable SDK license statement](https://github.com/Moddable-OpenSource/moddable/tree/OS201116/licenses#readme).
+
+Copyright &copy; 2017-2020 Moddable Tech, Inc.<br/>
+Copyright &copy; 2010-2015 Marvell Semiconductor, Inc.<br/>
+Copyright &copy; 2010-2015 Marvell International Ltd.<br/>
+Copyright &copy; 2002-2010 Kinoma, Inc.

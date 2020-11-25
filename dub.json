@@ -5,7 +5,7 @@
 		"Chance Snow"
 	],
 	"license": "MIT",
-  "copyright": "Copyright © 2020, Chance Snow",
+  "copyright": "Copyright © 2017-2020 Moddable Tech, Inc.; Copyright © 2010-2015 Marvell Semiconductor, Inc.; Copyright © 2010-2015 Marvell International Ltd.; Copyright © 2002-2010 Kinoma, Inc.; Copyright © 2020, Chance Snow",
   "subPackages": [
     "examples/hello-world"
   ],

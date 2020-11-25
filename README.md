@@ -10,7 +10,7 @@ D bindings to the [XS JavaScript engine](https://github.com/Moddable-OpenSource/
 
 ```json
 "dependencies": {
-    "xs": "0.1.0-alpha.1"
+    "xs": "0.1.0-alpha.2"
 }
 ```
 

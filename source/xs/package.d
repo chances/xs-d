@@ -11,11 +11,11 @@ import std.conv : to;
 import std.exception : enforce;
 import std.string : format, toStringz;
 
-public import xs.script;
 public import xs.bindings;
 public import xs.bindings.enums;
 public import xs.bindings.macros;
 public import xs.bindings.structs;
+public import xs.script;
 
 /// Thrown when a JS VM is aborted with the `xsUnhandledExceptionExit` status.
 class JSException : Exception {

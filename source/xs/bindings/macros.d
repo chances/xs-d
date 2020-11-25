@@ -367,10 +367,10 @@ xsSlot xsNewObject(scope xsMachine* the) {
 /// the=A machine
 /// instance=A reference to the instance to test
 /// prototype=A reference to the prototype to test
-bool xsIsInstanceOf(scope xsMachine* the, xsSlot instance, xsSlot prototype) {
+bool xsIsInstanceOf(scope xsMachine* the, const xsSlot instance, const xsSlot prototype) {
 	the.xsOverflow(-2);
-	the.fxPush(prototype);
-	the.fxPush(instance);
+	the.fxPush(cast(xsSlot) prototype);
+	the.fxPush(cast(xsSlot) instance);
 	return fxIsInstanceOf(the).to!bool;
 }
 
@@ -464,10 +464,10 @@ bool xsHas(scope xsMachine* the, const xsSlot this_, int id) {
 /// ---
 /// if (xsHasAt(xsThis, xsInteger(7)));
 /// ---
-bool xsHasAt(scope xsMachine* the, xsSlot this_, xsSlot key) {
+bool xsHasAt(scope xsMachine* the, const xsSlot this_, const xsSlot key) {
 	the.xsOverflow(-2);
-	the.fxPush(this_);
-	the.fxPush(key);
+	the.fxPush(cast(xsSlot) this_);
+	the.fxPush(cast(xsSlot) key);
 	return fxHasAt(the).to!bool;
 }
 
@@ -738,13 +738,13 @@ void xsCall_noResult(scope xsMachine* the, xsSlot this_, int id, xsSlot[] params
 /// function_=
 /// this_=
 /// params=The parameter slots to pass to the function
-xsSlot xsCallFunction(scope xsMachine* the, xsSlot function_, xsSlot this_, xsSlot[] params ...) {
+xsSlot xsCallFunction(scope xsMachine* the, const xsSlot function_, const xsSlot this_, const xsSlot[] params ...) {
   assert(params.length >= 0);
 	xsOverflow(the, -XS_FRAME_COUNT - params.length.to!int);
-	fxPush(the, this_);
-	fxPush(the, function_);
+	fxPush(the, cast(xsSlot) this_);
+	fxPush(the, cast(xsSlot) function_);
 	fxCall(the);
-	foreach (param; params) fxPush(the, param);
+	foreach (param; params) fxPush(the, cast(xsSlot) param);
 	fxRunCount(the, params.length.to!int);
 	return fxPop(the);
 }
@@ -755,12 +755,12 @@ xsSlot xsCallFunction(scope xsMachine* the, xsSlot function_, xsSlot this_, xsSl
 /// this_=
 /// id=The identifier of the constructor to call
 /// params=The parameter slots to pass to the constructor
-xsSlot xsNew(scope xsMachine* the, xsSlot this_, int id, xsSlot[] params ...) {
+xsSlot xsNew(scope xsMachine* the, const xsSlot this_, int id, const xsSlot[] params ...) {
   assert(params.length >= 0);
 	xsOverflow(the, -XS_FRAME_COUNT - params.length.to!int);
-	fxPush(the, this_);
+	fxPush(the, cast(xsSlot) this_);
 	fxNewID(the, id);
-  foreach (param; params) fxPush(the, param);
+  foreach (param; params) fxPush(the, cast(xsSlot) param);
 	fxRunCount(the, params.length.to!int);
 	return fxPop(the);
 }
@@ -883,14 +883,14 @@ void xsCollectGarbage(scope xsMachine* the) {
 void xsEnableGarbageCollection(scope xsMachine* the, bool enableIt) {
 	fxEnableGarbageCollection(the, enableIt);
 }
-void xsRemember(scope xsMachine* the, xsSlot slot) {
-	fxRemember(the, &slot);
+void xsRemember(scope xsMachine* the, const xsSlot slot) {
+	fxRemember(the, cast(xsSlot*) &slot);
 }
-void xsForget(scope xsMachine* the, xsSlot slot) {
-	fxForget(the, &slot);
+void xsForget(scope xsMachine* the, const xsSlot slot) {
+	fxForget(the, cast(xsSlot*) &slot);
 }
-void xsAccess(scope xsMachine* the, xsSlot slot) {
-	fxAccess(the, &slot);
+void xsAccess(scope xsMachine* the, const xsSlot slot) {
+	fxAccess(the, cast(xsSlot*) &slot);
 }
 
 // Exceptions
@@ -1279,6 +1279,7 @@ private template illegallyEscapesScope(Param, alias ParamStorage) {
 /// See_Also:
 /// $(UL
 ///   $(LI `xsHostZone`)
+///   $(LI `JSObject.makeFunction`)
 ///   $(LI From the <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#xs-in-c">XS in C</a> Moddable SDK <a href="https://github.com/Moddable-OpenSource/moddable/tree/OS201116/documentation#readme">Documentation</a>:)
 ///   $(UL
 ///     $(LI <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#host">Host</a>)

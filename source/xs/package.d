@@ -366,3 +366,339 @@ unittest {
   machine.collectGarbage();
   destroy(machine);
 }
+
+/// A JavaScript Object reference.
+///
+/// Adapted from <a href="https://developer.apple.com/documentation/javascriptcore/jsobjectref_h">`JSObjectRef`</a> in Apple's <a href="https://developer.apple.com/documentation/javascriptcore">JavaScriptCore</a>.
+class JSObject : JSValue {
+  import std.algorithm : map;
+  import std.array : array;
+
+  private void* _data;
+
+  ///
+  /// Params:
+  /// machine=A `Machine`.
+  /// value=
+  /// data=The Object’s private data.
+  this(Machine machine, const xsSlot value, void* data = null) {
+    super(machine, value);
+    this._data = data;
+  }
+
+  /// Creates a JavaScript Object.
+  ///
+  /// Params:
+  /// machine=A `Machine`.
+  /// data=The Object’s private data.
+  /// Returns: A `JSObject` with the given class and private data.
+  static JSObject make(Machine machine, void* data = null) {
+    auto objectSlot = xsNewObject(machine.the);
+    // TODO: Set user data
+
+    return new JSObject(machine, objectSlot, data);
+  }
+
+  /// Creates a JavaScript Array object.
+  ///
+  /// Params:
+  /// machine=A `Machine`.
+  /// length=Length of the returned Array.
+  /// Returns: A `JSObject` that is an Array.
+  static JSObject makeArray(Machine machine, uint length) {
+    return new JSObject(machine, xsNewArray(machine.the, length));
+  }
+
+  /// Creates a JavaScript Date object, as if by invoking the built-in Date constructor.
+  ///
+  /// Params:
+  /// machine=A `Machine`.
+  /// arguments=Arguments to pass to the Date constructor.
+  /// Returns: A `JSObject` that is a Date.
+  ///
+  /// Throws: `JSException` when the JS VM is aborted with the `xsUnhandledExceptionExit` status.
+  static JSObject makeDate(Machine machine, JSValue[] arguments ...) {
+    auto the = machine.the;
+    auto objectSlot = xsNew(
+      the, machine.global,
+      machine.toId(xsDatePrototype!the),
+      arguments.map!(arg => arg.slot).array
+    );
+    return new JSObject(machine, objectSlot);
+  }
+
+  /// Creates a JavaScript Error object, as if by invoking the built-in Error constructor.
+  ///
+  /// Params:
+  /// machine=A `Machine`.
+  /// arguments=Arguments to pass to the Error constructor.
+  /// Returns: A `JSObject` that is an Error.
+  ///
+  /// Throws: `JSException` when the JS VM is aborted with the `xsUnhandledExceptionExit` status.
+  static JSObject makeError(Machine machine, JSValue[] arguments ...) {
+    auto the = machine.the;
+    auto objectSlot = xsNew(
+      the, machine.global,
+      machine.toId(xsErrorPrototype!the),
+      arguments.map!(arg => arg.slot).array
+    );
+    return new JSObject(machine, objectSlot);
+  }
+
+  /// Creates a function with a given script as its body.
+  ///
+  /// Params:
+  /// machine=A `Machine`.
+  /// name=The function's name
+  /// parameterNames=The names of the function's parameters.
+  /// body=The script to use as the function's body.
+  /// path=A URL for the script's source file. This is only used when reporting exceptions. Pass `null` if you do not care to include source file information in exceptions.
+  /// startingLineNumber=An integer value specifying the script's starting line number in the file located at `path`. This is only used when reporting exceptions.
+  /// exception=A pointer to a JSValue in which to store a syntax error exception, if any. Pass `null` if you do not care to store a syntax error exception.
+  static JSObject makeFunction(
+    Machine machine, string name, string[] parameterNames, string body, string path, uint startingLineNumber,
+    out JSValue exception
+  ) {
+    assert(0, "Not implemented");
+  }
+
+  /// Creates a function with the given callback, `Func` as its implementation.
+  ///
+  /// Params:
+  /// machine=A `Machine`.
+  ///
+  /// See_Also: `isCallableAsHostZone`
+  static JSObject makeFunction(Func)(Machine machine) if (isCallableAsHostZone!Func) {
+    assert(0, "Not implemented");
+  }
+
+  /// Creates a JavaScript RegExp object, as if by invoking the built-in RegExp constructor.
+  ///
+  /// Params:
+  /// machine=A `Machine`.
+  static JSObject makeRegExp(Machine machine) {
+    auto the = machine.the;
+    auto objectSlot = xsNew(the, machine.global, machine.toId(xsRegExpPrototype!the));
+    return new JSObject(machine, objectSlot);
+  }
+
+  /// This Object’s private data.
+  void* data() @property const {
+    return cast(void*) _data;
+  }
+
+  /// Gets this object’s prototype.
+  JSValue prototype() @property const {
+    return null;
+  }
+
+  /// Sets this object’s prototype.
+  void prototype(JSValue value) @property {
+    return;
+  }
+
+  /// Whether this Object can be called as a constructor.
+  bool constructor() @property const {
+    auto the = machine.the;
+    return xsIsInstanceOf(the, slot, xsObjectPrototype!the);
+  }
+
+  /// Whether this Object can be called as a function.
+  bool function_() @property const {
+    return false;
+  }
+
+  /// The names of this Object’s enumerable properties.
+  string[] propertyNames() @property const {
+    return [];
+  }
+
+  /// Tests whether this Object has a given property.
+  bool hasProperty(string key) {
+    return xsHas(machine.the, slot, machine.id(key));
+  }
+
+  /// Tests whether this Object has a property given its numeric index.
+  bool hasPropertyAt(uint id) {
+    return xsHasAt(machine.the, slot, machine.the.xsUnsigned(id));
+  }
+
+  /// Gets a property from this Object.
+  JSValue getProperty(string key) {
+    return null;
+  }
+
+  /// Gets a property from this Object given its numeric index.
+  JSValue getPropertyAt(uint id) {
+    return null;
+  }
+
+  /// Sets a property from this Object.
+  void setProperty(string key) {
+    return;
+  }
+
+  /// Sets a property from this Object given its numeric index.
+  void setPropertyAt(uint id) {
+    return;
+  }
+
+  /// Deletes a property from this Object.
+  bool deleteProperty() {
+    return false;
+  }
+
+  /// Calls this Object as a constructor.
+  JSObject callAsContructor(JSValue[] params ...) {
+    assert(0, "Not implemented");
+  }
+
+  /// Calls this Object as a Function.
+  JSValue callAsFunction(JSValue[] params ...) {
+    assert(0, "Not implemented");
+  }
+
+  /// Calls this Object as a Function.
+  void callAsFunction_noResult(JSValue[] params ...) {
+    assert(0, "Not implemented");
+  }
+}
+
+/// A set of JSObject property attributes. Combine multiple attributes with bitwise OR.
+enum PropertyAttributes {
+  /// Specifies that a property has no special attributes.
+  none = 0,
+  /// Specifies that a property is read-only.
+  readOnly = xsDontSet,
+  /// Specifies that a property is read-only.
+  dontSet = xsDontSet,
+  /// Specifies that a property should not be enumerated by property enumerators and JavaScript `for...in` loops.
+  dontEnumerate = xsDontEnum,
+  /// Specifies that the delete operation should fail on a property.
+  /// See_Also: `JSObject.deleteProperty`
+  dontDelete = xsDontDelete,
+  /// Specifies that a property is static.
+  static_ = xsStatic,
+  /// Specifies that a property is a getter Function.
+  isGetter = xsIsGetter,
+  /// Specifies that a property is a setter Function.
+  isSetter = xsIsSetter,
+  ///
+  changeAll = xsChangeAll,
+}
+
+/// A set of `JSClass` attributes. Combine multiple attributes with bitwise OR.
+/// See_Also: `ClassDefinition.attributes`
+enum ClassAttributes {
+  /// Specifies that a class has no special attributes.
+  none = 0,
+  /// Specifies that a class should not automatically generate a shared prototype for its instance objects.
+  noAutomaticPrototype = 2
+}
+
+/// Describes a statically declared function property.
+///
+/// Adapted from <a href="https://developer.apple.com/documentation/javascriptcore/jsstaticfunction">`JSStaticFunction`</a> in Apple's <a href="https://developer.apple.com/documentation/javascriptcore">JavaScriptCore</a>.
+struct JSStaticFunction {
+  ///
+  string name;
+  /// A set of property attributes. Combine multiple attributes with bitwise OR.
+  PropertyAttributes attributes;
+  ///
+  xsCallback callAsFunction;
+}
+
+/// Describes a statically declared value property.
+///
+/// Adapted from <a href="https://developer.apple.com/documentation/javascriptcore/jsstaticvalue">`JSStaticValue`</a> in Apple's <a href="https://developer.apple.com/documentation/javascriptcore">JavaScriptCore</a>.
+struct JSStaticValue {
+  ///
+  string name;
+  /// A set of property attributes. Combine multiple attributes with bitwise OR.
+  PropertyAttributes attributes;
+  /// Invoked when getting this property’s value.
+  ///
+  /// If this function returns `null`, the get request forwards to object’s statically declared properties, then its parent class chain (which includes the default Object class), then its prototype chain.
+  xsCallback getProperty;
+  /// Invoked when setting this property’s value.
+  ///
+  /// If this function returns `null`, the get request forwards to object’s statically declared properties, then its parent class chain (which includes the default Object class), then its prototype chain.
+  xsCallback setProperty;
+}
+
+/// Properties and callbacks that define a type of Object.
+/// All fields other than the version field are optional. Any pointer may be `null`.
+///
+/// Adapted from <a href="https://developer.apple.com/documentation/javascriptcore/jsclassdefinition">`JSClassDefinition`</a> in Apple's <a href="https://developer.apple.com/documentation/javascriptcore">JavaScriptCore</a>.
+struct ClassDefinition {
+  ///
+  string name;
+  ///
+  JSClass parentClass;
+  /// A set of attributes. Combine multiple attributes with bitwise OR.
+  ClassAttributes attributes;
+  /// Invoked when an object is first created.
+  xsCallback initialize;
+  /// Invoked when an object is finalized (prepared for garbage collection). An Object may be finalized on any thread.
+  xsCallback finalize;
+  ///
+  xsDestructor destructor;
+  // xsCallback callAsConstructor; TODO: Not a thing in XS?
+  // xsCallback callAsFunction; TODO: Not a thing in XS?
+  // xsCallback hasInstance; TODO: Not a thing in XS?
+  /// Invoked when determining whether an Object has a property.
+  xsCallback hasProperty;
+  ///
+  xsCallback getPropertyNames;
+  /// Invoked when getting a property’s value.
+  ///
+  /// If this function returns `null`, the get request forwards to object’s statically declared properties, then its parent class chain (which includes the default Object class), then its prototype chain.
+  xsCallback getProperty;
+  /// Invoked when setting a property’s value.
+  ///
+  /// If this function returns `null`, the get request forwards to object’s statically declared properties, then its parent class chain (which includes the default Object class), then its prototype chain.
+  xsCallback setProperty;
+  ///
+  xsCallback deleteProperty;
+  // xsCallback convertToType; TODO: Not a thing in XS?
+  /// Statically declared function properties on the class' prototype.
+  JSStaticFunction[] staticFunctions;
+  /// Statically declared value properties on the class' prototype.
+  JSStaticValue[] staticValues;
+  ///
+  int version_;
+}
+
+/// A JavaScript class. Subclass a D class with `JSClass` to expose it to a JS VM.
+///
+/// Use with `JSObject.make` to construct objects with custom behavior.
+///
+/// Adapted from <a href="https://developer.apple.com/documentation/javascriptcore/jsclassref">`JSClassRef`</a> in Apple's <a href="https://developer.apple.com/documentation/javascriptcore">JavaScriptCore</a>.
+abstract class JSClass {
+  private JSObject _instance;
+  ///
+  const ClassDefinition definition;
+
+  /// Constructs a JavaScript class suitable for use with `JSObject.make`.
+  this(ClassDefinition definition) {
+    this.definition = definition;
+  }
+
+  /// Retains this JavaScript class.
+  void retain() {
+    remember();
+  }
+  /// Remembers this JavaScript class.
+  void remember() {
+    xsRemember(_instance.machine.the, _instance.slot);
+  }
+
+  /// Releases this JavaScript class.
+  void release() {
+    forget();
+  }
+  /// Forgets this JavaScript class.
+  void forget() {
+    xsForget(_instance.machine.the, _instance.slot);
+  }
+}

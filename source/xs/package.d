@@ -41,7 +41,7 @@ mixin template defaultFxAbort() {
 }
 
 version (unittest) {
-  // TODO: Unit test a custom abort function
+  // TODO: Unit test default abort function
   mixin defaultFxAbort;
 }
 
@@ -200,7 +200,7 @@ class Machine {
 }
 
 unittest {
-  auto machine = new Machine("test");
+  auto machine = new Machine("test-machine");
   const global = machine.global;
   assert(machine.the.xsToID(global));
   assert(machine.the.xsTypeOf(global) == JSType.reference);
@@ -288,7 +288,7 @@ class JSValue {
 unittest {
   import std.exception : assertThrown;
 
-  auto machine = new Machine("test");
+  auto machine = new Machine("test-jsvalue");
   const global = machine.global;
   assert(machine.toId(global));
 

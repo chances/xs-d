@@ -11,22 +11,73 @@ import std.conv : to;
 import std.exception : enforce;
 import std.string : format, toStringz;
 
+public import xs.script;
 public import xs.bindings;
 public import xs.bindings.enums;
 public import xs.bindings.macros;
+public import xs.bindings.structs;
 
+/// Thrown when a JS VM is aborted with the `xsUnhandledExceptionExit` status.
+class JSException : Exception {
+  /// The JS script or module file from which the exception was thrown.
+  const string scriptFile;
+  /// The line of the JS script or module file from which the exception was thrown.
+  const ulong scriptLine;
+
+  private const Script script_ = null;
+
+  /// Constructs a new instace of JSException.
+  this(string msg, string file = __FILE__, ulong line = cast(ulong)__LINE__) {
+    super(msg, file, line);
+
+    scriptFile = "NATIVE_CODE";
+    scriptLine = 0;
+  }
+  /// Constructs a new instace of JSException given the `Script` from which this exception was thrown.
+  this(string msg, const Script script, string file = __FILE__, ulong line = cast(ulong)__LINE__) {
+    super(msg, file, line);
+
+    this.script_ = script;
+    scriptFile = script.path;
+    // TODO: Get the thrown line from the VM
+    scriptLine = 0;
+  }
+
+  /// The `Script` from which this exception was thrown.
+  const(Script) script() @property const {
+    return script_;
+  }
+}
+
+/// A rudimentary Host VM abortion implementation that throws error messages back into the JS VM.
 ///
-extern(C) void fxAbort(scope xsMachine* the, int status)
-{
-	if (status == xsNotEnoughMemoryExit)
-		the.xsUnknownError("not enough memory");
-	else if (status == xsStackOverflowExit)
-		the.xsUnknownError("stack overflow");
-	else if (status == xsDeadStripExit)
-		the.xsUnknownError("dead strip");
-	else if (status == xsUnhandledExceptionExit) {
-		xsTrace(the, "unhandled exception\n");
-	}
+/// You <strong>MUST</strong> either mixin the template in your Host application or provide your own implementation.
+///
+/// Throws: `JSException` when a JS VM is aborted with the `xsUnhandledExceptionExit` status.
+///
+/// Examples:
+/// ---
+/// mixin defaultFxAbort;
+/// ---
+mixin template defaultFxAbort() {
+  extern(C) void fxAbort(scope xsMachine* the, int status)
+  {
+    if (status == xsNotEnoughMemoryExit)
+      the.xsUnknownError("not enough memory");
+    else if (status == xsStackOverflowExit)
+      the.xsUnknownError("stack overflow");
+    else if (status == xsDeadStripExit)
+      the.xsUnknownError("dead strip");
+    else if (status == xsUnhandledExceptionExit) {
+      xsTrace(the, "Unhandled JS exception\n");
+      throw new JSException("unhandled exception");
+    }
+  }
+}
+
+version (unittest) {
+  // TODO: Unit test default abort function
+  mixin defaultFxAbort;
 }
 
 private {
@@ -36,6 +87,11 @@ private {
 /// A JavaScript virtual machine.
 class Machine {
   private xsMachine* the_;
+  package(xs) const xsSlot realm;
+  private Script[] scripts_;
+
+  /// Name of this VM.
+  const string name;
 
   /// Default VM creation options.
   static xsCreation defaultCreation = {
@@ -50,11 +106,18 @@ class Machine {
   };
 
   /// Create and allocate a new JavaScript VM.
-  this(string name, const xsCreation creationOptions = defaultCreation) {
+  this(string name, const xsCreation creationOptions = defaultCreation, const(txScript*[]) preloadedScripts = []) {
+    import std.algorithm : map;
+    import std.array : array;
+
+    this.name = name;
     the_ = enforce(
       xsCreateMachine(&creationOptions, name, cast(void*) this),
       format!"Could not create JS virtual machine '%s'"(name)
     );
+    realm = *fxNewRealmInstance(the);
+    the_.archive = sxPreparation.from(creationOptions, name, "", preloadedScripts);
+    scripts_ = preloadedScripts.map!(s => new Script(this, s)).array;
   }
   ~this() {
     if (the) the.xsDeleteMachine();
@@ -62,6 +125,10 @@ class Machine {
 
   xsMachine* the() @property const {
     return cast(xsMachine*) the_;
+  }
+
+  const(Script[]) scripts() @property const {
+    return scripts_;
   }
 
   constSlot global() @property const {
@@ -168,7 +235,7 @@ class Machine {
 }
 
 unittest {
-  auto machine = new Machine("test");
+  auto machine = new Machine("test-machine");
   const global = machine.global;
   assert(machine.the.xsToID(global));
   assert(machine.the.xsTypeOf(global) == JSType.reference);
@@ -239,7 +306,7 @@ class JSValue {
   /// Convert this value to a `double` value.
   /// See_Also: `xs.bindings.macros.xsToNumber`
   double number() @property const {
-    enforce(type == JSType.integer, "Value is not a Number");
+    enforce(type == JSType.number, "Value is not a Number");
     return machine.the.xsToNumber(slot);
   }
 
@@ -254,7 +321,9 @@ class JSValue {
 }
 
 unittest {
-  auto machine = new Machine("test");
+  import std.exception : assertThrown;
+
+  auto machine = new Machine("test-jsvalue");
   const global = machine.global;
   assert(machine.toId(global));
 
@@ -265,13 +334,22 @@ unittest {
   assert(foo.id == machine.toId(foo.slot));
   assert(foo.type == JSType.integer);
   assert(foo.integer == 1);
-  assert(foo.number == 1);
+  assert(foo.unsigned == 1);
+  assertThrown(foo.number == 1);
 
   machine.set(global, foo.id, machine.unsigned(100));
   foo = machine.get(global, foo.id);
   assert(foo.type == JSType.integer);
+  assert(foo.integer == 100);
   assert(foo.unsigned == 100);
-  assert(foo.number == 100);
+  assertThrown(foo.number == 100);
+
+  machine.set(global, foo.id, machine.number(110));
+  foo = machine.get(global, foo.id);
+  assert(foo.type == JSType.number);
+  assertThrown(foo.integer == 100);
+  assertThrown(foo.unsigned == 100);
+  assert(foo.number == 110);
 
   machine.set(global, machine.id("bar"), machine.boolean(true));
   assert(machine.has(global, machine.id("bar")));

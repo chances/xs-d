@@ -32,28 +32,29 @@ xs-release: thirdparty/moddable
 	ar cr lib/libxs.a `find thirdparty/moddable/build/tmp/lin/release/xst -name '*.o' ! -name 'xst.o'`
 .PHONY : xs-release
 
-source/bindings/package.d:
-	dub run dpp -- --preprocess-only --no-sys-headers --ignore-macros --include-path "$(CWD)/thirdparty/moddable/xs/includes" source/bindings/xs.dpp
-	@mv source/bindings/xs.d source/bindings/package.d
+source/xs/bindings/package.d:
+	dub run dpp -- --preprocess-only --no-sys-headers --ignore-macros --include-path "$(CWD)/thirdparty/moddable/xs/includes" source/xs/bindings/xs.dpp
+	@mv source/bindings/xs.d source/xs/bindings/package.d
 
 EXAMPLES := bin/hello-world
 examples: $(EXAMPLES)
 .PHONY: examples
 
 HELLO_WORLD_SOURCES := $(shell find examples/hello-world/source -name '*.d')
-bin/hello-world: $(SOURCES) $(HELLO_WORLD_SOURCES)
+HELLO_WORLD_JS := $(shell find examples/hello-world/source -name '*.js')
+bin/hello-world: $(SOURCES) $(HELLO_WORLD_SOURCES) $(HELLO_WORLD_JS)
 	cd examples/hello-world && dub build
 
 hello-world: bin/hello-world
-	env LD_LIBRARY_PATH=$(LIBS_PATH) bin/hello-world
+	@bin/hello-world
 .PHONY: hello-world
 
 test:
-	env LD_LIBRARY_PATH=$(LIBS_PATH) dub test --parallel
+	dub test --parallel
 .PHONY: test
 
 cover: $(SOURCES)
-	env LD_LIBRARY_PATH=$(LIBS_PATH) dub test --parallel --coverage
+	dub test --parallel --coverage
 
 PACKAGE_VERSION := 0.1.0-alpha.1
 docs/sitemap.xml: $(SOURCES)
@@ -79,7 +80,7 @@ docs: docs/sitemap.xml
 .PHONY: docs
 
 clean:
-	rm -f source/bindings/package.d
+	rm -f source/xs/bindings/package.d
 	rm -f bin/headless
 	rm -f $(EXAMPLES)
 	rm -f docs.json

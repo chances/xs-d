@@ -16,8 +16,24 @@ jobs:
       uses: dlang-community/setup-dlang@v1
       with:
         compiler: ldc-latest
+    - name: Cache DUB Artifacts (Posix)
+      if: startsWith(runner.os, 'Linux') || startsWith(runner.os, 'macOS')
+      uses: actions/cache@v2
+      with:
+        path: ~/.dub
+        key: ${{ runner.os }}-dub-${{ hashFiles('**/dub.json') }}
+        restore-keys: |
+          ${{ runner.os }}-dub-
+    - name: Cache DUB Artifacts (Windows)
+      if: startsWith(runner.os, 'Windows')
+      uses: actions/cache@v2
+      with:
+        path: ~\AppData\Local\dub
+        key: ${{ runner.os }}-dub-${{ hashFiles('**/dub.json') }}
+        restore-keys: |
+          ${{ runner.os }}-dub-
     # - name: Install *nix Dependencies
-    #   if: runner.os == 'Linux'
+    #   if: startsWith(runner.os, 'Linux')
     #   run: sudo apt-get install --quiet -y libglfw3 libglfw3-dev
     - name: Cache Moddable SDK
       id: cache-moddable

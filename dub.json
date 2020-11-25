@@ -6,10 +6,14 @@
 	],
 	"license": "MIT",
   "copyright": "Copyright © 2020, Chance Snow",
+  "subPackages": [
+    "examples/hello-world"
+  ],
   "targetPath": "bin",
   "targetType": "library",
+  "systemDependencies": "linux: gio-2.0",
 	"preGenerateCommands": [
-    "make source/bindings/package.d"
+    "make source/xs/bindings/package.d"
   ],
   "preBuildCommands": [
     "make xs"

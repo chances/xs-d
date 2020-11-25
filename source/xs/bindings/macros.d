@@ -237,84 +237,84 @@ void* xsToArrayBuffer(scope xsMachine* the, xsSlot theSlot) {
 enum int prototypesStackIndex = -75;
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a> on MDN
-enum xsSlot xsObjectPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 1];
+xsSlot xsObjectPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 1]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a> on MDN
-enum xsSlot xsFunctionPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 2];
+xsSlot xsFunctionPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 2]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a> on MDN
-enum xsSlot xsArrayPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 3];
+xsSlot xsArrayPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 3]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> on MDN
-enum xsSlot xsStringPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 4];
+xsSlot xsStringPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 4]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a> on MDN
-enum xsSlot xsBooleanPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 5];
+xsSlot xsBooleanPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 5]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a> on MDN
-enum xsSlot xsNumberPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 6];
+xsSlot xsNumberPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 6]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a> on MDN
-enum xsSlot xsDatePrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 7];
+xsSlot xsDatePrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 7]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp">RegExp</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp">RegExp</a> on MDN
-enum xsSlot xsRegExpPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 8];
+xsSlot xsRegExpPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 8]; }
 /// Returns a reference to the Host prototype instance created by the XS runtime.
-enum xsSlot xsHostPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 9];
+xsSlot xsHostPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 9]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a> on MDN
-enum xsSlot xsErrorPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 10];
+xsSlot xsErrorPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 10]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError">EvalError</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError">EvalError</a> on MDN
-enum xsSlot xsEvalErrorPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 11];
+xsSlot xsEvalErrorPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 11]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError">RangeError</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError">RangeError</a> on MDN
-enum xsSlot xsRangeErrorPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 12];
+xsSlot xsRangeErrorPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 12]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError">ReferenceError</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError">ReferenceError</a> on MDN
-enum xsSlot xsReferenceErrorPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 13];
+xsSlot xsReferenceErrorPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 13]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError">SyntaxError</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError">SyntaxError</a> on MDN
-enum xsSlot xsSyntaxErrorPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 14];
+xsSlot xsSyntaxErrorPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 14]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError">TypeError</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError">TypeError</a> on MDN
-enum xsSlot xsTypeErrorPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 15];
+xsSlot xsTypeErrorPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 15]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError">URIError</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError">URIError</a> on MDN
-enum xsSlot xsURIErrorPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 16];
+xsSlot xsURIErrorPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 16]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AggregateError">AggregateError</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AggregateError">AggregateError</a> on MDN
-enum xsSlot xsAggregateErrorPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 17];
+xsSlot xsAggregateErrorPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 17]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a> on MDN
-enum xsSlot xsSymbolPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 18];
+xsSlot xsSymbolPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 18]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer">ArrayBuffer</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer">ArrayBuffer</a> on MDN
-enum xsSlot xsArrayBufferPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 19];
+xsSlot xsArrayBufferPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 19]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView">DataView</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView">DataView</a> on MDN
-enum xsSlot xsDataViewPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 20];
+xsSlot xsDataViewPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 20]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray">TypedArray</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray">TypedArray</a> on MDN
-enum xsSlot xsTypedArrayPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 21];
+xsSlot xsTypedArrayPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 21]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map">Map</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map">Map</a> on MDN
-enum xsSlot xsMapPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 22];
+xsSlot xsMapPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 22]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set">Set</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set">Set</a> on MDN
-enum xsSlot xsSetPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 23];
+xsSlot xsSetPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 23]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap">WeakMap</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap">WeakMap</a> on MDN
-enum xsSlot xsWeakMapPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 24];
+xsSlot xsWeakMapPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 24]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet">WeakSet</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet">WeakSet</a> on MDN
-enum xsSlot xsWeakSetPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 25];
+xsSlot xsWeakSetPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 25]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a> on MDN
-enum xsSlot xsPromisePrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 26];
+xsSlot xsPromisePrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 26]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy">Proxy</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy">Proxy</a> on MDN
-enum xsSlot xsProxyPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 27];
+xsSlot xsProxyPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 27]; }
 
 /// Creates an array instance, and returns a reference to the new array instance.
 ///

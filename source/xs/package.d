@@ -11,12 +11,11 @@ import std.conv : to;
 import std.exception : enforce;
 import std.string : format, toStringz;
 
+public import xs.script;
 public import xs.bindings;
 public import xs.bindings.enums;
 public import xs.bindings.macros;
 public import xs.bindings.structs;
-
-// TODO: https://github.com/Moddable-OpenSource/moddable/blob/5639abb24b6d725554969dc0be5822edb54a4a08/documentation/xs/XS%20Platforms.md#eval
 
 /// A rudimentary Host VM abortion implementation that throws error messages back into the JS VM.
 ///
@@ -42,6 +41,7 @@ mixin template defaultFxAbort() {
 }
 
 version (unittest) {
+  // TODO: Unit test a custom abort function
   mixin defaultFxAbort;
 }
 
@@ -52,6 +52,11 @@ private {
 /// A JavaScript virtual machine.
 class Machine {
   private xsMachine* the_;
+  package(xs) const xsSlot realm;
+  private Script[] scripts_;
+
+  /// Name of this VM.
+  const string name;
 
   /// Default VM creation options.
   static xsCreation defaultCreation = {
@@ -66,11 +71,18 @@ class Machine {
   };
 
   /// Create and allocate a new JavaScript VM.
-  this(string name, const xsCreation creationOptions = defaultCreation) {
+  this(string name, const xsCreation creationOptions = defaultCreation, const(txScript*[]) preloadedScripts = []) {
+    import std.algorithm : map;
+    import std.array : array;
+
+    this.name = name;
     the_ = enforce(
       xsCreateMachine(&creationOptions, name, cast(void*) this),
       format!"Could not create JS virtual machine '%s'"(name)
     );
+    realm = *fxNewRealmInstance(the);
+    the_.archive = sxPreparation.from(creationOptions, name, "", preloadedScripts);
+    scripts_ = preloadedScripts.map!(s => new Script(this, s)).array;
   }
   ~this() {
     if (the) the.xsDeleteMachine();
@@ -78,6 +90,10 @@ class Machine {
 
   xsMachine* the() @property const {
     return cast(xsMachine*) the_;
+  }
+
+  const(Script[]) scripts() @property const {
+    return scripts_;
   }
 
   constSlot global() @property const {

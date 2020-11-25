@@ -46,15 +46,15 @@ bin/hello-world: $(SOURCES) $(HELLO_WORLD_SOURCES) $(HELLO_WORLD_JS)
 	cd examples/hello-world && dub build
 
 hello-world: bin/hello-world
-	env LD_LIBRARY_PATH=$(LIBS_PATH) bin/hello-world
+	@bin/hello-world
 .PHONY: hello-world
 
 test:
-	env LD_LIBRARY_PATH=$(LIBS_PATH) dub test --parallel
+	dub test --parallel
 .PHONY: test
 
 cover: $(SOURCES)
-	env LD_LIBRARY_PATH=$(LIBS_PATH) dub test --parallel --coverage
+	dub test --parallel --coverage
 
 PACKAGE_VERSION := 0.1.0-alpha.1
 docs/sitemap.xml: $(SOURCES)

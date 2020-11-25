@@ -1261,6 +1261,9 @@ void xsSetContext(scope xsMachine* the, void* context) {
 /// Detect whether `T` is the `xsMachine` struct.
 enum bool isXsMachine(T) = __traits(isSame, T, xsMachine);
 
+/// Detect whether `T` is a pointer to the `xsMachine` struct.
+enum bool isXsMachinePtr(T) = __traits(isSame, T, xsMachine*);
+
 import std.meta : staticIndexOf, templateAnd, templateNot, templateOr;
 import std.traits : isCallable, Parameters, ParameterIdentifierTuple, ParameterStorageClass,
   ParameterStorageClassTuple, QualifierOf, ReturnType;
@@ -1269,7 +1272,7 @@ import std.traits : isCallable, Parameters, ParameterIdentifierTuple, ParameterS
 private enum bool hasScopeStorage(alias T) = (T & ParameterStorageClass.scope_) == ParameterStorageClass.scope_;
 private template illegallyEscapesScope(Param, alias ParamStorage) {
   alias notHasScopeStorage = templateNot!(hasScopeStorage!ParamStorage);
-  enum bool illegallyEscapesScope = notHasScopeStorage!ParamStorage && isXsMachine!Param;
+  enum bool illegallyEscapesScope = notHasScopeStorage!ParamStorage && isXsMachinePtr!Param;
 }
 
 /// Detect whether `T` is callable as a Host zone, in lieu of `xsBeginHost` and `xsEndHost`.
@@ -1288,7 +1291,12 @@ template isCallableAsHostZone(T...) if (T.length == 1 && isCallable!T && is (Ret
 
   alias TParams = Parameters!T;
   static assert(TParams.length == 1, "A Host zone entry point must have a single parameter of type `scope xsMachine*`");
-  enum bool isCallableAsHostZone = allSatisfy!(isXsMachine, TParams);
+  static if(illegallyEscapesScope!(TParams[0], ParameterStorageClassTuple!T[0])) {
+    static assert(0, "The VM parameter of a Host zone entry point must use the scope storage class. " ~
+      "\n\ti.e. Add the `scope` storage class to the `xsMachine*` parameter of method or delegate `" ~ __traits(identifier, T) ~ "`" ~
+      "\n\tSee https://dlang.org/spec/function.html#parameters");
+  }
+  enum bool isCallableAsHostZone = allSatisfy!(isXsMachinePtr, TParams);
 }
 
 /// Used to set up and clean up a stack frame, so that you can use all the macros of XS in C in between, provided in lieu of `xsBeginHost` and `xsEndHost`.
@@ -1307,7 +1315,7 @@ template isCallableAsHostZone(T...) if (T.length == 1 && isCallable!T && is (Ret
 /// {
 /// 	long result = 0;
 /// 	xsMachine* aMachine = GetWindowLongPtr(hwnd, GWL_USERDATA);
-///   auto zone = void delegate (xsMachine* the) {
+///   auto zone = (xsMachine* the) => {
 /// 		result = the.xsToInteger(the.xsCall(
 ///       the.xsGlobal, xsID_dispatch,
 /// 			the.xsInteger(m), the.xsInteger(w), the.xsInteger(l)
@@ -1330,13 +1338,13 @@ void xsHostZone(alias Func)(scope xsMachine* the) if (isCallableAsHostZone!Func)
       flag: 0,
     };
     hostThe.firstJump = &hostJump;
-    if (setjmp(hostJump.buffer) == 0) {
-      xsMachine* the = fxBeginHost(the);
+    if (setjmp(hostJump.buffer.ptr) == 0) {
+      xsMachine* zonedThe = fxBeginHost(the);
 
       /// Call user-land host code
-      Func(the);
+      Func(zonedThe);
 
-      fxEndHost(the);
+      fxEndHost(zonedThe);
       the = null;
     } else fxAbort(hostThe, xsUnhandledExceptionExit);
     hostThe.stack = hostJump.stack;

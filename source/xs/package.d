@@ -271,7 +271,7 @@ class JSValue {
   /// Convert this value to a `double` value.
   /// See_Also: `xs.bindings.macros.xsToNumber`
   double number() @property const {
-    enforce(type == JSType.integer, "Value is not a Number");
+    enforce(type == JSType.number, "Value is not a Number");
     return machine.the.xsToNumber(slot);
   }
 
@@ -286,6 +286,8 @@ class JSValue {
 }
 
 unittest {
+  import std.exception : assertThrown;
+
   auto machine = new Machine("test");
   const global = machine.global;
   assert(machine.toId(global));
@@ -297,13 +299,22 @@ unittest {
   assert(foo.id == machine.toId(foo.slot));
   assert(foo.type == JSType.integer);
   assert(foo.integer == 1);
-  assert(foo.number == 1);
+  assert(foo.unsigned == 1);
+  assertThrown(foo.number == 1);
 
   machine.set(global, foo.id, machine.unsigned(100));
   foo = machine.get(global, foo.id);
   assert(foo.type == JSType.integer);
+  assert(foo.integer == 100);
   assert(foo.unsigned == 100);
-  assert(foo.number == 100);
+  assertThrown(foo.number == 100);
+
+  machine.set(global, foo.id, machine.number(110));
+  foo = machine.get(global, foo.id);
+  assert(foo.type == JSType.number);
+  assertThrown(foo.integer == 100);
+  assertThrown(foo.unsigned == 100);
+  assert(foo.number == 110);
 
   machine.set(global, machine.id("bar"), machine.boolean(true));
   assert(machine.has(global, machine.id("bar")));

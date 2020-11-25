@@ -68,7 +68,17 @@ $('#symbolSearchPane').show();</script>
 						<a href="../../../xs/bindings/macros.html">macros</a>
 					</div>
 				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../xs/bindings/structs.html">structs</a>
+					</div>
+				</li>
 			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../../../xs/script.html">script</a>
+					</div>
 				</li>
 			</ul>
 				</li>
@@ -107,7 +117,7 @@ $('#symbolSearchPane').show();</script>
 {
 </span><span class="typ">long </span><span class="pln">result </span><span class="pun">= </span><span class="lit">0</span><span class="pun">;
 </span><span class="pln">xsMachine</span><span class="pun">* </span><span class="pln">aMachine </span><span class="pun">= </span><span class="typ">GetWindowLongPtr</span><span class="pun">(</span><span class="pln">hwnd</span><span class="pun">, </span><span class="pln">GWL_USERDATA</span><span class="pun">);
-</span><span class="kwd">auto </span><span class="pln">zone </span><span class="pun">= </span><span class="typ">void </span><span class="kwd">delegate </span><span class="pun">(</span><span class="pln">xsMachine</span><span class="pun">* <a href="../../../xs/bindings/macros/xsHostZone.html#the"></span><span class="pln">the</span></a><span class="pun">) {
+</span><span class="kwd">auto </span><span class="pln">zone </span><span class="pun">= (</span><span class="pln">xsMachine</span><span class="pun">* <a href="../../../xs/bindings/macros/xsHostZone.html#the"></span><span class="pln">the</span></a><span class="pun">) =&gt; {
 </span><span class="pln">result </span><span class="pun">= </span><span class="pln">the<wbr/></span><span class="pun">.</span><span class="pln">xsToInteger</span><span class="pun">(</span><span class="pln">the<wbr/></span><span class="pun">.</span><span class="pln">xsCall</span><span class="pun">(
 </span><span class="pln">the<wbr/></span><span class="pun">.</span><span class="pln">xsGlobal</span><span class="pun">, </span><span class="pln">xsID_dispatch</span><span class="pun">,
 </span><span class="pln">the<wbr/></span><span class="pun">.</span><span class="pln">xsInteger</span><span class="pun">(</span><span class="pln">m</span><span class="pun">), </span><span class="pln">the<wbr/></span><span class="pun">.</span><span class="pln">xsInteger</span><span class="pun">(</span><span class="pln">w</span><span class="pun">), </span><span class="pln">the<wbr/></span><span class="pun">.</span><span class="pln">xsInteger</span><span class="pun">(</span><span class="pln">l</span><span class="pun">)

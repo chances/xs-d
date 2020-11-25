@@ -68,7 +68,17 @@ $('#symbolSearchPane').show();</script>
 						<a href="./xs/bindings/macros.html">macros</a>
 					</div>
 				</li>
+				<li>
+					<div class="module ">
+						<a href="./xs/bindings/structs.html">structs</a>
+					</div>
+				</li>
 			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="./xs/script.html">script</a>
+					</div>
 				</li>
 			</ul>
 				</li>
@@ -82,7 +92,7 @@ $('#symbolSearchPane').show();</script>
 
 			<section></section>
 			<section>
-				<h2>Functions</h2>
+				<h2>Classes</h2>
 				<table>
 					<col class="caption"/>
 					<tr>
@@ -91,19 +101,11 @@ $('#symbolSearchPane').show();</script>
 					<tr>
 						<td>
 							<code>
-								<a id="fxAbort" class="public" href="./xs/fxAbort.html">fxAbort</a><span class="tableEntryAnnotation">(the, status)</span>
+								<a id="JSException" class="public" href="./xs/JSException.html">JSException</a>
 							</code>
 						</td>
-						<td></td>
-					</tr>
-				</table>
-			</section>
-			<section>
-				<h2>Classes</h2>
-				<table>
-					<col class="caption"/>
-					<tr>
-						<th>Name</th><th>Description</th>
+						<td>Thrown when a JS VM is aborted with the <code class="lang-d"><span class="pln">xsUnhandledExceptionExit</span></code> status.
+</td>
 					</tr>
 					<tr>
 						<td>
@@ -121,6 +123,24 @@ $('#symbolSearchPane').show();</script>
 							</code>
 						</td>
 						<td>A JavaScript virtual machine.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section>
+				<h2>Templates</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="defaultFxAbort" class="public" href="./xs/defaultFxAbort.html">defaultFxAbort</a>
+							</code>
+						</td>
+						<td>A rudimentary Host VM abortion implementation that throws error messages back into the JS VM.
 </td>
 					</tr>
 				</table>

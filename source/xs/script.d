@@ -67,12 +67,17 @@ class Script {
   }
 
   ///
+  /// Throws: `JSException` when the JS VM is aborted with the `xsUnhandledExceptionExit` status.
   void run() inout {
     auto zone = (scope xsMachine* the) => {
       // https://github.com/Moddable-OpenSource/moddable/blob/5639abb24b6d725554969dc0be5822edb54a4a08/documentation/xs/XS%20Platforms.md#modules
       fxRunModule(the, cast(xsSlot*) &machine.realm, XS_NO_ID, cast(txScript*) script.copy);
     }();
-    machine.the.xsHostZone!zone;
+    try {
+      machine.the.xsHostZone!zone;
+    } catch (JSException unhandledInVm) {
+      throw new JSException(unhandledInVm.msg, this, unhandledInVm.file, unhandledInVm.line);
+    }
   }
 }
 
@@ -102,11 +107,11 @@ version(unittest) {
 }
 
 unittest {
-  import std.exception : assertNotThrown;
+  import std.exception : assertThrown;
 
   auto script = helloWorldScript();
   auto machine = new Machine("test-script", Machine.defaultCreation, [&script]);
-  assertNotThrown(machine.scripts[0].run());
+  assertThrown!JSException(machine.scripts[0].run());
 
   destroy(machine);
 }

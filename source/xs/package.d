@@ -17,9 +17,43 @@ public import xs.bindings.enums;
 public import xs.bindings.macros;
 public import xs.bindings.structs;
 
+/// Thrown when a JS VM is aborted with the `xsUnhandledExceptionExit` status.
+class JSException : Exception {
+  /// The JS script or module file from which the exception was thrown.
+  const string scriptFile;
+  /// The line of the JS script or module file from which the exception was thrown.
+  const ulong scriptLine;
+
+  private const Script script_ = null;
+
+  /// Constructs a new instace of JSException.
+  this(string msg, string file = __FILE__, ulong line = cast(ulong)__LINE__) {
+    super(msg, file, line);
+
+    scriptFile = "NATIVE_CODE";
+    scriptLine = 0;
+  }
+  /// Constructs a new instace of JSException given the `Script` from which this exception was thrown.
+  this(string msg, const Script script, string file = __FILE__, ulong line = cast(ulong)__LINE__) {
+    super(msg, file, line);
+
+    this.script_ = script;
+    scriptFile = script.path;
+    // TODO: Get the thrown line from the VM
+    scriptLine = 0;
+  }
+
+  /// The `Script` from which this exception was thrown.
+  const(Script) script() @property const {
+    return script_;
+  }
+}
+
 /// A rudimentary Host VM abortion implementation that throws error messages back into the JS VM.
 ///
 /// You <strong>MUST</strong> either mixin the template in your Host application or provide your own implementation.
+///
+/// Throws: `JSException` when a JS VM is aborted with the `xsUnhandledExceptionExit` status.
 ///
 /// Examples:
 /// ---
@@ -35,7 +69,8 @@ mixin template defaultFxAbort() {
     else if (status == xsDeadStripExit)
       the.xsUnknownError("dead strip");
     else if (status == xsUnhandledExceptionExit) {
-      xsTrace(the, "unhandled exception\n");
+      xsTrace(the, "Unhandled JS exception\n");
+      throw new JSException("unhandled exception");
     }
   }
 }

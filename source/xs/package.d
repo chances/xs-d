@@ -553,12 +553,9 @@ class JSObject : JSValue {
   /// Returns: The prototype of this Object. If there are no inherited properties, `null` is returned.
   /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getPrototypeOf">`Object.getPrototypeOf`</a> on MDN
   JSValue prototype() @property const {
-    auto prototype = machine.the.xsHostZone!((scope xsMachine* the) => {
-      auto theMachine = Machine.from(the);
-      auto obj = theMachine.global.getProperty("Object").object;
-      auto getPrototypeOf = obj.getProperty("getPrototypeOf").object;
-      return getPrototypeOf.callAsFunction(obj, new JSValue(theMachine, slot));
-    }());
+    auto obj = machine.global.getProperty("Object").object;
+    auto getPrototypeOf = obj.getProperty("getPrototypeOf").object;
+    auto prototype = getPrototypeOf.callAsFunction(obj, this);
 
     if (prototype.type == JSType.null_) return null;
     return prototype;
@@ -572,26 +569,6 @@ class JSObject : JSValue {
   /// ---
   string prototypeName() @property const {
     return prototype.object.getProperty("constructor").object.getProperty("name").string_;
-  }
-
-  /// Sets this Object’s prototype.
-  ///
-  /// Params:
-  /// value=This Object's new prototype, or `null`.
-  /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/setPrototypeOf">`Object.setPrototypeOf`</a> on MDN
-  void setPrototype(const JSValue value = null) {
-    auto the = machine.the;
-    assert(xsIsInstanceOf(the, value.slot, xsObjectPrototype!the), "Value isn't an Object." ~
-      "\n\tSee " ~ mdn ~ "/Object/setPrototypeOf#Description"
-    );
-    assert(extensible, "This Object's prototype is non-extensible." ~
-      "\n\tSee " ~ mdn ~ "/Object/setPrototypeOf#Description"
-    );
-    xsCall(
-      the, xsObjectPrototype!the, machine.id("setPrototypeOf"),
-      slot,
-      value is null ? the.xsNull : value.slot
-    );
   }
 
   /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/isExtensible">`Object.isExtensible`</a> on MDN
@@ -718,6 +695,7 @@ unittest {
   global.setProperty("Host", JSObject.make(machine));
   assert(global.hasProperty("Host"));
   assert(global.getProperty("Host").convertableToObject);
+  assert(global.getProperty("Host").object.prototypeName == "Object");
 
   assert(global.deleteProperty("Host"));
   assert(!global.hasProperty("Host"));

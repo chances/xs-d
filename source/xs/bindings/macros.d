@@ -709,8 +709,8 @@ xsSlot xsCall(scope xsMachine* the, const xsSlot this_, xsIndex id, const xsSlot
   assert(params.length >= 0);
 	the.xsOverflow(-XS_FRAME_COUNT - params.length.to!int);
 	the.fxPush(cast(xsSlot) this_);
-  foreach (param; params) fxPush(the, cast(xsSlot) param);
 	fxCallID(the, id);
+  foreach (param; params) fxPush(the, cast(xsSlot) param);
 	fxRunCount(the, params.length.to!int);
 	return the.fxPop();
 }
@@ -726,8 +726,8 @@ void xsCall_noResult(scope xsMachine* the, const xsSlot this_, xsIndex id, const
   assert(params.length >= 0);
 	the.xsOverflow(-XS_FRAME_COUNT - params.length.to!int);
 	the.fxPush(cast(xsSlot) this_);
-  foreach (param; params) fxPush(the, cast(xsSlot) param);
 	fxCallID(the, id);
+  foreach (param; params) fxPush(the, cast(xsSlot) param);
 	fxRunCount(the, params.length.to!int);
 	the.stack++;
 }
@@ -735,9 +735,24 @@ void xsCall_noResult(scope xsMachine* the, const xsSlot this_, xsIndex id, const
 ///
 /// Params:
 /// the=A machine
-/// function_=
-/// this_=
+/// this_=A reference to the instance that will have the property or item
+/// function_=A reference to the the property or item to call
 /// params=The parameter slots to pass to the function
+/// Returns: The function's return value slot.
+///
+/// Examples:
+/// In ECMAScript:
+/// ---
+/// foo()
+/// this.foo(1)
+/// this[0](2, 3)
+/// ---
+/// In D:
+/// ---
+/// xsCallFunction(xsGlobal, foo);
+/// xsCallFunction(xsThis, foo, xsInteger(1));
+/// xsCallFunction(xsThis, 0, xsInteger(2), xsInteger(3));
+/// ---
 xsSlot xsCallFunction(scope xsMachine* the, const xsSlot function_, const xsSlot this_, const xsSlot[] params ...) {
   assert(params.length >= 0);
 	xsOverflow(the, -XS_FRAME_COUNT - params.length.to!int);
@@ -1305,6 +1320,7 @@ template isCallableAsHostZone(T...) if (T.length == 1 && isCallable!T) {
 /// Uncaught exceptions that occur within `Func` do not propagate beyond the execution of `xsHostZone`.
 ///
 /// Returns: The result of `Func`, or `void` if `Func` has no return type.
+/// Throws: `JSException` when the JS VM is aborted with the `xsUnhandledExceptionExit` status while executing `Func`.
 /// See_Also:
 /// From the <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#xs-in-c">XS in C</a> Moddable SDK <a href="https://github.com/Moddable-OpenSource/moddable/tree/OS201116/documentation#readme">Documentation</a>:
 /// $(UL
@@ -1342,6 +1358,13 @@ ReturnType!Func xsHostZone(alias Func)(scope xsMachine* the) if (isCallableAsHos
       code: hostThe.code,
       flag: 0,
     };
+    void resetState() {
+      hostThe.stack = hostJump.stack;
+      hostThe.scope_ = hostJump.scope_;
+      hostThe.frame = hostJump.frame;
+      hostThe.code = hostJump.code;
+      hostThe.firstJump = hostJump.nextJump;
+    }
     hostThe.firstJump = &hostJump;
     if (setjmp(hostJump.buffer.ptr) == 0) {
       xsMachine* zonedThe = fxBeginHost(the);
@@ -1355,12 +1378,15 @@ ReturnType!Func xsHostZone(alias Func)(scope xsMachine* the) if (isCallableAsHos
 
       fxEndHost(zonedThe);
       the = null;
-    } else fxAbort(hostThe, xsUnhandledExceptionExit);
-    hostThe.stack = hostJump.stack;
-    hostThe.scope_ = hostJump.scope_;
-    hostThe.frame = hostJump.frame;
-    hostThe.code = hostJump.code;
-    hostThe.firstJump = hostJump.nextJump;
+    } else {
+      try {
+        fxAbort(hostThe, xsUnhandledExceptionExit);
+      } catch (Exception ex) {
+        resetState();
+        throw ex;
+      }
+    }
+    resetState();
     break;
   }
   static if (!voidReturnType) return result;

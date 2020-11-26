@@ -33,6 +33,10 @@ package(xs) union txValue {
 	sxSlot* reference;
 
 	sxSlot* closure;
+
+  // https://github.com/Moddable-OpenSource/moddable/blob/OS201116/xs/sources/xsAll.h#L272
+  struct module_anon { sxSlot* realm; txID id; }
+  module_anon module_;
 }
 
 package(xs) struct sxSlot {

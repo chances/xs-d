@@ -13,12 +13,14 @@ import xs.bindings.enums;
 import xs.bindings.structs;
 
 package(xs) enum mxProgramStackIndex = 2;
-package(xs) auto mxProgram(xsMachine* the) { return the.stackTop[-1 - mxProgramStackIndex]; }
-package(xs) xsSlot* next(const xsSlot slot) {
-  return cast(xsSlot*) slot.data[0];
+package(xs) sxSlot mxProgram(xsMachine* the) { return cast(sxSlot) the.stackTop[-1 - mxProgramStackIndex]; }
+package(xs) sxSlot* mxRealm(xsMachine* the) { return mxProgram(the).value.reference.next.value.module_.realm; }
+package(xs) xsSlot* slot(sxSlot* slot) { return cast(xsSlot*) slot; }
+package(xs) sxSlot* next(const xsSlot slot) {
+  return cast(sxSlot*) slot.data[0];
 }
-package(xs) xsSlot* next(const xsSlot* slot) {
-  return cast(xsSlot*) slot.data[0];
+package(xs) sxSlot* next(const xsSlot* slot) {
+  return cast(sxSlot*) slot.data[0];
 }
 
 /// The kind of JS source code.
@@ -161,13 +163,12 @@ class Script {
         // https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20Platforms.md#modules
         fxRunModule(the, cast(xsSlot*) &machine.realm, XS_NO_ID, script.copy);
       else {
-        auto realmClosures = cast(sxSlot*) machine.realm.next.next;
-        auto program = cast(sxSlot) the.mxProgram;
+        auto realmClosures = machine.realm.next.next;
         fxRunScript(
           the, script.copy,
           cast(sxSlot*) &machine.realm, null,
           realmClosures.value.reference, null,
-          program.value.reference
+          the.mxProgram.value.reference
         );
       }
     }();

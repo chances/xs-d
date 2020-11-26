@@ -126,19 +126,31 @@ class Machine {
     import std.algorithm : map;
     import std.array : array;
 
-    this.name = name;
     the_ = enforce(
       xsCreateMachine(&creationOptions, name, cast(void*) this),
       format!"Could not create JS virtual machine '%s'"(name)
     );
-    realm = *fxNewRealmInstance(the);
+    this.name = name;
+    realm = *mxRealm(the_).slot;
     the_.archive = sxPreparation.from(creationOptions, name, "", preloadedScripts.map!(script => script[0]).array);
     foreach (preloadedScript; preloadedScripts) {
       scripts_ ~= new Script(this, preloadedScript[0], preloadedScript[1]);
     }
   }
+  private this(xsMachine* the) {
+    import std.traits : fullyQualifiedName;
+
+    the_ = the;
+    name = fullyQualifiedName!Machine ~ "~anonymous";
+    realm = *mxRealm(the_).slot;
+  }
   ~this() {
-    if (the) the.xsDeleteMachine();
+    // Only free managed contexts with contexts
+    if (the && the.context) the.xsDeleteMachine();
+  }
+
+  static Machine from(xsMachine* the) {
+    return new Machine(the);
   }
 
   xsMachine* the() @property const {
@@ -306,28 +318,28 @@ class JSValue {
   /// Convert this value to a `bool` value.
   /// See_Also: `xs.bindings.macros.xsToBoolean`
   bool boolean() @property const {
-    enforce(type == JSType.boolean, "Value is not a Boolean");
+    enforce(type == JSType.boolean || type == JSType.reference, "Value is not a Boolean");
     return machine.the.xsToBoolean(slot);
   }
 
   /// Convert this value to an `int` value.
   /// See_Also: `xs.bindings.macros.xsToInteger`
   int integer() @property const {
-    enforce(type == JSType.integer, "Value is not an integral Number");
+    enforce(type == JSType.integer || type == JSType.reference, "Value is not an integral Number");
     return machine.the.xsToInteger(slot);
   }
 
   /// Convert this value to an `uint` value.
   /// See_Also: `xs.bindings.macros.xsToUnsigned`
   uint unsigned() @property const {
-    enforce(type == JSType.integer, "Value is not an integral Number");
+    enforce(type == JSType.integer || type == JSType.reference, "Value is not an integral Number");
     return machine.the.xsToUnsigned(slot);
   }
 
   /// Convert this value to a `double` value.
   /// See_Also: `xs.bindings.macros.xsToNumber`
   double number() @property const {
-    enforce(type == JSType.number, "Value is not a Number");
+    enforce(type == JSType.number || type == JSType.reference, "Value is not a Number");
     return machine.the.xsToNumber(slot);
   }
 
@@ -336,7 +348,7 @@ class JSValue {
   string string_() @property const {
     import std.string : fromStringz;
 
-    enforce((JSType.someString & type) == type, "Value is not a String");
+    enforce((JSType.someString & type) == type || type == JSType.reference, "Value is not a String");
     return machine.the.xsToString(slot).fromStringz.to!string;
   }
 
@@ -536,22 +548,37 @@ class JSObject : JSValue {
     return cast(void*) _data;
   }
 
-  /// Gets this object’s prototype.
-  /// Returns: The prototype of the given object. If there are no inherited properties, `null` is returned.
+  /// Gets this Object’s prototype.
+  /// Returns: The prototype of this Object. If there are no inherited properties, `null` is returned.
   /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getPrototypeOf">`Object.getPrototypeOf`</a> on MDN
   JSValue prototype() @property const {
-    auto the = machine.the;
-    auto prototype = xsCall(the, xsObjectPrototype!the, machine.id("getPrototypeOf"), slot);
-    if (prototype == the.xsNull) return null;
-    return new JSValue(machine, prototype);
+    auto prototype = machine.the.xsHostZone!((scope xsMachine* the) => {
+      auto theMachine = Machine.from(the);
+      auto obj = theMachine.global.getProperty("Object").object;
+      auto getPrototypeOf = obj.getProperty("getPrototypeOf").object;
+      return getPrototypeOf.callAsFunction(obj, new JSValue(theMachine, slot));
+    }());
+
+    if (prototype.type == JSType.null_) return null;
+    return prototype;
   }
 
-  /// Sets this object’s prototype.
+  /// Gets this Object's prototype's constructor's name.
+  ///
+  /// Equivalent to this JS:
+  /// ---
+  /// Object.getPrototypeOf(value).constructor.name
+  /// ---
+  string prototypeName() @property const {
+    return prototype.object.getProperty("constructor").object.getProperty("name").string_;
+  }
+
+  /// Sets this Object’s prototype.
   ///
   /// Params:
   /// value=This Object's new prototype, or `null`.
   /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/setPrototypeOf">`Object.setPrototypeOf`</a> on MDN
-  void prototype(const JSValue value = null) @property {
+  void setPrototype(const JSValue value = null) {
     auto the = machine.the;
     assert(xsIsInstanceOf(the, value.slot, xsObjectPrototype!the), "Value isn't an Object." ~
       "\n\tSee " ~ mdn ~ "/Object/setPrototypeOf#Description"
@@ -570,10 +597,10 @@ class JSObject : JSValue {
   bool extensible() @property const {
     auto the = machine.the;
     assert(xsIsInstanceOf(the, slot, xsObjectPrototype!the));
-    auto result = machine.the.xsHostZone!((scope xsMachine* the) => {
-      return xsCall(the, machine.global.getProperty("Object").slot, machine.id("isExtensible"), slot);
-    }());
-    return new JSValue(machine, result).boolean;
+    auto obj = machine.global.getProperty("Object").object;
+    auto isExtensible = obj.getProperty("isExtensible").object;
+    auto result = isExtensible.callAsFunction(obj, this);
+    return result.boolean;
   }
 
   /// Whether this Object can be called as a constructor.
@@ -658,9 +685,11 @@ class JSObject : JSValue {
   /// Params:
   /// target=A reference to the Object that has this function
   /// params=The parameter values to pass to the function
-  JSValue callAsFunction(JSObject target, JSValue[] params ...) {
+  JSValue callAsFunction(JSObject target, const JSValue[] params ...) {
     assert(function_);
-    auto result = xsCall(machine.the, target.slot, machine.toId(slot), params.map!(p => p.slot).array);
+    auto result = machine.the.xsHostZone!((scope xsMachine* the) => {
+      return xsCallFunction(the, target.slot, slot, params.map!(p => p.slot).array);
+    }());
     if (result == machine.the.xsNull) return null;
     return new JSValue(machine, result);
   }
@@ -692,7 +721,7 @@ unittest {
   assert(global.deleteProperty("Host"));
   assert(!global.hasProperty("Host"));
 
-  // TODO: assert(global.extensible);
+  assert(global.extensible);
 
   destroy(machine);
 }

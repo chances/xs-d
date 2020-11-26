@@ -602,21 +602,21 @@ void xsSetAt(scope xsMachine* the, const xsSlot this_, const xsSlot key, const x
 /// ---
 /// machine.xsDefine(xsThis, xsID_foo, xsInteger(7), xsDefault);
 /// ---
-void xsDefine(scope xsMachine* the, xsSlot this_, int id, xsSlot slot, Attribute attributes) {
+void xsDefine(scope xsMachine* the, const xsSlot this_, xsIndex id, const xsSlot slot, xsAttribute attributes) {
 	the.xsOverflow(-2);
-	the.fxPush(slot);
-	the.fxPush(this_);
-	fxDefineID(the, id, attributes, attributes | xsDontDelete | xsDontEnum | xsDontSet);
+	the.fxPush(cast(xsSlot) slot);
+	the.fxPush(cast(xsSlot) this_);
+	fxDefineID(the, id, attributes, attributes | xsDontDelete | xsDontSet);
 	the.stack++;
 }
 
 ///
-void xsDefineAt(scope xsMachine* the, xsSlot this_, xsSlot key, xsSlot slot, Attribute attributes) {
+void xsDefineAt(scope xsMachine* the, const xsSlot this_, const xsSlot key, const xsSlot slot, xsAttribute attributes) {
 	the.xsOverflow(-3);
-	the.fxPush(slot);
-	the.fxPush(this_);
-	the.fxPush(key);
-	fxDefineAt(the, attributes, attributes | xsDontDelete | xsDontEnum | xsDontSet);
+	the.fxPush(cast(xsSlot) slot);
+	the.fxPush(cast(xsSlot) this_);
+	the.fxPush(cast(xsSlot) key);
+	fxDefineAt(the, attributes, attributes | xsDontDelete | xsDontSet);
 	the.stack++;
 }
 

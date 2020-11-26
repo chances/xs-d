@@ -474,16 +474,27 @@ class JSObject : JSValue {
   /// name=The function's name
   /// parameterNames=The names of the function's parameters.
   /// body_=The script to use as the function's body.
-  /// path=A URL for the script's source file. This is only used when reporting exceptions. Pass `null` if you do not care to include source file information in exceptions.
-  /// startingLineNumber=An integer value specifying the script's starting line number in the file located at `path`. This is only used when reporting exceptions.
   ///
   /// Throws: `JSException` when a JS VM is aborted with the `xsUnhandledExceptionExit` status. For example, when a syntax error exception is thrown.
-  static JSObject makeFunction(
-    Machine machine, string name, string[] parameterNames, string body_, string path, uint startingLineNumber
-  ) {
+  /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/Function">`Function` constructor</a> on MDN
+  static JSObject makeFunction(Machine machine, string name, string[] parameterNames, string body_) {
+    import std.algorithm : joiner;
+    import std.array : array;
+
     assert(machine);
     assert(name.length, "Functions must have names");
-    assert(0, "Not implemented");
+
+    auto the = machine.the;
+    auto functionSlot = xsNew(
+      the, machine.global, machine.toId(xsFunctionPrototype!the),
+      xsString(the, parameterNames.joiner(",").array.to!string), xsString(the, body_)
+    );
+    // Modify the function's name
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
+    xsDefine(
+      the, functionSlot, machine.id("name"), xsString(the, name), Attribute.dontSet | Attribute.dontDelete
+    );
+    return new JSObject(machine, functionSlot);
   }
 
   /// Creates a function with the given callback, `Func` as its implementation.

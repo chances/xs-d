@@ -39,10 +39,7 @@ class JSException : Exception {
     this.exception = exception;
   }
   /// Constructs a new instace of JSException given the `Script` from which this exception was thrown.
-  this(
-    string msg, const Script script, const JSValue exception = null,
-    string file = __FILE__, ulong line = cast(ulong)__LINE__
-  ) {
+  this(string msg, const Script script, string file = __FILE__, ulong line = cast(ulong)__LINE__) {
     super(msg, file, line);
 
     this.script_ = script;
@@ -79,6 +76,7 @@ mixin template defaultFxAbort() {
       the.xsUnknownError("dead strip");
     else if (status == xsUnhandledExceptionExit) {
       xsTrace(the, "Unhandled JS exception\n");
+      // TODO: Get the JS error that was thrown from the VM
       throw new JSException("unhandled exception");
     }
   }
@@ -95,6 +93,8 @@ private {
 
 /// A JavaScript virtual machine.
 class Machine {
+  import std.typecons : Flag;
+
   private xsMachine* the_;
   package(xs) const xsSlot realm;
   private Script[] scripts_;
@@ -112,10 +112,17 @@ class Machine {
     keyCount: 2048+1024,
     nameModulo: 1993,
     symbolModulo: 127,
+    parserBufferSize: 2 * 1024 * 1024,
+    parserTableModulo: 1024,
   };
 
+  import std.typecons : Tuple;
+
   /// Create and allocate a new JavaScript VM.
-  this(string name, const xsCreation creationOptions = defaultCreation, const(txScript*[]) preloadedScripts = []) {
+  this(
+    string name, const xsCreation creationOptions = defaultCreation,
+    const Tuple!(txScript*, ScriptKind)[] preloadedScripts = []
+  ) {
     import std.algorithm : map;
     import std.array : array;
 
@@ -125,8 +132,10 @@ class Machine {
       format!"Could not create JS virtual machine '%s'"(name)
     );
     realm = *fxNewRealmInstance(the);
-    the_.archive = sxPreparation.from(creationOptions, name, "", preloadedScripts);
-    scripts_ = preloadedScripts.map!(s => new Script(this, s)).array;
+    the_.archive = sxPreparation.from(creationOptions, name, "", preloadedScripts.map!(script => script[0]).array);
+    foreach (preloadedScript; preloadedScripts) {
+      scripts_ ~= new Script(this, preloadedScript[0], preloadedScript[1]);
+    }
   }
   ~this() {
     if (the) the.xsDeleteMachine();

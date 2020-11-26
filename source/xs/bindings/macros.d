@@ -1286,7 +1286,7 @@ private template illegallyEscapesScope(Param, alias ParamStorage) {
 ///     $(LI <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#xsbeginhost-and-xsendhost">`beginHost` and `endHost`</a>)
 ///   )
 /// )
-template isCallableAsHostZone(T...) if (T.length == 1 && isCallable!T && is (ReturnType!T == void)) {
+template isCallableAsHostZone(T...) if (T.length == 1 && isCallable!T) {
   import std.meta : allSatisfy;
   import std.traits : Parameters;
 
@@ -1303,6 +1303,8 @@ template isCallableAsHostZone(T...) if (T.length == 1 && isCallable!T && is (Ret
 /// Used to set up and clean up a stack frame, so that you can use all the macros of XS in C in between, provided in lieu of `xsBeginHost` and `xsEndHost`.
 ///
 /// Uncaught exceptions that occur within `Func` do not propagate beyond the execution of `xsHostZone`.
+///
+/// Returns: The result of `Func`, or `void` if `Func` has no return type.
 /// See_Also:
 /// From the <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#xs-in-c">XS in C</a> Moddable SDK <a href="https://github.com/Moddable-OpenSource/moddable/tree/OS201116/documentation#readme">Documentation</a>:
 /// $(UL
@@ -1326,7 +1328,9 @@ template isCallableAsHostZone(T...) if (T.length == 1 && isCallable!T && is (Ret
 /// 	return result;
 /// }
 /// ---
-void xsHostZone(alias Func)(scope xsMachine* the) if (isCallableAsHostZone!Func) {
+ReturnType!Func xsHostZone(alias Func)(scope xsMachine* the) if (isCallableAsHostZone!Func) {
+  enum bool voidReturnType = is(ReturnType!Func == void);
+  static if (!voidReturnType) ReturnType!Func result;
   while(true) {
     auto hostThe = the;
     xsJump hostJump = {
@@ -1343,7 +1347,11 @@ void xsHostZone(alias Func)(scope xsMachine* the) if (isCallableAsHostZone!Func)
       xsMachine* zonedThe = fxBeginHost(the);
 
       /// Call user-land host code
-      Func(zonedThe);
+      static if (voidReturnType)
+        Func(zonedThe);
+      else static if (!voidReturnType)
+        result = Func(zonedThe);
+      else static assert(0, "Unreachable by design; " ~ __traits(identifier, T) ~ " has unsupported return type");
 
       fxEndHost(zonedThe);
       the = null;
@@ -1355,6 +1363,7 @@ void xsHostZone(alias Func)(scope xsMachine* the) if (isCallableAsHostZone!Func)
     hostThe.firstJump = hostJump.nextJump;
     break;
   }
+  static if (!voidReturnType) return result;
 }
 
 // TODO: xsArrayCacheBegin

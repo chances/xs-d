@@ -1,4 +1,4 @@
-/// JavaScript script and module loaders.
+/// JavaScript program and module loaders.
 ///
 /// Authors: Chance Snow
 /// Copyright: Copyright © 2020 Chance Snow. All rights reserved.
@@ -84,7 +84,7 @@ class JSParseException : Exception {
   mixin basicExceptionCtors;
 }
 
-/// A JavaScript script or entry point module.
+/// A JavaScript program or entry point module.
 class Script {
   private Machine machine;
   package(xs) const txScript script;
@@ -101,10 +101,10 @@ class Script {
   ///
 	const txS1[] hostsBuffer;
 
-  /// Construct a new script given its source code and load it, executing its global scope in the given `machine`.
+  /// Construct a new script given its source code and load it, executing its outer-most scope in the given `machine`.
   ///
   /// Throws: `JSParseException` when the script fails to parse
-  /// Throws: `JSException` when the JS VM is aborted with the `xsUnhandledExceptionExit` status while executing the script's global scope
+  /// Throws: `JSException` when the JS VM is aborted with the `xsUnhandledExceptionExit` status while executing the script's outer-most scope
   this(Machine machine, string source, string* path = null, ScriptKind kind = ScriptKind.program) {
     import std.exception : enforce;
 
@@ -135,7 +135,9 @@ class Script {
 
     run();
   }
-  /// Construct a script given compiled VM byte code.
+  /// Construct a script given compiled VM byte code and load it, executing its outer-most scope in the given `machine`.
+  ///
+  /// Throws: `JSException` when the JS VM is aborted with the `xsUnhandledExceptionExit` status while executing the script's outer-most scope
   this(Machine machine, const txScript* byteCode, ScriptKind kind = ScriptKind.program) {
     import std.string : fromStringz;
 

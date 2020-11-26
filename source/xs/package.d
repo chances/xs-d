@@ -149,9 +149,8 @@ class Machine {
     return scripts_;
   }
 
-  constSlot global() @property const {
-    const slot = the.xsGlobal;
-    return slot;
+  JSObject global() @property const {
+    return new JSObject(cast(Machine) this, the.xsGlobal);
   }
 
   /// See_Also: `xs.bindings.macros.xsID`
@@ -254,7 +253,7 @@ class Machine {
 
 unittest {
   auto machine = new Machine("test-machine");
-  const global = machine.global;
+  const global = machine.global.slot;
   assert(machine.the.xsToID(global));
   assert(machine.the.xsTypeOf(global) == JSType.reference);
   assert(machine.the.xsHas(global, machine.the.xsID("Number")));
@@ -340,13 +339,26 @@ class JSValue {
     enforce((JSType.someString & type) == type, "Value is not a String");
     return machine.the.xsToString(slot).fromStringz.to!string;
   }
+
+  /// Whether this value is convertable to a `JSObject` value.
+  bool convertableToObject() @property const {
+    auto the = machine.the;
+    return type == JSType.reference && xsIsInstanceOf(the, slot, xsObjectPrototype!the);
+  }
+
+  /// Convert this value to a `JSObject` value.
+  JSObject object() @property inout {
+    enforce(convertableToObject, "Value is not an Object reference");
+    if (typeid(JSObject).isBaseOf(this.classinfo)) return cast(JSObject) this;
+    return new JSObject(machine, slot);
+  }
 }
 
 unittest {
   import std.exception : assertThrown;
 
   auto machine = new Machine("test-jsvalue");
-  const global = machine.global;
+  const global = machine.global.slot;
   assert(machine.toId(global));
 
   const fooId = machine.id("foo");
@@ -398,6 +410,7 @@ class JSObject : JSValue {
 
   private void* _data;
 
+  /// Constructs an Object given a value slot.
   ///
   /// Params:
   /// machine=A `Machine`.
@@ -442,7 +455,7 @@ class JSObject : JSValue {
   static JSObject makeDate(Machine machine, JSValue[] arguments ...) {
     auto the = machine.the;
     auto objectSlot = xsNew(
-      the, machine.global,
+      the, xsGlobal(the),
       machine.toId(xsDatePrototype!the),
       arguments.map!(arg => arg.slot).array
     );
@@ -460,7 +473,7 @@ class JSObject : JSValue {
   static JSObject makeError(Machine machine, JSValue[] arguments ...) {
     auto the = machine.the;
     auto objectSlot = xsNew(
-      the, machine.global,
+      the, xsGlobal(the),
       machine.toId(xsErrorPrototype!the),
       arguments.map!(arg => arg.slot).array
     );
@@ -486,7 +499,7 @@ class JSObject : JSValue {
 
     auto the = machine.the;
     auto functionSlot = xsNew(
-      the, machine.global, machine.toId(xsFunctionPrototype!the),
+      the, xsGlobal(the), machine.toId(xsFunctionPrototype!the),
       xsString(the, parameterNames.joiner(",").array.to!string), xsString(the, body_)
     );
     // Modify the function's name
@@ -514,7 +527,7 @@ class JSObject : JSValue {
   /// machine=A `Machine`.
   static JSObject makeRegExp(Machine machine) {
     auto the = machine.the;
-    auto objectSlot = xsNew(the, machine.global, machine.toId(xsRegExpPrototype!the));
+    auto objectSlot = xsNew(the, xsGlobal(the), machine.toId(xsRegExpPrototype!the));
     return new JSObject(machine, objectSlot);
   }
 
@@ -557,7 +570,9 @@ class JSObject : JSValue {
   bool extensible() @property const {
     auto the = machine.the;
     assert(xsIsInstanceOf(the, slot, xsObjectPrototype!the));
-    auto result = xsCall(the, xsObjectPrototype!the, machine.id("isExtensible"), slot);
+    auto result = machine.the.xsHostZone!((scope xsMachine* the) => {
+      return xsCall(the, machine.global.getProperty("Object").slot, machine.id("isExtensible"), slot);
+    }());
     return new JSValue(machine, result).boolean;
   }
 
@@ -569,13 +584,14 @@ class JSObject : JSValue {
 
   /// Whether this Object can be called as a function.
   bool function_() @property const {
-    return false;
+    auto the = machine.the;
+    return xsIsInstanceOf(the, slot, xsFunctionPrototype!the);
   }
 
   /// The names of this Object’s enumerable properties.
   /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyNames">`Object.getOwnPropertyNames`</a> on MDN
   string[] propertyNames() @property const {
-    return [];
+    return []; // TODO: Call `Object.getOwnPropertyNames`
   }
 
   /// Tests whether this Object has a given property.
@@ -609,12 +625,14 @@ class JSObject : JSValue {
   }
 
   /// Deletes a property from this Object.
+  /// Returns: Whether the property was successfully deleted.
   bool deleteProperty(string key) {
     xsDelete(machine.the, slot, machine.id(key));
-    return hasProperty(key);
+    return !hasProperty(key);
   }
 
   /// Deletes a property from this Object given its numeric index.
+  /// Returns: Whether the property was successfully deleted.
   bool deletePropertyAt(uint id) {
     auto value = getPropertyAt(id);
     xsDeleteAt(machine.the, slot, machine.the.xsUnsigned(id));
@@ -656,6 +674,27 @@ class JSObject : JSValue {
     assert(function_);
     xsCall_noResult(machine.the, target.slot, machine.toId(slot), params.map!(p => p.slot).array);
   }
+}
+
+unittest {
+  auto machine = new Machine("test-jsobject");
+  auto global = machine.global;
+
+  assert(global.hasProperty("Object"));
+  assert(global.getProperty("Object").convertableToObject);
+  assert(global.getProperty("Object").object.getProperty("isExtensible").object.function_);
+  assert(global.getProperty("Object").object.constructor);
+
+  global.setProperty("Host", JSObject.make(machine));
+  assert(global.hasProperty("Host"));
+  assert(global.getProperty("Host").convertableToObject);
+
+  assert(global.deleteProperty("Host"));
+  assert(!global.hasProperty("Host"));
+
+  // TODO: assert(global.extensible);
+
+  destroy(machine);
 }
 
 /// A set of JSObject property attributes. Combine multiple attributes with bitwise OR.

@@ -638,9 +638,9 @@ void xsDefineAt(scope xsMachine* the, const xsSlot this_, const xsSlot key, cons
 /// ---
 /// In D:
 /// ---
-/// xsDelete(xsGlobal, xsID_foo);
-/// xsDelete(xsThis, xsID_foo);
-/// xsDelete(xsThis, 0);
+/// the.xsDelete(xsGlobal, xsID_foo);
+/// the.xsDelete(xsThis, xsID_foo);
+/// the.xsDelete(xsThis, 0);
 /// ---
 void xsDelete(scope xsMachine* the, const xsSlot this_, int key) {
 	the.xsOverflow(-1);
@@ -666,8 +666,8 @@ void xsDelete(scope xsMachine* the, const xsSlot this_, int key) {
 /// ---
 /// In D:
 /// ---
-/// xsDeleteAt(xsThis, xsID_foo);
-/// xsDeleteAt(xsThis, xsInteger(0));
+/// the.xsDeleteAt(xsThis, xsID_foo);
+/// the.xsDeleteAt(xsThis, xsInteger(0));
 /// ---
 void xsDeleteAt(scope xsMachine* the, const xsSlot this_, const xsSlot key) {
 	the.xsOverflow(-2);

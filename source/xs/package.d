@@ -149,6 +149,7 @@ class Machine {
     if (the && the.context) the.xsDeleteMachine();
   }
 
+  /// Create a Machine given a `xsMachine`.
   static Machine from(xsMachine* the) {
     return new Machine(the);
   }

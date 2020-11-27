@@ -38,7 +38,7 @@ class JSException : Exception {
     scriptLine = 0;
     this.exception = exception;
   }
-  /// Constructs a new instace of JSException given the `Script` from which this exception was thrown.
+  /// Constructs a new instace of JSException given the `xs.script.Script` from which this exception was thrown.
   this(string msg, const Script script, string file = __FILE__, ulong line = cast(ulong)__LINE__) {
     super(msg, file, line);
 
@@ -49,7 +49,7 @@ class JSException : Exception {
     this.exception = exception;
   }
 
-  /// The `Script` from which this exception was thrown.
+  /// The `xs.script.Script` from which this exception was thrown.
   const(Script) script() @property const {
     return script_;
   }
@@ -317,6 +317,20 @@ class JSValue {
     return (cast(xsMachine*) machine.the).xsTypeOf(slot);
   }
 
+  /// This value's private data.
+  ///
+  /// Throws: `JSException` when the JS VM is aborted with the `xsUnhandledExceptionExit` status, most likely because this value does not refer to a host object.
+  /// See_Also: `xs.bindings.macros.xsGetHostData`
+  T data(T)() @property const if (is(T == class)) {
+    return cast(T) this.data;
+  }
+  /// ditto
+  void* data() @property const {
+    return machine.the.xsHostZone!((scope xsMachine* the) => {
+      return cast(void*) xsGetHostData(the, slot);
+    }());
+  }
+
   /// Convert this value to a `bool` value.
   /// See_Also: `xs.bindings.macros.xsToBoolean`
   bool boolean() @property const {
@@ -365,6 +379,28 @@ class JSValue {
     enforce(convertableToObject, "Value is not an Object reference");
     if (typeid(JSObject).isBaseOf(this.classinfo)) return cast(JSObject) this;
     return new JSObject(machine, slot);
+  }
+
+  /// Retains this value, preventing it from being collected as garbage.
+  /// See_Also: Equivalent to `remember`
+  void retain() {
+    remember();
+  }
+  /// Remembers this value, preventing it from being collected as garbage.
+  /// See_Also: Equivalent to `retain`
+  void remember() {
+    xsRemember(machine.the, slot);
+  }
+
+  /// Releases this value, allowing it to be collected as garbage.
+  /// See_Also: Equivalent to `forget`
+  void release() {
+    forget();
+  }
+  /// Forgets this value, allowing it to be collected as garbage.
+  /// See_Also: Equivalent to `release`
+  void forget() {
+    xsForget(machine.the, slot);
   }
 }
 
@@ -421,8 +457,7 @@ unittest {
 class JSObject : JSValue {
   import std.algorithm : map;
   import std.array : array;
-
-  private void* _data;
+  import std.traits : ReturnType;
 
   /// Constructs an Object given a value slot.
   ///
@@ -432,20 +467,28 @@ class JSObject : JSValue {
   /// data=The Object’s private data.
   this(Machine machine, const xsSlot value, void* data = null) {
     super(machine, value);
-    this._data = data;
+
+    // TODO: Also assert that slot is a host object
+    if (data !is null) xsSetHostData(machine.the, value, data);
   }
 
   /// Creates a JavaScript Object.
   ///
   /// Params:
   /// machine=A `Machine`.
-  /// data=The Object’s private data.
-  /// Returns: A `JSObject` with the given class and private data.
-  static JSObject make(Machine machine, void* data = null) {
+  /// Returns: A newly constructed `JSObject`.
+  static JSObject make(Machine machine) {
     auto objectSlot = xsNewObject(machine.the);
-    // TODO: Set user data
+    auto obj = new JSObject(machine, objectSlot);
+    return obj;
+  }
 
-    return new JSObject(machine, objectSlot, data);
+  /// Creates a JavaScript Object given a `JSClass` instance.
+  ///
+  /// Returns: A newly constructed `JSObject` with host data set to the instance of the given `class_`.
+  static JSObject make(Machine machine, JSClass class_) {
+    assert(class_, "Expected a non-null `JSClass` instance");
+    return new JSObject(machine, xsNewHostObject(machine.the), cast(void*) class_);
   }
 
   /// Creates a JavaScript Array object.
@@ -494,15 +537,24 @@ class JSObject : JSValue {
     return new JSObject(machine, objectSlot);
   }
 
-  /// Creates a function with the given callback, `Func` as its implementation.
+  /// Creates a function with the given `callback` as its implementation.
   ///
   /// Params:
   /// machine=A `Machine`.
+  /// callback=
   ///
-  /// See_Also: `isCallableAsHostZone`
-  static JSObject makeFunction(Func)(Machine machine) if (isCallableAsHostZone!Func) {
+  /// See_Also:
+  /// $(UL
+  ///   $(LI `xs.bindings.macros.xsNewHostFunction`)
+  ///   $(LI `xs.bindings.macros.isCallableAsHostZone`)
+  /// )
+  static JSObject makeFunction(Func)(Machine machine, Func callback) if (
+    isCallableAsHostZone!Func && is(ReturnType!Func == void)
+  ) {
+    import std.traits : Parameters;
+
     assert(machine);
-    assert(0, "Not implemented");
+    return new JSObject(machine, xsNewHostFunction(machine.the, callback, Parameters!Func.length));
   }
 
   /// Creates a JavaScript RegExp object, as if by invoking the built-in RegExp constructor.
@@ -513,11 +565,6 @@ class JSObject : JSValue {
     auto the = machine.the;
     auto objectSlot = xsNew(the, xsGlobal(the), xsRegExpPrototype!the);
     return new JSObject(machine, objectSlot);
-  }
-
-  /// This Object’s private data.
-  void* data() @property const {
-    return cast(void*) _data;
   }
 
   /// Gets this Object’s prototype.
@@ -590,12 +637,12 @@ class JSObject : JSValue {
     return new JSValue(machine, xsGetAt(machine.the, slot, machine.the.xsUnsigned(id)));
   }
 
-  /// Sets a property from this Object.
+  /// Sets a property of this Object.
   void setProperty(string key, const JSValue value) {
     machine.set(slot, machine.id(key), value);
   }
 
-  /// Sets a property from this Object given its numeric index.
+  /// Sets a property of this Object given its numeric index.
   void setPropertyAt(uint id, const JSValue value) {
     xsSetAt(machine.the, slot, machine.the.xsUnsigned(id), value.slot);
   }
@@ -654,7 +701,17 @@ class JSObject : JSValue {
   }
 }
 
+version (unittest) {
+  static counter = 0;
+  private extern(C) void xs_hostFunctionCallback(scope xsMachine* the) {
+    const param = 1; // TODO: Get param from machine stack
+    counter += param;
+  }
+}
+
 unittest {
+  import std.exception : assertNotThrown;
+
   auto machine = new Machine("test-jsobject");
   auto global = machine.global;
   assert(global.extensible);
@@ -672,7 +729,20 @@ unittest {
   assert(global.deleteProperty("Host"));
   assert(!global.hasProperty("Host"));
 
+  auto count = JSObject.makeFunction(machine, &xs_hostFunctionCallback);
+  assert(count.type == JSType.reference);
+  global.setProperty("count", count);
+  assert(global.hasProperty("count"));
+  assert(global.getProperty("count").convertableToObject);
+  count = global.getProperty("count").object;
+  assert(count.prototypeName == "Function");
+
+  assert(counter == 0);
+  assertNotThrown!JSException(new Script(machine, "count();"));
+  assert(counter == 1);
+
   destroy(machine);
+  counter = 0;
 }
 
 /// A set of JSObject property attributes. Combine multiple attributes with bitwise OR.
@@ -707,6 +777,9 @@ enum ClassAttributes {
   noAutomaticPrototype = 2
 }
 
+///
+alias xsDelegate = void delegate(xsMachineRecord*);
+
 /// Describes a statically declared function property.
 ///
 /// Adapted from <a href="https://developer.apple.com/documentation/javascriptcore/jsstaticfunction">`JSStaticFunction`</a> in Apple's <a href="https://developer.apple.com/documentation/javascriptcore">JavaScriptCore</a>.
@@ -716,7 +789,7 @@ struct JSStaticFunction {
   /// A set of property attributes. Combine multiple attributes with bitwise OR.
   PropertyAttributes attributes;
   ///
-  xsCallback callAsFunction;
+  xsDelegate callAsFunction;
 }
 
 /// Describes a statically declared value property.
@@ -730,11 +803,11 @@ struct JSStaticValue {
   /// Invoked when getting this property’s value.
   ///
   /// If this function returns `null`, the get request forwards to object’s statically declared properties, then its parent class chain (which includes the default Object class), then its prototype chain.
-  xsCallback getProperty;
+  xsDelegate getProperty;
   /// Invoked when setting this property’s value.
   ///
   /// If this function returns `null`, the get request forwards to object’s statically declared properties, then its parent class chain (which includes the default Object class), then its prototype chain.
-  xsCallback setProperty;
+  xsDelegate setProperty;
 }
 
 /// Properties and callbacks that define a type of Object.
@@ -749,67 +822,82 @@ struct ClassDefinition {
   /// A set of attributes. Combine multiple attributes with bitwise OR.
   ClassAttributes attributes;
   /// Invoked when an object is first created.
-  xsCallback initialize;
+  xsDelegate initialize;
   /// Invoked when an object is finalized (prepared for garbage collection). An Object may be finalized on any thread.
-  xsCallback finalize;
+  xsDelegate finalize;
   ///
   xsDestructor destructor;
-  // xsCallback callAsConstructor; TODO: Not a thing in XS?
-  // xsCallback callAsFunction; TODO: Not a thing in XS?
-  // xsCallback hasInstance; TODO: Not a thing in XS?
+  // xsDelegate callAsConstructor; TODO: Not a thing in XS?
+  // xsDelegate callAsFunction; TODO: Not a thing in XS?
+  // xsDelegate hasInstance; TODO: Not a thing in XS?
   /// Invoked when determining whether an Object has a property.
-  xsCallback hasProperty;
+  xsDelegate hasProperty;
   ///
-  xsCallback getPropertyNames;
+  xsDelegate getPropertyNames;
   /// Invoked when getting a property’s value.
   ///
   /// If this function returns `null`, the get request forwards to object’s statically declared properties, then its parent class chain (which includes the default Object class), then its prototype chain.
-  xsCallback getProperty;
+  xsDelegate getProperty;
   /// Invoked when setting a property’s value.
   ///
   /// If this function returns `null`, the get request forwards to object’s statically declared properties, then its parent class chain (which includes the default Object class), then its prototype chain.
-  xsCallback setProperty;
+  xsDelegate setProperty;
   ///
-  xsCallback deleteProperty;
-  // xsCallback convertToType; TODO: Not a thing in XS?
+  xsDelegate deleteProperty;
+  // xsDelegate convertToType; TODO: Not a thing in XS?
   /// Statically declared function properties on the class' prototype.
   JSStaticFunction[] staticFunctions;
   /// Statically declared value properties on the class' prototype.
   JSStaticValue[] staticValues;
   ///
-  int version_;
+  uint version_;
 }
 
-/// A JavaScript class. Subclass a D class with `JSClass` to expose it to a JS VM.
-///
-/// Use with `JSObject.make` to construct objects with custom behavior.
+/// A JavaScript class. Subclass a D class with `JSClass` and use `JSObject.make` to construct objects with custom behavior.
 ///
 /// Adapted from <a href="https://developer.apple.com/documentation/javascriptcore/jsclassref">`JSClassRef`</a> in Apple's <a href="https://developer.apple.com/documentation/javascriptcore">JavaScriptCore</a>.
 abstract class JSClass {
-  private JSObject _instance;
   ///
   const ClassDefinition definition;
 
   /// Constructs a JavaScript class suitable for use with `JSObject.make`.
-  this(ClassDefinition definition) {
+  this(const ClassDefinition definition) {
+    assert(definition.name.length, "A class definition must have a name");
     this.definition = definition;
   }
+}
 
-  /// Retains this JavaScript class.
-  void retain() {
-    remember();
-  }
-  /// Remembers this JavaScript class.
-  void remember() {
-    xsRemember(_instance.machine.the, _instance.slot);
-  }
+version (unittest) {
+  class Point : JSClass {
+    uint x, y;
 
-  /// Releases this JavaScript class.
-  void release() {
-    forget();
+    this(uint x = 0, uint y = 0) {
+      import std.traits : fullyQualifiedName;
+      const ClassDefinition klass = {
+        name: fullyQualifiedName!Point,
+        attributes: ClassAttributes.none,
+      };
+      super(klass);
+
+      this.x = x;
+      this.y = y;
+    }
   }
-  /// Forgets this JavaScript class.
-  void forget() {
-    xsForget(_instance.machine.the, _instance.slot);
-  }
+}
+
+unittest {
+  import std.exception : assertThrown;
+
+  auto machine = new Machine("test-jsclass");
+  auto global = machine.global;
+  assertThrown!JSException(global.data);
+
+  auto point = new Point();
+  global.setProperty("position", JSObject.make(machine, point));
+  const position = global.getProperty("position");
+  assert(position.type == JSType.reference);
+  assert(position.data == cast(void*) point);
+  assert(position.data!Point == point);
+
+  destroy(machine);
 }

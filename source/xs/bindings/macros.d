@@ -853,14 +853,16 @@ void xsSetHostData(scope xsMachine* the, const xsSlot slot, void* data) {
 	fxSetHostData(the, &the.scratch, data);
 }
 
-// TODO: xsGetHostDestructor
-// #define xsGetHostDestructor(_SLOT) \
-// 	(the.scratch = (_SLOT), \
-// 	fxGetHostDestructor(the, &(the.scratch)))
-// TODO: xsSetHostDestructor
-// #define xsSetHostDestructor(_SLOT,xsDestructor destructor) \
-// 	(the.scratch = (_SLOT), \
-// 	fxSetHostDestructor(the, &(the.scratch), xsDestructor destructor))
+///
+xsDestructor xsGetHostDestructor(scope xsMachine* the, const xsSlot slot) {
+	the.scratch = cast(xsSlot) slot;
+	return fxGetHostDestructor(the, &the.scratch);
+}
+///
+void xsSetHostDestructor(scope xsMachine* the, const xsSlot slot, xsDestructor destructor) {
+	the.scratch = cast(xsSlot) slot;
+	fxSetHostDestructor(the, &the.scratch, destructor);
+}
 
 // TODO: xsGetHostHandle
 // #define xsGetHostHandle(_SLOT) \
@@ -883,31 +885,45 @@ void xsSetHostData(scope xsMachine* the, const xsSlot slot, void* data) {
 
 // Arguments and Variables
 
+///
 enum xsVars(alias xsMachine* the, alias int count) = fxVars(the, count);
 
+///
 enum xsThis(alias xsMachine* the) = the.frame[4];
+///
 enum xsFunction(alias xsMachine* the) = the.frame[3];
+///
 enum xsTarget(alias xsMachine* the) = the.frame[2];
+///
 enum xsResult(alias xsMachine* the) = the.frame[1];
+///
 enum xsArgc(alias xsMachine* the) = the.frame[-1];
+///
 enum xsArg(alias xsMachine* the, alias int index) = (the.frame[-2 - fxCheckArg(the, index)]);
+///
 enum xsVarc(alias xsMachine* the) = the.scope_[0];
+///
 enum xsVar(alias xsMachine* the, alias int index) = (the.scope_[-1 - fxCheckVar(the, index)]);
 
 // Garbage Collector
 
+///
 void xsCollectGarbage(scope xsMachine* the) {
 	fxCollectGarbage(the);
 }
+///
 void xsEnableGarbageCollection(scope xsMachine* the, bool enableIt) {
 	fxEnableGarbageCollection(the, enableIt);
 }
+///
 void xsRemember(scope xsMachine* the, const xsSlot slot) {
 	fxRemember(the, cast(xsSlot*) &slot);
 }
+///
 void xsForget(scope xsMachine* the, const xsSlot slot) {
 	fxForget(the, cast(xsSlot*) &slot);
 }
+///
 void xsAccess(scope xsMachine* the, const xsSlot slot) {
 	fxAccess(the, cast(xsSlot*) &slot);
 }
@@ -915,11 +931,13 @@ void xsAccess(scope xsMachine* the, const xsSlot slot) {
 // Exceptions
 
 debug {
+  ///
   void xsThrow(scope xsMachine* the, xsSlot slot, string file = __FILE__, int line = __LINE__) {
     the.stackTop[-2] = slot;
     fxThrow(the, cast(char*) file.toStringz, line);
   }
 } else {
+  ///
   void xsThrow(scope xsMachine* the, xsSlot slot) {
     the.stackTop[-2] = slot;
     fxThrow(the, null, 0);

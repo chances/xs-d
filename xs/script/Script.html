@@ -85,7 +85,7 @@ $('#symbolSearchPane').show();</script>
 			</ul>
 		</nav>
 		<div id="main-contents">
-			<h1>Class Script</h1><p>A JavaScript script or entry point module.
+			<h1>Class Script</h1><p>A JavaScript program or entry point module.
 </p>
 			<div class="prototype">
 				<code class="lang-d">
@@ -107,9 +107,19 @@ $('#symbolSearchPane').show();</script>
 							<a href="../../xs/script/Script.this.html" class="public">
 								<code>this</code>
 							</a>
-							<span class="tableEntryAnnotation">(machine, path, source)</span>
+							<span class="tableEntryAnnotation">(machine, source, path, kind)</span>
 						</td>
-						<td>Construct a new script given its source code.
+						<td>Construct a new script given its source code and load it, executing its outer-most scope in the given <code class="lang-d"><a href="../../xs/script/Script.this.html#machine"><span class="pln">machine</span></a></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<a href="../../xs/script/Script.this.html" class="public">
+								<code>this</code>
+							</a>
+							<span class="tableEntryAnnotation">(machine, byteCode, kind)</span>
+						</td>
+						<td>Construct a script given compiled VM byte code and load it, executing its outer-most scope in the given <code class="lang-d"><a href="../../xs/script/Script.this.html#machine"><span class="pln">machine</span></a></code>.
 </td>
 					</tr>
 				</table>
@@ -134,6 +144,13 @@ $('#symbolSearchPane').show();</script>
 					</tr>
 					<tr>
 						<td>
+							<a href="../../xs/script/Script.kind.html" class="public"><code>kind</code></a>
+						</td>
+						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">const</span><span class="pun">(</span><a href="../../xs/script/ScriptKind.html"><span class="typ">ScriptKind</span></a><span class="pun">)</span></code></td><td>The kind of JS source code of this script.
+</td>
+					</tr>
+					<tr>
+						<td>
 							<a href="../../xs/script/Script.path.html" class="public"><code>path</code></a>
 						</td>
 						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">const</span><span class="pun">(</span><span class="typ">string</span><span class="pun">)</span></code></td><td></td>
@@ -143,23 +160,6 @@ $('#symbolSearchPane').show();</script>
 							<a href="../../xs/script/Script.symbolsBuffer.html" class="public"><code>symbolsBuffer</code></a>
 						</td>
 						<td class="typecol"><code class="prettyprint lang-d"><span class="kwd">const</span><span class="pun">(</span><span class="typ">byte</span><span class="pun">[]</span><span class="pun">)</span></code></td><td></td>
-					</tr>
-				</table>
-			</section>
-			<section><h2>Methods</h2>
-				<table>
-					<col class="caption"/>
-					<tr>
-						<th>Name</th><th>Description</th>
-					</tr>
-					<tr>
-						<td>
-							<a href="../../xs/script/Script.run.html" class="public">
-								<code>run</code>
-							</a>
-							<span class="tableEntryAnnotation">()</span>
-						</td>
-						<td></td>
 					</tr>
 				</table>
 			</section>

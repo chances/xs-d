@@ -94,11 +94,11 @@ $('#symbolSearchPane').show();</script>
 			<br/>
 			&nbsp;&nbsp;<span class="kwd">scope </span><span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsMachineRecord</span><span class="pun">*</span> <span class="pln">the</span><span class="pun">,</span>
 			<br/>
-			&nbsp;&nbsp;<span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsSlotRecord</span> <span class="pln">this_</span><span class="pun">,</span>
+			&nbsp;&nbsp;<span class="kwd">const</span><span class="pun">(</span><span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsSlotRecord</span><span class="pun">)</span> <span class="pln">this_</span><span class="pun">,</span>
 			<br/>
-			&nbsp;&nbsp;<span class="typ">int</span> <span class="pln">id</span><span class="pun">,</span>
+			&nbsp;&nbsp;<span class="kwd">const</span><span class="pun">(</span><span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsSlotRecord</span><span class="pun">)</span> <span class="pln">constructor</span><span class="pun">,</span>
 			<br/>
-			&nbsp;&nbsp;<span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsSlotRecord</span><span class="pun">[]</span> <span class="pln">params</span><span class="pun">...</span>
+			&nbsp;&nbsp;<span class="kwd">const</span><span class="pun">(</span><span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsSlotRecord</span><span class="pun">[]</span><span class="pun">)</span> <span class="pln">params</span><span class="pun">...</span>
 			<br/>
 			<span class="pun">)</span><span class="pun">;</span>
 					</div>
@@ -108,8 +108,8 @@ $('#symbolSearchPane').show();</script>
 			<section><h2>Parameters</h2>
 <table><col class="caption"><tr><th>Name</th><th>Description</th></tr>
 <tr><td id="the">the</td><td>A machine</td></tr>
-<tr><td id="this_">this_</td><td></td></tr>
-<tr><td id="id">id</td><td>The identifier of the constructor to call</td></tr>
+<tr><td id="this_">this_</td><td>A reference to the instance that will have the constructor</td></tr>
+<tr><td id="constructor">constructor</td><td>A reference to the constructor to call</td></tr>
 <tr><td id="params">params</td><td>The parameter slots to pass to the constructor</td></tr>
 </table>
 </section>

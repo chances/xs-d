@@ -101,10 +101,28 @@ $('#symbolSearchPane').show();</script>
 					<tr>
 						<td>
 							<code>
+								<a id="JSClass" class="public" href="./xs/JSClass.html">JSClass</a>
+							</code>
+						</td>
+						<td>A JavaScript class. Subclass a D class with <code class="lang-d"><span class="typ">JSClass</span></code> to expose it to a JS VM.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
 								<a id="JSException" class="public" href="./xs/JSException.html">JSException</a>
 							</code>
 						</td>
 						<td>Thrown when a JS VM is aborted with the <code class="lang-d"><span class="pln">xsUnhandledExceptionExit</span></code> status.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="JSObject" class="public" href="./xs/JSObject.html">JSObject</a>
+							</code>
+						</td>
+						<td>A JavaScript Object reference.
 </td>
 					</tr>
 					<tr>
@@ -123,6 +141,70 @@ $('#symbolSearchPane').show();</script>
 							</code>
 						</td>
 						<td>A JavaScript virtual machine.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section>
+				<h2>Structs</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="ClassDefinition" class="public" href="./xs/ClassDefinition.html">ClassDefinition</a>
+							</code>
+						</td>
+						<td>Properties and callbacks that define a type of Object.
+All fields other than the version field are optional. Any pointer may be <code class="lang-d"><span class="kwd">null</span></code>.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="JSStaticFunction" class="public" href="./xs/JSStaticFunction.html">JSStaticFunction</a>
+							</code>
+						</td>
+						<td>Describes a statically declared function property.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="JSStaticValue" class="public" href="./xs/JSStaticValue.html">JSStaticValue</a>
+							</code>
+						</td>
+						<td>Describes a statically declared value property.
+</td>
+					</tr>
+				</table>
+			</section>
+			<section>
+				<h2>Enums</h2>
+				<table>
+					<col class="caption"/>
+					<tr>
+						<th>Name</th><th>Description</th>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="ClassAttributes" class="public" href="./xs/ClassAttributes.html">ClassAttributes</a>
+							</code>
+						</td>
+						<td>A set of <code class="lang-d"><a href="./xs/JSClass.html"><span class="typ">JSClass</span></a></code> attributes. Combine multiple attributes with bitwise OR.
+</td>
+					</tr>
+					<tr>
+						<td>
+							<code>
+								<a id="PropertyAttributes" class="public" href="./xs/PropertyAttributes.html">PropertyAttributes</a>
+							</code>
+						</td>
+						<td>A set of JSObject property attributes. Combine multiple attributes with bitwise OR.
 </td>
 					</tr>
 				</table>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Function JSObject.make - xs-d</title>
+		<link rel="stylesheet" type="text/css" href="../styles/ddox.css"/>
+		<link rel="stylesheet" href="../prettify/prettify.css" type="text/css"/>
+		<script type="text/javascript" src="../scripts/jquery.js">/**/</script><script type="text/javascript" src="../scripts/ddox.js">/**/</script>
+	</head>
+	<body onload="setupDdox();">
+<style>
+#main-nav > h1 {
+  display: flex;
+  align-items: flex-end;
+}
+#main-nav > h1 > span {
+  padding-bottom: 0.25em;
+}
+#logo {
+  margin-right: 0.5rem;
+  max-width: 4rem;
+}
+</style>
+<nav id="main-nav">
+  <h1 style="max-width: 9em;">
+    XS JavaScript Engine D Bindings
+  </h1>
+  <ul style="list-style: none; padding: 0;">
+    <li>
+      <a href="https://chances.github.io/xs-d">API Reference</a>
+    </li>
+    <li>
+      <a href="https://code.dlang.org/packages/xs">Download</a>
+    </li>
+    <li>
+      <a href="https://github.com/chances/xs-d#readme">Open Source on GitHub</a>
+    </li>
+  </ul>
+  <h2>API Reference</h2>
+			<noscript>
+				<p style="color: red">The search functionality needs JavaScript enabled</p>
+			</noscript>
+			<div id="symbolSearchPane" style="display: none">
+				<form action="#" method="GET">
+					<input id="symbolSearch" type="text" name="q" placeholder="Search for symbols" autocomplete="off" onchange="performSymbolSearch(40);" onkeypress="this.onchange();" onpaste="this.onchange();" oninput="this.onchange();"/>
+				</form>
+				<ul id="symbolSearchResults" class="symbolList" style="display: none"></ul><script type="application/javascript" src="../symbols.js"></script><script type="application/javascript">var symbolSearchRootDir = "../";
+$('#symbolSearchPane').show();</script>
+			</div>
+			<ul class="tree-view">
+				<li class="tree-view ">
+					<div class="package selected">
+						<a href="../xs.html">xs</a>
+					</div>
+			<ul class="tree-view">
+				<li class="tree-view collapsed">
+					<div class="package ">
+						<a href="../xs/bindings.html">bindings</a>
+					</div>
+			<ul class="tree-view">
+				<li>
+					<div class="module ">
+						<a href="../xs/bindings/enums.html">enums</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../xs/bindings/macros.html">macros</a>
+					</div>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../xs/bindings/structs.html">structs</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+				<li>
+					<div class="module ">
+						<a href="../xs/script.html">script</a>
+					</div>
+				</li>
+			</ul>
+				</li>
+			</ul>
+		</nav>
+		<div id="main-contents">
+			<h1>Function JSObject.make</h1><p>Creates a JavaScript Object.
+</p>
+			<div class="prototype">
+				<code class="lang-d">
+					<div class="single-prototype">
+			<span class="kwd">static </span><a href="../xs/JSObject.html"><span class="typ">JSObject</span></a> <span class="pln">make</span>
+			<span class="pun">(</span>
+			<br/>
+			&nbsp;&nbsp;<a href="../xs/Machine.html"><span class="typ">Machine</span></a> <span class="pln">machine</span><span class="pun">,</span>
+			<br/>
+			&nbsp;&nbsp;<span class="typ">void</span><span class="pun">*</span> <span class="pln">data</span> <span class="pun">=</span> <span class="kwd">null</span>
+			<br/>
+			<span class="pun">)</span><span class="pun">;</span>
+					</div>
+				</code>
+			</div>
+			<section></section>
+
+			<section><h2>Parameters</h2>
+<table><col class="caption"><tr><th>Name</th><th>Description</th></tr>
+<tr><td id="machine">machine</td><td>A <code class="lang-d"><a href="../xs/Machine.html"><span class="typ">Machine</span></a></code>.</td></tr>
+<tr><td id="data">data</td><td>The Object’s private data.</td></tr>
+</table>
+</section>
+<section><h2>Returns</h2>
+<p>A <code class="lang-d"><a href="../xs/JSObject.html"><span class="typ">JSObject</span></a></code> with the given class and private data.
+</p>
+</section>
+
+			<footer>
+				<table class="license-info">
+					<tr>
+						<th>Authors</th>
+						<td>
+							<p>Chance Snow
+</p>
+
+						</td>
+					</tr>
+					<tr>
+						<th>Copyright</th>
+						<td>
+							<p>Copyright © 2020 Chance Snow. All rights reserved.
+</p>
+
+						</td>
+					</tr>
+					<tr>
+						<th>License</th>
+						<td>
+							<p><a href="https://opensource.org/licenses/MIT">MIT License</a>
+</p>
+
+						</td>
+					</tr>
+				</table>
+<div style="display: flex; justify-content: space-between; margin-top: 2em;">
+  <a href="https://github.com/chances/xs-d#readme">GitHub</a>
+  <span class="faint" style="float: right;">Generated using <a href="https://code.dlang.org/packages/ddox">DDOX</a></span>
+</div>
+			</footer>
+		</div>
+	</body>
+</html>

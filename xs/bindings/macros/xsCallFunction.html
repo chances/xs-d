@@ -94,11 +94,11 @@ $('#symbolSearchPane').show();</script>
 			<br/>
 			&nbsp;&nbsp;<span class="kwd">scope </span><span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsMachineRecord</span><span class="pun">*</span> <span class="pln">the</span><span class="pun">,</span>
 			<br/>
-			&nbsp;&nbsp;<span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsSlotRecord</span> <span class="pln">function_</span><span class="pun">,</span>
+			&nbsp;&nbsp;<span class="kwd">const</span><span class="pun">(</span><span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsSlotRecord</span><span class="pun">)</span> <span class="pln">function_</span><span class="pun">,</span>
 			<br/>
-			&nbsp;&nbsp;<span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsSlotRecord</span> <span class="pln">this_</span><span class="pun">,</span>
+			&nbsp;&nbsp;<span class="kwd">const</span><span class="pun">(</span><span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsSlotRecord</span><span class="pun">)</span> <span class="pln">this_</span><span class="pun">,</span>
 			<br/>
-			&nbsp;&nbsp;<span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsSlotRecord</span><span class="pun">[]</span> <span class="pln">params</span><span class="pun">...</span>
+			&nbsp;&nbsp;<span class="kwd">const</span><span class="pun">(</span><span class="pln">xs<wbr/></span><span class="pun">.</span><span class="pln">bindings<wbr/></span><span class="pun">.</span><span class="pln">xsSlotRecord</span><span class="pun">[]</span><span class="pun">)</span> <span class="pln">params</span><span class="pun">...</span>
 			<br/>
 			<span class="pun">)</span><span class="pun">;</span>
 					</div>
@@ -108,10 +108,26 @@ $('#symbolSearchPane').show();</script>
 			<section><h2>Parameters</h2>
 <table><col class="caption"><tr><th>Name</th><th>Description</th></tr>
 <tr><td id="the">the</td><td>A machine</td></tr>
-<tr><td id="function_">function_</td><td></td></tr>
-<tr><td id="this_">this_</td><td></td></tr>
+<tr><td id="this_">this_</td><td>A reference to the instance that will have the property or item</td></tr>
+<tr><td id="function_">function_</td><td>A reference to the the property or item to call</td></tr>
 <tr><td id="params">params</td><td>The parameter slots to pass to the function</td></tr>
 </table>
+</section>
+<section><h2>Returns</h2>
+<p>The function's return value slot.
+</p>
+</section>
+<section><h2>Examples</h2>
+<p>In ECMAScript:
+</p>
+<pre class="code"><code class="lang-d"><span class="pln">foo</span><span class="pun">()
+</span><span class="kwd">this<wbr/></span><span class="pun">.</span><span class="pln">foo</span><span class="pun">(</span><span class="lit">1</span><span class="pun">)
+</span><span class="kwd">this</span><span class="pun">[</span><span class="lit">0</span><span class="pun">](</span><span class="lit">2</span><span class="pun">, </span><span class="lit">3</span><span class="pun">)</span></code></pre>
+<p>In D:
+</p>
+<pre class="code"><code class="lang-d"><span class="pln">xsCallFunction</span><span class="pun">(<a href="../../../xs/bindings/macros/xsGlobal.html"></span><span class="pln">xsGlobal</span></a><span class="pun">, </span><span class="pln">foo</span><span class="pun">);
+</span><span class="pln">xsCallFunction</span><span class="pun">(</span><span class="pln">xsThis</span><span class="pun">, </span><span class="pln">foo</span><span class="pun">, <a href="../../../xs/bindings/macros/xsInteger.html"></span><span class="pln">xsInteger</span></a><span class="pun">(</span><span class="lit">1</span><span class="pun">));
+</span><span class="pln">xsCallFunction</span><span class="pun">(</span><span class="pln">xsThis</span><span class="pun">, </span><span class="lit">0</span><span class="pun">, <a href="../../../xs/bindings/macros/xsInteger.html"></span><span class="pln">xsInteger</span></a><span class="pun">(</span><span class="lit">2</span><span class="pun">), <a href="../../../xs/bindings/macros/xsInteger.html"></span><span class="pln">xsInteger</span></a><span class="pun">(</span><span class="lit">3</span><span class="pun">));</span></code></pre>
 </section>
 
 			<footer>

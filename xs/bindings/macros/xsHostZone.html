@@ -90,7 +90,7 @@ $('#symbolSearchPane').show();</script>
 			<div class="prototype">
 				<code class="lang-d">
 					<div class="single-prototype">
-			<span class="typ">void</span> <span class="pln">xsHostZone</span>(alias Func)
+			<span class="typ">ReturnType</span>!Func <span class="pln">xsHostZone</span>(alias Func)
 			<span class="pun">(</span>
 			<br/>
 			&nbsp;&nbsp;<span class="kwd">scope </span><span class="pln">xsMachine</span><span class="pun">*</span> <span class="pln">the</span>
@@ -105,7 +105,15 @@ $('#symbolSearchPane').show();</script>
 </p>
 </section>
 
-			<section><h2>See Also</h2>
+			<section><h2>Returns</h2>
+<p>The result of <code class="lang-d"><span class="typ">Func</span></code>, or <code class="lang-d"><span class="typ">void</span></code> if <code class="lang-d"><span class="typ">Func</span></code> has no return type.
+</p>
+</section>
+<section><h2>Throws</h2>
+<p><code class="lang-d"><span class="typ">JSException</span></code> when the JS VM is aborted with the <code class="lang-d"><span class="pln">xsUnhandledExceptionExit</span></code> status while executing <code class="lang-d"><span class="typ">Func</span></code>.
+</p>
+</section>
+<section><h2>See Also</h2>
 <p>From the <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#xs-in-c">XS in C</a> Moddable SDK <a href="https://github.com/Moddable-OpenSource/moddable/tree/OS201116/documentation#readme">Documentation</a>:
 <ul><li><a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#host">Host</a></li>
 <li><a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#xsbeginhost-and-xsendhost"><code class="lang-d"><span class="pln">beginHost</span></code> and <code class="lang-d"><span class="pln">endHost</span></code></a></li>

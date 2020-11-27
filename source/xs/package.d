@@ -317,6 +317,15 @@ class JSValue {
     return (cast(xsMachine*) machine.the).xsTypeOf(slot);
   }
 
+  /// This value's private data.
+  T data(T)() @property const if (is(T == class)) {
+    return cast(T) this.data;
+  }
+  /// ditto
+  void* data() @property const {
+    return cast(void*) xsGetHostData(machine.the, slot);
+  }
+
   /// Convert this value to a `bool` value.
   /// See_Also: `xs.bindings.macros.xsToBoolean`
   bool boolean() @property const {
@@ -444,8 +453,6 @@ class JSObject : JSValue {
   import std.algorithm : map;
   import std.array : array;
 
-  private void* _data;
-
   /// Constructs an Object given a value slot.
   ///
   /// Params:
@@ -455,7 +462,6 @@ class JSObject : JSValue {
   this(Machine machine, const xsSlot value, void* data = null) {
     super(machine, value);
 
-    this._data = data;
     // TODO: Also assert that slot is a host object
     if (data !is null) xsSetHostData(machine.the, value, data);
   }
@@ -544,15 +550,6 @@ class JSObject : JSValue {
     auto the = machine.the;
     auto objectSlot = xsNew(the, xsGlobal(the), xsRegExpPrototype!the);
     return new JSObject(machine, objectSlot);
-  }
-
-  /// This Object’s private data.
-  void* data() @property const {
-    return cast(void*) xsGetHostData(machine.the, slot);
-  }
-  /// ditto
-  T data(T)() @property const if (is(T == class)) {
-    return cast(T) xsGetHostData(machine.the, slot);
   }
 
   /// Gets this Object’s prototype.
@@ -850,8 +847,12 @@ unittest {
   auto machine = new Machine("test-jsclass");
   auto global = machine.global;
 
-  global.setProperty("position", JSObject.make(machine, new Point()));
-  assert(global.getProperty("position").type == JSType.reference);
+  auto point = new Point();
+  global.setProperty("position", JSObject.make(machine, point));
+  const position = global.getProperty("position");
+  assert(position.type == JSType.reference);
+  assert(position.data == cast(void*) point);
+  assert(position.data!Point == point);
 
   destroy(machine);
 }

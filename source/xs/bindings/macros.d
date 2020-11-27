@@ -827,7 +827,18 @@ inout(xsSlot) xsGlobal(scope inout xsMachine* the) {
 // 	fxNewHostInstance(the), \
 // 	fxPop())
 
+/// Creates a host object, and returns a reference to the new host object.
 ///
+/// A <i>host object</i> is a special kind of object with data that can be directly accessed only in C.
+/// The data in a host object is invisible to scripts.
+///
+/// When the garbage collector is about to get rid of a host object, it executes the host object's destructor, if any.
+/// No reference to the host object is passed to the destructor: a destructor can only destroy data.
+///
+/// Params:
+/// the=A machine
+/// destructor=The destructor to be executed by the garbage collector. Pass the host object's destructor, or `null` if it does not need a destructor.
+/// Returns: A reference to the new host object.
 xsSlot xsNewHostObject(scope xsMachine* the, xsDestructor destructor = null) {
 	fxNewHostObject(the, destructor);
 	return fxPop(the);
@@ -1312,11 +1323,11 @@ private template illegallyEscapesScope(Param, alias ParamStorage) {
   enum bool illegallyEscapesScope = notHasScopeStorage!ParamStorage && isXsMachinePtr!Param;
 }
 
-/// Detect whether `T` is callable as a Host zone, in lieu of `xsBeginHost` and `xsEndHost`.
+/// Detect whether `T` is callable as a Host zone, in lieu of <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#xsbeginhost-and-xsendhost">`xsBeginHost` and `xsEndHost`</a>.
 /// See_Also:
 /// $(UL
 ///   $(LI `xsHostZone`)
-///   $(LI `JSObject.makeFunction`)
+///   $(LI <a href="../../JSObject.makeFunction.html">`JSObject.makeFunction`</a>)
 ///   $(LI From the <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#xs-in-c">XS in C</a> Moddable SDK <a href="https://github.com/Moddable-OpenSource/moddable/tree/OS201116/documentation#readme">Documentation</a>:)
 ///   $(UL
 ///     $(LI <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#host">Host</a>)
@@ -1342,7 +1353,7 @@ template isCallableAsHostZone(T...) if (T.length == 1 && isCallable!T) {
 /// Uncaught exceptions that occur within `Func` do not propagate beyond the execution of `xsHostZone`.
 ///
 /// Returns: The result of `Func`, or `void` if `Func` has no return type.
-/// Throws: `JSException` when the JS VM is aborted with the `xsUnhandledExceptionExit` status while executing `Func`.
+/// Throws: <a href="../../JSException.html">`JSException`</a> when the JS VM is aborted with the `xsUnhandledExceptionExit` status while executing `Func`.
 /// See_Also:
 /// From the <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#xs-in-c">XS in C</a> Moddable SDK <a href="https://github.com/Moddable-OpenSource/moddable/tree/OS201116/documentation#readme">Documentation</a>:
 /// $(UL

@@ -38,7 +38,7 @@ class JSException : Exception {
     scriptLine = 0;
     this.exception = exception;
   }
-  /// Constructs a new instace of JSException given the `Script` from which this exception was thrown.
+  /// Constructs a new instace of JSException given the `xs.script.Script` from which this exception was thrown.
   this(string msg, const Script script, string file = __FILE__, ulong line = cast(ulong)__LINE__) {
     super(msg, file, line);
 
@@ -49,7 +49,7 @@ class JSException : Exception {
     this.exception = exception;
   }
 
-  /// The `Script` from which this exception was thrown.
+  /// The `xs.script.Script` from which this exception was thrown.
   const(Script) script() @property const {
     return script_;
   }
@@ -475,16 +475,16 @@ class JSObject : JSValue {
   ///
   /// Params:
   /// machine=A `Machine`.
-  /// Returns: A `JSObject` with the given class and private data.
+  /// Returns: A newly constructed `JSObject`.
   static JSObject make(Machine machine) {
     auto objectSlot = xsNewObject(machine.the);
     auto obj = new JSObject(machine, objectSlot);
     return obj;
   }
 
-  /// Creates a JavaScript Object given a `JSObject` instance.
+  /// Creates a JavaScript Object given a `JSClass` instance.
   ///
-  /// Returns: The instance of the given `class_` constructed in the VM.
+  /// Returns: A newly constructed `JSObject` with host data set to the instance of the given `class_`.
   static JSObject make(Machine machine, JSClass class_) {
     assert(class_, "Expected a non-null `JSClass` instance");
     return new JSObject(machine, xsNewHostObject(machine.the), cast(void*) class_);
@@ -541,7 +541,11 @@ class JSObject : JSValue {
   /// Params:
   /// machine=A `Machine`.
   ///
-  /// See_Also: `isCallableAsHostZone`
+  /// See_Also:
+  /// $(UL
+  ///   $(LI `xs.bindings.macros.xsNewHostFunction`)
+  ///   $(LI `xs.bindings.macros.isCallableAsHostZone`)
+  /// )
   static JSObject makeFunction(Func)(Machine machine) if (isCallableAsHostZone!Func) {
     assert(machine);
     assert(0, "Not implemented");
@@ -627,12 +631,12 @@ class JSObject : JSValue {
     return new JSValue(machine, xsGetAt(machine.the, slot, machine.the.xsUnsigned(id)));
   }
 
-  /// Sets a property from this Object.
+  /// Sets a property of this Object.
   void setProperty(string key, const JSValue value) {
     machine.set(slot, machine.id(key), value);
   }
 
-  /// Sets a property from this Object given its numeric index.
+  /// Sets a property of this Object given its numeric index.
   void setPropertyAt(uint id, const JSValue value) {
     xsSetAt(machine.the, slot, machine.the.xsUnsigned(id), value.slot);
   }

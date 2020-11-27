@@ -466,8 +466,16 @@ class JSObject : JSValue {
   static JSObject make(Machine machine, void* data = null) {
     auto objectSlot = xsNewObject(machine.the);
     // TODO: Set user data
-
     return new JSObject(machine, objectSlot, data);
+  }
+
+  /// Creates a JavaScript Object given a `JSObject` instance.
+  ///
+  /// Returns: The instance of the given `class_` constructed in the VM.
+  static JSObject make(Machine machine, JSClass class_) {
+    assert(class_, "Expected a non-null `JSClass` instance");
+    // TODO: Create a new host object
+    return make(machine);
   }
 
   /// Creates a JavaScript Array object.
@@ -799,21 +807,46 @@ struct ClassDefinition {
   /// Statically declared value properties on the class' prototype.
   JSStaticValue[] staticValues;
   ///
-  int version_;
+  uint version_;
 }
 
-/// A JavaScript class. Subclass a D class with `JSClass` to expose it to a JS VM.
-///
-/// Use with `JSObject.make` to construct objects with custom behavior.
+/// A JavaScript class. Subclass a D class with `JSClass` and use `JSObject.make` to construct objects with custom behavior.
 ///
 /// Adapted from <a href="https://developer.apple.com/documentation/javascriptcore/jsclassref">`JSClassRef`</a> in Apple's <a href="https://developer.apple.com/documentation/javascriptcore">JavaScriptCore</a>.
 abstract class JSClass {
-  private JSObject _instance;
   ///
   const ClassDefinition definition;
 
   /// Constructs a JavaScript class suitable for use with `JSObject.make`.
-  this(ClassDefinition definition) {
+  this(const ClassDefinition definition) {
+    assert(definition.name.length, "A class definition must have a name");
     this.definition = definition;
   }
+}
+
+version (unittest) {
+  class Point : JSClass {
+    uint x, y;
+
+    this(uint x = 0, uint y = 0) {
+      import std.traits : fullyQualifiedName;
+      const ClassDefinition klass = {
+        name: fullyQualifiedName!Point,
+      };
+      super(klass);
+
+      this.x = x;
+      this.y = y;
+    }
+  }
+}
+
+unittest {
+  auto machine = new Machine("test-jsclass");
+  auto global = machine.global;
+
+  global.setProperty("position", JSObject.make(machine, new Point()));
+  assert(global.getProperty("position").type == JSType.reference);
+
+  destroy(machine);
 }

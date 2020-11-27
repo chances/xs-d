@@ -318,12 +318,17 @@ class JSValue {
   }
 
   /// This value's private data.
+  ///
+  /// Throws: `JSException` when the JS VM is aborted with the `xsUnhandledExceptionExit` status, most likely because this value does not refer to a host object.
+  /// See_Also: `xs.bindings.macros.xsGetHostData`
   T data(T)() @property const if (is(T == class)) {
     return cast(T) this.data;
   }
   /// ditto
   void* data() @property const {
-    return cast(void*) xsGetHostData(machine.the, slot);
+    return machine.the.xsHostZone!((scope xsMachine* the) => {
+      return cast(void*) xsGetHostData(the, slot);
+    }());
   }
 
   /// Convert this value to a `bool` value.
@@ -844,8 +849,11 @@ version (unittest) {
 }
 
 unittest {
+  import std.exception : assertThrown;
+
   auto machine = new Machine("test-jsclass");
   auto global = machine.global;
+  assertThrown!JSException(global.data);
 
   auto point = new Point();
   global.setProperty("position", JSObject.make(machine, point));

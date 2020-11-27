@@ -748,6 +748,9 @@ enum ClassAttributes {
   noAutomaticPrototype = 2
 }
 
+///
+alias xsDelegate = void delegate(xsMachineRecord*);
+
 /// Describes a statically declared function property.
 ///
 /// Adapted from <a href="https://developer.apple.com/documentation/javascriptcore/jsstaticfunction">`JSStaticFunction`</a> in Apple's <a href="https://developer.apple.com/documentation/javascriptcore">JavaScriptCore</a>.
@@ -757,7 +760,7 @@ struct JSStaticFunction {
   /// A set of property attributes. Combine multiple attributes with bitwise OR.
   PropertyAttributes attributes;
   ///
-  xsCallback callAsFunction;
+  xsDelegate callAsFunction;
 }
 
 /// Describes a statically declared value property.
@@ -771,11 +774,11 @@ struct JSStaticValue {
   /// Invoked when getting this property’s value.
   ///
   /// If this function returns `null`, the get request forwards to object’s statically declared properties, then its parent class chain (which includes the default Object class), then its prototype chain.
-  xsCallback getProperty;
+  xsDelegate getProperty;
   /// Invoked when setting this property’s value.
   ///
   /// If this function returns `null`, the get request forwards to object’s statically declared properties, then its parent class chain (which includes the default Object class), then its prototype chain.
-  xsCallback setProperty;
+  xsDelegate setProperty;
 }
 
 /// Properties and callbacks that define a type of Object.
@@ -790,29 +793,29 @@ struct ClassDefinition {
   /// A set of attributes. Combine multiple attributes with bitwise OR.
   ClassAttributes attributes;
   /// Invoked when an object is first created.
-  xsCallback initialize;
+  xsDelegate initialize;
   /// Invoked when an object is finalized (prepared for garbage collection). An Object may be finalized on any thread.
-  xsCallback finalize;
+  xsDelegate finalize;
   ///
   xsDestructor destructor;
-  // xsCallback callAsConstructor; TODO: Not a thing in XS?
-  // xsCallback callAsFunction; TODO: Not a thing in XS?
-  // xsCallback hasInstance; TODO: Not a thing in XS?
+  // xsDelegate callAsConstructor; TODO: Not a thing in XS?
+  // xsDelegate callAsFunction; TODO: Not a thing in XS?
+  // xsDelegate hasInstance; TODO: Not a thing in XS?
   /// Invoked when determining whether an Object has a property.
-  xsCallback hasProperty;
+  xsDelegate hasProperty;
   ///
-  xsCallback getPropertyNames;
+  xsDelegate getPropertyNames;
   /// Invoked when getting a property’s value.
   ///
   /// If this function returns `null`, the get request forwards to object’s statically declared properties, then its parent class chain (which includes the default Object class), then its prototype chain.
-  xsCallback getProperty;
+  xsDelegate getProperty;
   /// Invoked when setting a property’s value.
   ///
   /// If this function returns `null`, the get request forwards to object’s statically declared properties, then its parent class chain (which includes the default Object class), then its prototype chain.
-  xsCallback setProperty;
+  xsDelegate setProperty;
   ///
-  xsCallback deleteProperty;
-  // xsCallback convertToType; TODO: Not a thing in XS?
+  xsDelegate deleteProperty;
+  // xsDelegate convertToType; TODO: Not a thing in XS?
   /// Statically declared function properties on the class' prototype.
   JSStaticFunction[] staticFunctions;
   /// Statically declared value properties on the class' prototype.

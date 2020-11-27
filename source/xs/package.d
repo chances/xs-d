@@ -366,6 +366,28 @@ class JSValue {
     if (typeid(JSObject).isBaseOf(this.classinfo)) return cast(JSObject) this;
     return new JSObject(machine, slot);
   }
+
+  /// Retains this value, preventing it from being collected as garbage.
+  /// See_Also: Equivalent to `remember`
+  void retain() {
+    remember();
+  }
+  /// Remembers this value, preventing it from being collected as garbage.
+  /// See_Also: Equivalent to `retain`
+  void remember() {
+    xsRemember(machine.the, slot);
+  }
+
+  /// Releases this value, allowing it to be collected as garbage.
+  /// See_Also: Equivalent to `forget`
+  void release() {
+    forget();
+  }
+  /// Forgets this value, allowing it to be collected as garbage.
+  /// See_Also: Equivalent to `release`
+  void forget() {
+    xsForget(machine.the, slot);
+  }
 }
 
 unittest {
@@ -793,23 +815,5 @@ abstract class JSClass {
   /// Constructs a JavaScript class suitable for use with `JSObject.make`.
   this(ClassDefinition definition) {
     this.definition = definition;
-  }
-
-  /// Retains this JavaScript class.
-  void retain() {
-    remember();
-  }
-  /// Remembers this JavaScript class.
-  void remember() {
-    xsRemember(_instance.machine.the, _instance.slot);
-  }
-
-  /// Releases this JavaScript class.
-  void release() {
-    forget();
-  }
-  /// Forgets this JavaScript class.
-  void forget() {
-    xsForget(_instance.machine.the, _instance.slot);
   }
 }

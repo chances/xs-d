@@ -147,6 +147,7 @@ class Machine {
   ~this() {
     // Only free managed contexts with contexts
     if (the && the.context) the.xsDeleteMachine();
+    the_ = null;
   }
 
   /// Create a Machine given a `xsMachine`.
@@ -469,7 +470,7 @@ class JSObject : JSValue {
     auto the = machine.the;
     auto objectSlot = xsNew(
       the, xsGlobal(the),
-      machine.toId(xsDatePrototype!the),
+      xsDatePrototype!the,
       arguments.map!(arg => arg.slot).array
     );
     return new JSObject(machine, objectSlot);
@@ -487,40 +488,10 @@ class JSObject : JSValue {
     auto the = machine.the;
     auto objectSlot = xsNew(
       the, xsGlobal(the),
-      machine.toId(xsErrorPrototype!the),
+      xsErrorPrototype!the,
       arguments.map!(arg => arg.slot).array
     );
     return new JSObject(machine, objectSlot);
-  }
-
-  /// Creates a function with a given script as its body.
-  ///
-  /// Params:
-  /// machine=A `Machine`.
-  /// name=The function's name
-  /// parameterNames=The names of the function's parameters.
-  /// body_=The script to use as the function's body.
-  ///
-  /// Throws: `JSException` when a JS VM is aborted with the `xsUnhandledExceptionExit` status. For example, when a syntax error exception is thrown.
-  /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/Function">`Function` constructor</a> on MDN
-  static JSObject makeFunction(Machine machine, string name, string[] parameterNames, string body_) {
-    import std.algorithm : joiner;
-    import std.array : array;
-
-    assert(machine);
-    assert(name.length, "Functions must have names");
-
-    auto the = machine.the;
-    auto functionSlot = xsNew(
-      the, xsGlobal(the), machine.toId(xsFunctionPrototype!the),
-      xsString(the, parameterNames.joiner(",").array.to!string), xsString(the, body_)
-    );
-    // Modify the function's name
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
-    xsDefine(
-      the, functionSlot, machine.id("name"), xsString(the, name), Attribute.dontSet | Attribute.dontDelete
-    );
-    return new JSObject(machine, functionSlot);
   }
 
   /// Creates a function with the given callback, `Func` as its implementation.
@@ -540,7 +511,7 @@ class JSObject : JSValue {
   /// machine=A `Machine`.
   static JSObject makeRegExp(Machine machine) {
     auto the = machine.the;
-    auto objectSlot = xsNew(the, xsGlobal(the), machine.toId(xsRegExpPrototype!the));
+    auto objectSlot = xsNew(the, xsGlobal(the), xsRegExpPrototype!the);
     return new JSObject(machine, objectSlot);
   }
 
@@ -652,7 +623,7 @@ class JSObject : JSValue {
   JSObject callAsContructor(JSObject target, JSValue[] params ...) {
     assert(constructor);
     auto the = machine.the;
-    auto result = xsNew(the, target.slot, machine.toId(slot), params.map!(p => p.slot).array);
+    auto result = xsNew(the, target.slot, slot, params.map!(p => p.slot).array);
     if (result == the.xsNull) return null;
     assert(xsIsInstanceOf(the, result, xsObjectPrototype!the));
     return new JSObject(machine, result);
@@ -686,6 +657,7 @@ class JSObject : JSValue {
 unittest {
   auto machine = new Machine("test-jsobject");
   auto global = machine.global;
+  assert(global.extensible);
 
   assert(global.hasProperty("Object"));
   assert(global.getProperty("Object").convertableToObject);
@@ -699,8 +671,6 @@ unittest {
 
   assert(global.deleteProperty("Host"));
   assert(!global.hasProperty("Host"));
-
-  assert(global.extensible);
 
   destroy(machine);
 }

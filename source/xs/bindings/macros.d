@@ -767,14 +767,15 @@ xsSlot xsCallFunction(scope xsMachine* the, const xsSlot function_, const xsSlot
 ///
 /// Params:
 /// the=A machine
-/// this_=
-/// id=The identifier of the constructor to call
+/// this_=A reference to the instance that will have the constructor
+/// constructor=A reference to the constructor to call
 /// params=The parameter slots to pass to the constructor
-xsSlot xsNew(scope xsMachine* the, const xsSlot this_, int id, const xsSlot[] params ...) {
+xsSlot xsNew(scope xsMachine* the, const xsSlot this_, const xsSlot constructor, const xsSlot[] params ...) {
   assert(params.length >= 0);
 	xsOverflow(the, -XS_FRAME_COUNT - params.length.to!int);
 	fxPush(the, cast(xsSlot) this_);
-	fxNewID(the, id);
+  fxPush(the, cast(xsSlot) constructor);
+	fxNew(the);
   foreach (param; params) fxPush(the, cast(xsSlot) param);
 	fxRunCount(the, params.length.to!int);
 	return fxPop(the);
@@ -1377,7 +1378,7 @@ ReturnType!Func xsHostZone(alias Func)(scope xsMachine* the) if (isCallableAsHos
       else static assert(0, "Unreachable by design; " ~ __traits(identifier, T) ~ " has unsupported return type");
 
       fxEndHost(zonedThe);
-      the = null;
+      zonedThe = null;
     } else {
       try {
         fxAbort(hostThe, xsUnhandledExceptionExit);

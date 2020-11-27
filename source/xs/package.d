@@ -457,6 +457,7 @@ unittest {
 class JSObject : JSValue {
   import std.algorithm : map;
   import std.array : array;
+  import std.traits : ReturnType;
 
   /// Constructs an Object given a value slot.
   ///
@@ -536,19 +537,24 @@ class JSObject : JSValue {
     return new JSObject(machine, objectSlot);
   }
 
-  /// Creates a function with the given callback, `Func` as its implementation.
+  /// Creates a function with the given `callback` as its implementation.
   ///
   /// Params:
   /// machine=A `Machine`.
+  /// callback=
   ///
   /// See_Also:
   /// $(UL
   ///   $(LI `xs.bindings.macros.xsNewHostFunction`)
   ///   $(LI `xs.bindings.macros.isCallableAsHostZone`)
   /// )
-  static JSObject makeFunction(Func)(Machine machine) if (isCallableAsHostZone!Func) {
+  static JSObject makeFunction(Func)(Machine machine, Func callback) if (
+    isCallableAsHostZone!Func && is(ReturnType!Func == void)
+  ) {
+    import std.traits : Parameters;
+
     assert(machine);
-    assert(0, "Not implemented");
+    return new JSObject(machine, xsNewHostFunction(machine.the, callback, Parameters!Func.length));
   }
 
   /// Creates a JavaScript RegExp object, as if by invoking the built-in RegExp constructor.
@@ -695,7 +701,17 @@ class JSObject : JSValue {
   }
 }
 
+version (unittest) {
+  static counter = 0;
+  private extern(C) void xs_hostFunctionCallback(scope xsMachine* the) {
+    const param = 1; // TODO: Get param from machine stack
+    counter += param;
+  }
+}
+
 unittest {
+  import std.exception : assertNotThrown;
+
   auto machine = new Machine("test-jsobject");
   auto global = machine.global;
   assert(global.extensible);
@@ -713,7 +729,20 @@ unittest {
   assert(global.deleteProperty("Host"));
   assert(!global.hasProperty("Host"));
 
+  auto count = JSObject.makeFunction(machine, &xs_hostFunctionCallback);
+  assert(count.type == JSType.reference);
+  global.setProperty("count", count);
+  assert(global.hasProperty("count"));
+  assert(global.getProperty("count").convertableToObject);
+  count = global.getProperty("count").object;
+  assert(count.prototypeName == "Function");
+
+  assert(counter == 0);
+  assertNotThrown!JSException(new Script(machine, "count();"));
+  assert(counter == 1);
+
   destroy(machine);
+  counter = 0;
 }
 
 /// A set of JSObject property attributes. Combine multiple attributes with bitwise OR.

@@ -810,10 +810,26 @@ inout(xsSlot) xsGlobal(scope inout xsMachine* the) {
 // 	fxNewHostConstructor(the, _CALLBACK, _LENGTH, _NAME), \
 // 	fxPop())
 
-// TODO: xsNewHostFunction
-// #define xsNewHostFunction(xsCallback _CALLBACK,_LENGTH) \
-// 	(fxNewHostFunction(the, _CALLBACK, _LENGTH, xsNoID), \
-// 	fxPop())
+/// Creates a host function, and returns a reference to the new host function.
+///
+/// A <i>host function</i> is a special kind of function, one whose implementation is in C rather than ECMAScript.
+/// For a script, a host function is just like a function; however, when a script invokes a host function, a C callback is executed.
+///
+/// Params:
+/// the=A machine
+/// callback=The callback to execute
+/// length=The number of parameters expected by the callback
+/// Returns: A reference to the new host function.
+///
+/// See_Also:
+/// $(UL
+///   $(LI <a href="../../JSObject.makeFunction.html">`JSObject.makeFunction`</a>)
+///   $(LI `isCallableAsHostZone`)
+/// )
+xsSlot xsNewHostFunction(scope xsMachine* the, xsCallback callback, int length) {
+	fxNewHostFunction(the, callback, length, xsNoID);
+	return fxPop(the);
+}
 
 // TODO: xsNewHostFunctionObject
 // #define xsNewHostFunctionObject(xsCallback _CALLBACK,_LENGTH, _NAME) \
@@ -1342,7 +1358,7 @@ template isCallableAsHostZone(T...) if (T.length == 1 && isCallable!T) {
   static assert(TParams.length == 1, "A Host zone entry point must have a single parameter of type `scope xsMachine*`");
   static if(illegallyEscapesScope!(TParams[0], ParameterStorageClassTuple!T[0])) {
     static assert(0, "The VM parameter of a Host zone entry point must use the scope storage class. " ~
-      "\n\ti.e. Add the `scope` storage class to the `xsMachine*` parameter of method or delegate `" ~ __traits(identifier, T) ~ "`" ~
+      "\n\ti.e. Add the `scope` storage class to the `xsMachine*` parameter of the function or delegate" ~
       "\n\tSee https://dlang.org/spec/function.html#parameters");
   }
   enum bool isCallableAsHostZone = allSatisfy!(isXsMachinePtr, TParams);

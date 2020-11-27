@@ -454,19 +454,21 @@ class JSObject : JSValue {
   /// data=The Object’s private data.
   this(Machine machine, const xsSlot value, void* data = null) {
     super(machine, value);
+
     this._data = data;
+    // TODO: Also assert that slot is a host object
+    if (data !is null) xsSetHostData(machine.the, value, data);
   }
 
   /// Creates a JavaScript Object.
   ///
   /// Params:
   /// machine=A `Machine`.
-  /// data=The Object’s private data.
   /// Returns: A `JSObject` with the given class and private data.
-  static JSObject make(Machine machine, void* data = null) {
+  static JSObject make(Machine machine) {
     auto objectSlot = xsNewObject(machine.the);
-    // TODO: Set user data
-    return new JSObject(machine, objectSlot, data);
+    auto obj = new JSObject(machine, objectSlot);
+    return obj;
   }
 
   /// Creates a JavaScript Object given a `JSObject` instance.
@@ -474,8 +476,7 @@ class JSObject : JSValue {
   /// Returns: The instance of the given `class_` constructed in the VM.
   static JSObject make(Machine machine, JSClass class_) {
     assert(class_, "Expected a non-null `JSClass` instance");
-    // TODO: Create a new host object
-    return make(machine);
+    return new JSObject(machine, xsNewHostObject(machine.the), cast(void*) class_);
   }
 
   /// Creates a JavaScript Array object.
@@ -547,7 +548,11 @@ class JSObject : JSValue {
 
   /// This Object’s private data.
   void* data() @property const {
-    return cast(void*) _data;
+    return cast(void*) xsGetHostData(machine.the, slot);
+  }
+  /// ditto
+  T data(T)() @property const if (is(T == class)) {
+    return cast(T) xsGetHostData(machine.the, slot);
   }
 
   /// Gets this Object’s prototype.

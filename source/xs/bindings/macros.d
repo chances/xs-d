@@ -790,7 +790,7 @@ xsSlot xsNew(scope xsMachine* the, const xsSlot this_, const xsSlot constructor,
 // Globals
 
 ///
-inout(xsSlot) xsGlobal(inout xsMachine* the) {
+inout(xsSlot) xsGlobal(scope inout xsMachine* the) {
   return the.stackTop[-1];
 }
 
@@ -827,10 +827,11 @@ inout(xsSlot) xsGlobal(inout xsMachine* the) {
 // 	fxNewHostInstance(the), \
 // 	fxPop())
 
-// TODO: xsNewHostObject
-// #define xsNewHostObject(xsDestructor destructor) \
-// 	(fxNewHostObject(the, xsDestructor destructor), \
-// 	fxPop())
+///
+xsSlot xsNewHostObject(scope xsMachine* the, xsDestructor destructor = null) {
+	fxNewHostObject(the, destructor);
+	return fxPop(the);
+}
 
 // TODO: xsGetHostChunk
 // #define xsGetHostChunk(_SLOT) \
@@ -841,14 +842,16 @@ inout(xsSlot) xsGlobal(inout xsMachine* the) {
 // 	(the.scratch = (_SLOT), \
 // 	fxSetHostChunk(the, &(the.scratch), _DATA, _SIZE))
 
-// TODO: xsGetHostData
-// #define xsGetHostData(_SLOT) \
-// 	(the.scratch = (_SLOT), \
-// 	fxGetHostData(the, &(the.scratch)))
-// TODO: xsSetHostData
-// #define xsSetHostData(_SLOT,_DATA) \
-// 	(the.scratch = (_SLOT), \
-// 	fxSetHostData(the, &(the.scratch), _DATA))
+///
+void* xsGetHostData(scope xsMachine* the, const xsSlot slot) {
+	the.scratch = cast(xsSlot) slot;
+	return fxGetHostData(the, &the.scratch);
+}
+///
+void xsSetHostData(scope xsMachine* the, const xsSlot slot, void* data) {
+	the.scratch = cast(xsSlot) slot;
+	fxSetHostData(the, &the.scratch, data);
+}
 
 // TODO: xsGetHostDestructor
 // #define xsGetHostDestructor(_SLOT) \

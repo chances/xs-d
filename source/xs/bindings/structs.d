@@ -7,9 +7,54 @@ module xs.bindings.structs;
 
 import xs.bindings;
 
+alias txFlag = txU1;
 alias txID = txS2;
+alias txBoolean = txS4;
+alias txInteger = txS4;
+alias txKind = txS1;
 alias txSize = txS4;
+alias txNumber = double;
 alias txString = char*;
+
+package(xs) struct txBigInt {
+	txU4* data;
+	txU2 size;
+	txU1 sign;
+}
+
+package(xs) union txValue {
+	txBoolean boolean;
+	txInteger integer;
+	txNumber number;
+	txString string_;
+	txID symbol;
+	txBigInt bigint;
+
+	sxSlot* reference;
+
+	sxSlot* closure;
+
+  // https://github.com/Moddable-OpenSource/moddable/blob/OS201116/xs/sources/xsAll.h#L272
+  struct module_anon { sxSlot* realm; txID id; }
+  module_anon module_;
+}
+
+package(xs) struct sxSlot {
+	sxSlot* next;
+	union {
+		struct {
+			txKind kind;
+			txFlag flag;
+			txID ID;
+		}
+		txInteger KIND_FLAG_ID;
+	}
+// #if (!defined(linux)) && ((defined(__GNUC__) && defined(__LP64__)) || (defined(_MSC_VER) && defined(_M_X64)))
+// 	// Made it aligned and consistent on all platforms
+// 	txInteger dummy;
+// #endif
+	txValue value;
+}
 
 /// Empty checksum of a prepared VM
 static txU1[16] emptyChecksum = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
@@ -94,6 +139,52 @@ struct txScript {
     assert(script.hostsBuffer);
     auto hosts = script.hostsBuffer[0..hostsSize];
     assert(hostsBuffer[0..hostsSize].copy(hosts).length == 0);
+
+    import core.stdc.string : strlen;
+
+    if (path !is null) {
+      const pathSlice = path[0..path.strlen];
+      script.path = cast(char*) malloc(pathSlice.length);
+      assert(script.path);
+      assert(pathSlice.copy(script.path[0..pathSlice.length]).length == 0);
+    }
+
+    return script;
+  }
+
+  txScript* managedCopy() @property const {
+    import core.stdc.string : strlen;
+    import std.algorithm : copy;
+
+    auto pathSlice = path is null ? new char[0] : path[0..path.strlen];
+    auto script = new txScript(
+      cast(void*) callback,
+      symbolsSize ? new txS1[symbolsSize].ptr : null, symbolsSize,
+      codeSize ? new txS1[codeSize].ptr : null, codeSize,
+      hostsSize ? new txS1[hostsSize].ptr : null, hostsSize,
+      path is null ? null : new char[pathSlice.length].ptr, version_
+    );
+    assert(script);
+
+    if (script.symbolsBuffer) {
+      auto symbols = script.symbolsBuffer[0..symbolsSize];
+      assert(symbolsBuffer[0..symbolsSize].copy(symbols).length == 0);
+    }
+
+    if (script.codeBuffer) {
+      auto code = script.codeBuffer[0..codeSize];
+      assert(codeBuffer[0..codeSize].copy(code).length == 0);
+    }
+
+    if (script.hostsBuffer) {
+      auto hosts = script.hostsBuffer[0..hostsSize];
+      assert(hostsBuffer[0..hostsSize].copy(hosts).length == 0);
+    }
+
+    if (path !is null) {
+      assert(script.path);
+      assert(pathSlice.copy(script.path[0..pathSlice.length]).length == 0);
+    }
 
     return script;
   }

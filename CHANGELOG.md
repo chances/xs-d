@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.0-alpha.3
+
+- Add runtime compilation/execution of JS snippets
+- Add `JSObject` abstraction
+- Add `JSClass` abstraction
+
 ## v0.1.0-alpha.2
 
 Adds a "Hello, world!" example that runs `trace("hello world\n");` in a new VM.

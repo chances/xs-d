@@ -237,84 +237,84 @@ void* xsToArrayBuffer(scope xsMachine* the, xsSlot theSlot) {
 enum int prototypesStackIndex = -75;
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a> on MDN
-enum xsSlot xsObjectPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 1];
+xsSlot xsObjectPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 1]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a> on MDN
-enum xsSlot xsFunctionPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 2];
+xsSlot xsFunctionPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 2]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a> on MDN
-enum xsSlot xsArrayPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 3];
+xsSlot xsArrayPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 3]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a> on MDN
-enum xsSlot xsStringPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 4];
+xsSlot xsStringPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 4]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a> on MDN
-enum xsSlot xsBooleanPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 5];
+xsSlot xsBooleanPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 5]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a> on MDN
-enum xsSlot xsNumberPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 6];
+xsSlot xsNumberPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 6]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a> on MDN
-enum xsSlot xsDatePrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 7];
+xsSlot xsDatePrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 7]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp">RegExp</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp">RegExp</a> on MDN
-enum xsSlot xsRegExpPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 8];
+xsSlot xsRegExpPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 8]; }
 /// Returns a reference to the Host prototype instance created by the XS runtime.
-enum xsSlot xsHostPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 9];
+xsSlot xsHostPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 9]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a> on MDN
-enum xsSlot xsErrorPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 10];
+xsSlot xsErrorPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 10]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError">EvalError</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError">EvalError</a> on MDN
-enum xsSlot xsEvalErrorPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 11];
+xsSlot xsEvalErrorPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 11]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError">RangeError</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError">RangeError</a> on MDN
-enum xsSlot xsRangeErrorPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 12];
+xsSlot xsRangeErrorPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 12]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError">ReferenceError</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError">ReferenceError</a> on MDN
-enum xsSlot xsReferenceErrorPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 13];
+xsSlot xsReferenceErrorPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 13]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError">SyntaxError</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError">SyntaxError</a> on MDN
-enum xsSlot xsSyntaxErrorPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 14];
+xsSlot xsSyntaxErrorPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 14]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError">TypeError</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError">TypeError</a> on MDN
-enum xsSlot xsTypeErrorPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 15];
+xsSlot xsTypeErrorPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 15]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError">URIError</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError">URIError</a> on MDN
-enum xsSlot xsURIErrorPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 16];
+xsSlot xsURIErrorPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 16]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AggregateError">AggregateError</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AggregateError">AggregateError</a> on MDN
-enum xsSlot xsAggregateErrorPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 17];
+xsSlot xsAggregateErrorPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 17]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol">Symbol</a> on MDN
-enum xsSlot xsSymbolPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 18];
+xsSlot xsSymbolPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 18]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer">ArrayBuffer</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer">ArrayBuffer</a> on MDN
-enum xsSlot xsArrayBufferPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 19];
+xsSlot xsArrayBufferPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 19]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView">DataView</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView">DataView</a> on MDN
-enum xsSlot xsDataViewPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 20];
+xsSlot xsDataViewPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 20]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray">TypedArray</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray">TypedArray</a> on MDN
-enum xsSlot xsTypedArrayPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 21];
+xsSlot xsTypedArrayPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 21]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map">Map</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map">Map</a> on MDN
-enum xsSlot xsMapPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 22];
+xsSlot xsMapPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 22]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set">Set</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set">Set</a> on MDN
-enum xsSlot xsSetPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 23];
+xsSlot xsSetPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 23]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap">WeakMap</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap">WeakMap</a> on MDN
-enum xsSlot xsWeakMapPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 24];
+xsSlot xsWeakMapPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 24]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet">WeakSet</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet">WeakSet</a> on MDN
-enum xsSlot xsWeakSetPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 25];
+xsSlot xsWeakSetPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 25]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a> on MDN
-enum xsSlot xsPromisePrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 26];
+xsSlot xsPromisePrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 26]; }
 /// Returns a reference to the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy">Proxy</a> prototype instance created by the XS runtime.
 /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy">Proxy</a> on MDN
-enum xsSlot xsProxyPrototype(alias xsMachine* the) = the.stackPrototypes[prototypesStackIndex - 27];
+xsSlot xsProxyPrototype(alias xsMachine* the)() { return the.stackPrototypes[prototypesStackIndex - 27]; }
 
 /// Creates an array instance, and returns a reference to the new array instance.
 ///
@@ -367,10 +367,10 @@ xsSlot xsNewObject(scope xsMachine* the) {
 /// the=A machine
 /// instance=A reference to the instance to test
 /// prototype=A reference to the prototype to test
-bool xsIsInstanceOf(scope xsMachine* the, xsSlot instance, xsSlot prototype) {
+bool xsIsInstanceOf(scope xsMachine* the, const xsSlot instance, const xsSlot prototype) {
 	the.xsOverflow(-2);
-	the.fxPush(prototype);
-	the.fxPush(instance);
+	the.fxPush(cast(xsSlot) prototype);
+	the.fxPush(cast(xsSlot) instance);
 	return fxIsInstanceOf(the).to!bool;
 }
 
@@ -464,10 +464,10 @@ bool xsHas(scope xsMachine* the, const xsSlot this_, int id) {
 /// ---
 /// if (xsHasAt(xsThis, xsInteger(7)));
 /// ---
-bool xsHasAt(scope xsMachine* the, xsSlot this_, xsSlot key) {
+bool xsHasAt(scope xsMachine* the, const xsSlot this_, const xsSlot key) {
 	the.xsOverflow(-2);
-	the.fxPush(this_);
-	the.fxPush(key);
+	the.fxPush(cast(xsSlot) this_);
+	the.fxPush(cast(xsSlot) key);
 	return fxHasAt(the).to!bool;
 }
 
@@ -520,10 +520,10 @@ xsSlot xsGet(scope xsMachine* the, const xsSlot this_, int id) {
 /// xsVar(0) = xsGet(xsThis, xsID_foo);
 /// xsVar(1) = xsGetAt(xsVar(0), xsInteger(3));
 /// ---
-xsSlot xsGetAt(scope xsMachine* the, xsSlot this_, xsSlot key) {
+xsSlot xsGetAt(scope xsMachine* the, const xsSlot this_, const xsSlot key) {
 	the.xsOverflow(-2);
-	the.fxPush(this_);
-	the.fxPush(key);
+	the.fxPush(cast(xsSlot) this_);
+	the.fxPush(cast(xsSlot) key);
 	fxGetAt(the);
 	return the.fxPop();
 }
@@ -549,7 +549,7 @@ xsSlot xsGetAt(scope xsMachine* the, xsSlot this_, xsSlot key) {
 /// xsSet(xsThis, xsID_foo, xsInteger(1));
 /// xsSet(xsThis, 0, xsInteger(2));
 /// ---
-void xsSet(scope xsMachine* the, const xsSlot this_, int id, const xsSlot slot) {
+void xsSet(scope xsMachine* the, const xsSlot this_, xsIndex id, const xsSlot slot) {
 	the.xsOverflow(-2);
 	the.fxPush(cast(xsSlot) slot);
 	the.fxPush(cast(xsSlot) this_);
@@ -576,11 +576,11 @@ void xsSet(scope xsMachine* the, const xsSlot this_, int id, const xsSlot slot) 
 /// xsVar(0) = xsGet(xsThis, xsID_foo);
 /// xsSetAt(xsVar(0), xsInteger(3), xsInteger(7));
 /// ---
-void xsSetAt(scope xsMachine* the, xsSlot this_, xsSlot key, xsSlot slot) {
+void xsSetAt(scope xsMachine* the, const xsSlot this_, const xsSlot key, const xsSlot slot) {
 	the.xsOverflow(-3);
-	the.fxPush(slot);
-	the.fxPush(this_);
-	the.fxPush(key);
+	the.fxPush(cast(xsSlot) slot);
+	the.fxPush(cast(xsSlot) this_);
+	the.fxPush(cast(xsSlot) key);
 	fxSetAt(the);
 	the.stack++;
 }
@@ -602,21 +602,21 @@ void xsSetAt(scope xsMachine* the, xsSlot this_, xsSlot key, xsSlot slot) {
 /// ---
 /// machine.xsDefine(xsThis, xsID_foo, xsInteger(7), xsDefault);
 /// ---
-void xsDefine(scope xsMachine* the, xsSlot this_, int id, xsSlot slot, Attribute attributes) {
+void xsDefine(scope xsMachine* the, const xsSlot this_, xsIndex id, const xsSlot slot, xsAttribute attributes) {
 	the.xsOverflow(-2);
-	the.fxPush(slot);
-	the.fxPush(this_);
-	fxDefineID(the, id, attributes, attributes | xsDontDelete | xsDontEnum | xsDontSet);
+	the.fxPush(cast(xsSlot) slot);
+	the.fxPush(cast(xsSlot) this_);
+	fxDefineID(the, id, attributes, attributes | xsDontDelete | xsDontSet);
 	the.stack++;
 }
 
 ///
-void xsDefineAt(scope xsMachine* the, xsSlot this_, xsSlot key, xsSlot slot, Attribute attributes) {
+void xsDefineAt(scope xsMachine* the, const xsSlot this_, const xsSlot key, const xsSlot slot, xsAttribute attributes) {
 	the.xsOverflow(-3);
-	the.fxPush(slot);
-	the.fxPush(this_);
-	the.fxPush(key);
-	fxDefineAt(the, attributes, attributes | xsDontDelete | xsDontEnum | xsDontSet);
+	the.fxPush(cast(xsSlot) slot);
+	the.fxPush(cast(xsSlot) this_);
+	the.fxPush(cast(xsSlot) key);
+	fxDefineAt(the, attributes, attributes | xsDontDelete | xsDontSet);
 	the.stack++;
 }
 
@@ -638,13 +638,13 @@ void xsDefineAt(scope xsMachine* the, xsSlot this_, xsSlot key, xsSlot slot, Att
 /// ---
 /// In D:
 /// ---
-/// xsDelete(xsGlobal, xsID_foo);
-/// xsDelete(xsThis, xsID_foo);
-/// xsDelete(xsThis, 0);
+/// the.xsDelete(xsGlobal, xsID_foo);
+/// the.xsDelete(xsThis, xsID_foo);
+/// the.xsDelete(xsThis, 0);
 /// ---
-void xsDelete(scope xsMachine* the, xsSlot this_, int key) {
+void xsDelete(scope xsMachine* the, const xsSlot this_, int key) {
 	the.xsOverflow(-1);
-	the.fxPush(this_);
+	the.fxPush(cast(xsSlot) this_);
 	fxDeleteID(the, key);
 	the.stack++;
 }
@@ -666,13 +666,13 @@ void xsDelete(scope xsMachine* the, xsSlot this_, int key) {
 /// ---
 /// In D:
 /// ---
-/// xsDeleteAt(xsThis, xsID_foo);
-/// xsDeleteAt(xsThis, xsInteger(0));
+/// the.xsDeleteAt(xsThis, xsID_foo);
+/// the.xsDeleteAt(xsThis, xsInteger(0));
 /// ---
-void xsDeleteAt(scope xsMachine* the, xsSlot this_, xsSlot key) {
+void xsDeleteAt(scope xsMachine* the, const xsSlot this_, const xsSlot key) {
 	the.xsOverflow(-2);
-	the.fxPush(this_);
-	the.fxPush(key);
+	the.fxPush(cast(xsSlot) this_);
+	the.fxPush(cast(xsSlot) key);
 	fxDeleteAt(the);
 	the.stack++;
 }
@@ -705,12 +705,12 @@ enum int XS_FRAME_COUNT = 6;
 /// xsCall(xsThis, xsID_foo, xsInteger(1));
 /// xsCall(xsThis, 0, xsInteger(2), xsInteger(3));
 /// ---
-xsSlot xsCall(scope xsMachine* the, xsSlot this_, int id, xsSlot[] params ...) {
+xsSlot xsCall(scope xsMachine* the, const xsSlot this_, xsIndex id, const xsSlot[] params ...) {
   assert(params.length >= 0);
 	the.xsOverflow(-XS_FRAME_COUNT - params.length.to!int);
-	the.fxPush(this_);
-  foreach (param; params) fxPush(the, param);
+	the.fxPush(cast(xsSlot) this_);
 	fxCallID(the, id);
+  foreach (param; params) fxPush(the, cast(xsSlot) param);
 	fxRunCount(the, params.length.to!int);
 	return the.fxPop();
 }
@@ -722,12 +722,12 @@ xsSlot xsCall(scope xsMachine* the, xsSlot this_, int id, xsSlot[] params ...) {
 /// this_=A reference to the instance that will have the property or item
 /// id=The identifier of the property or item to call
 /// params=The parameter slots to pass to the function
-void xsCall_noResult(scope xsMachine* the, xsSlot this_, int id, xsSlot[] params ...) {
+void xsCall_noResult(scope xsMachine* the, const xsSlot this_, xsIndex id, const xsSlot[] params ...) {
   assert(params.length >= 0);
 	the.xsOverflow(-XS_FRAME_COUNT - params.length.to!int);
-	the.fxPush(this_);
-  foreach (param; params) fxPush(the, param);
+	the.fxPush(cast(xsSlot) this_);
 	fxCallID(the, id);
+  foreach (param; params) fxPush(the, cast(xsSlot) param);
 	fxRunCount(the, params.length.to!int);
 	the.stack++;
 }
@@ -735,16 +735,31 @@ void xsCall_noResult(scope xsMachine* the, xsSlot this_, int id, xsSlot[] params
 ///
 /// Params:
 /// the=A machine
-/// function_=
-/// this_=
+/// this_=A reference to the instance that will have the property or item
+/// function_=A reference to the the property or item to call
 /// params=The parameter slots to pass to the function
-xsSlot xsCallFunction(scope xsMachine* the, xsSlot function_, xsSlot this_, xsSlot[] params ...) {
+/// Returns: The function's return value slot.
+///
+/// Examples:
+/// In ECMAScript:
+/// ---
+/// foo()
+/// this.foo(1)
+/// this[0](2, 3)
+/// ---
+/// In D:
+/// ---
+/// xsCallFunction(xsGlobal, foo);
+/// xsCallFunction(xsThis, foo, xsInteger(1));
+/// xsCallFunction(xsThis, 0, xsInteger(2), xsInteger(3));
+/// ---
+xsSlot xsCallFunction(scope xsMachine* the, const xsSlot function_, const xsSlot this_, const xsSlot[] params ...) {
   assert(params.length >= 0);
 	xsOverflow(the, -XS_FRAME_COUNT - params.length.to!int);
-	fxPush(the, this_);
-	fxPush(the, function_);
+	fxPush(the, cast(xsSlot) this_);
+	fxPush(the, cast(xsSlot) function_);
 	fxCall(the);
-	foreach (param; params) fxPush(the, param);
+	foreach (param; params) fxPush(the, cast(xsSlot) param);
 	fxRunCount(the, params.length.to!int);
 	return fxPop(the);
 }
@@ -752,15 +767,16 @@ xsSlot xsCallFunction(scope xsMachine* the, xsSlot function_, xsSlot this_, xsSl
 ///
 /// Params:
 /// the=A machine
-/// this_=
-/// id=The identifier of the constructor to call
+/// this_=A reference to the instance that will have the constructor
+/// constructor=A reference to the constructor to call
 /// params=The parameter slots to pass to the constructor
-xsSlot xsNew(scope xsMachine* the, xsSlot this_, int id, xsSlot[] params ...) {
+xsSlot xsNew(scope xsMachine* the, const xsSlot this_, const xsSlot constructor, const xsSlot[] params ...) {
   assert(params.length >= 0);
 	xsOverflow(the, -XS_FRAME_COUNT - params.length.to!int);
-	fxPush(the, this_);
-	fxNewID(the, id);
-  foreach (param; params) fxPush(the, param);
+	fxPush(the, cast(xsSlot) this_);
+  fxPush(the, cast(xsSlot) constructor);
+	fxNew(the);
+  foreach (param; params) fxPush(the, cast(xsSlot) param);
 	fxRunCount(the, params.length.to!int);
 	return fxPop(the);
 }
@@ -883,14 +899,14 @@ void xsCollectGarbage(scope xsMachine* the) {
 void xsEnableGarbageCollection(scope xsMachine* the, bool enableIt) {
 	fxEnableGarbageCollection(the, enableIt);
 }
-void xsRemember(scope xsMachine* the, xsSlot slot) {
-	fxRemember(the, &slot);
+void xsRemember(scope xsMachine* the, const xsSlot slot) {
+	fxRemember(the, cast(xsSlot*) &slot);
 }
-void xsForget(scope xsMachine* the, xsSlot slot) {
-	fxForget(the, &slot);
+void xsForget(scope xsMachine* the, const xsSlot slot) {
+	fxForget(the, cast(xsSlot*) &slot);
 }
-void xsAccess(scope xsMachine* the, xsSlot slot) {
-	fxAccess(the, &slot);
+void xsAccess(scope xsMachine* the, const xsSlot slot) {
+	fxAccess(the, cast(xsSlot*) &slot);
 }
 
 // Exceptions
@@ -1279,13 +1295,14 @@ private template illegallyEscapesScope(Param, alias ParamStorage) {
 /// See_Also:
 /// $(UL
 ///   $(LI `xsHostZone`)
+///   $(LI `JSObject.makeFunction`)
 ///   $(LI From the <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#xs-in-c">XS in C</a> Moddable SDK <a href="https://github.com/Moddable-OpenSource/moddable/tree/OS201116/documentation#readme">Documentation</a>:)
 ///   $(UL
 ///     $(LI <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#host">Host</a>)
 ///     $(LI <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#xsbeginhost-and-xsendhost">`beginHost` and `endHost`</a>)
 ///   )
 /// )
-template isCallableAsHostZone(T...) if (T.length == 1 && isCallable!T && is (ReturnType!T == void)) {
+template isCallableAsHostZone(T...) if (T.length == 1 && isCallable!T) {
   import std.meta : allSatisfy;
   import std.traits : Parameters;
 
@@ -1302,6 +1319,9 @@ template isCallableAsHostZone(T...) if (T.length == 1 && isCallable!T && is (Ret
 /// Used to set up and clean up a stack frame, so that you can use all the macros of XS in C in between, provided in lieu of `xsBeginHost` and `xsEndHost`.
 ///
 /// Uncaught exceptions that occur within `Func` do not propagate beyond the execution of `xsHostZone`.
+///
+/// Returns: The result of `Func`, or `void` if `Func` has no return type.
+/// Throws: `JSException` when the JS VM is aborted with the `xsUnhandledExceptionExit` status while executing `Func`.
 /// See_Also:
 /// From the <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#xs-in-c">XS in C</a> Moddable SDK <a href="https://github.com/Moddable-OpenSource/moddable/tree/OS201116/documentation#readme">Documentation</a>:
 /// $(UL
@@ -1325,7 +1345,9 @@ template isCallableAsHostZone(T...) if (T.length == 1 && isCallable!T && is (Ret
 /// 	return result;
 /// }
 /// ---
-void xsHostZone(alias Func)(scope xsMachine* the) if (isCallableAsHostZone!Func) {
+ReturnType!Func xsHostZone(alias Func)(scope xsMachine* the) if (isCallableAsHostZone!Func) {
+  enum bool voidReturnType = is(ReturnType!Func == void);
+  static if (!voidReturnType) ReturnType!Func result;
   while(true) {
     auto hostThe = the;
     xsJump hostJump = {
@@ -1337,23 +1359,38 @@ void xsHostZone(alias Func)(scope xsMachine* the) if (isCallableAsHostZone!Func)
       code: hostThe.code,
       flag: 0,
     };
+    void resetState() {
+      hostThe.stack = hostJump.stack;
+      hostThe.scope_ = hostJump.scope_;
+      hostThe.frame = hostJump.frame;
+      hostThe.code = hostJump.code;
+      hostThe.firstJump = hostJump.nextJump;
+    }
     hostThe.firstJump = &hostJump;
     if (setjmp(hostJump.buffer.ptr) == 0) {
       xsMachine* zonedThe = fxBeginHost(the);
 
       /// Call user-land host code
-      Func(zonedThe);
+      static if (voidReturnType)
+        Func(zonedThe);
+      else static if (!voidReturnType)
+        result = Func(zonedThe);
+      else static assert(0, "Unreachable by design; " ~ __traits(identifier, T) ~ " has unsupported return type");
 
       fxEndHost(zonedThe);
-      the = null;
-    } else fxAbort(hostThe, xsUnhandledExceptionExit);
-    hostThe.stack = hostJump.stack;
-    hostThe.scope_ = hostJump.scope_;
-    hostThe.frame = hostJump.frame;
-    hostThe.code = hostJump.code;
-    hostThe.firstJump = hostJump.nextJump;
+      zonedThe = null;
+    } else {
+      try {
+        fxAbort(hostThe, xsUnhandledExceptionExit);
+      } catch (Exception ex) {
+        resetState();
+        throw ex;
+      }
+    }
+    resetState();
     break;
   }
+  static if (!voidReturnType) return result;
 }
 
 // TODO: xsArrayCacheBegin

@@ -846,6 +846,7 @@ version (unittest) {
       import std.traits : fullyQualifiedName;
       const ClassDefinition klass = {
         name: fullyQualifiedName!Point,
+        attributes: ClassAttributes.none,
       };
       super(klass);
 

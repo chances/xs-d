@@ -652,13 +652,17 @@ class JSObject : JSValue {
     return xsHasAt(machine.the, slot, machine.the.xsUnsigned(id));
   }
 
+  /// Define a property of this Object.
   ///
-  void defineProperty(string key, JSValue value, PropertyAttributes attributes) {
+  /// When a property is created, if the prototype of the instance has a property with the same name, its attributes are inherited; otherwise, by default, a property can be deleted, enumerated, and set, and can be used by scripts.
+  void defineProperty(string key, JSValue value, PropertyAttributes attributes = PropertyAttributes.default_) {
     xsDefine(machine.the, slot, machine.id(key), value.slot, attributes);
   }
 
+  /// Define a property of this Object given its numeric index.
   ///
-  void definePropertyAt(uint id, JSValue value, PropertyAttributes attributes) {
+  /// When a property is created, if the prototype of the instance has a property with the same name, its attributes are inherited; otherwise, by default, a property can be deleted, enumerated, and set, and can be used by scripts.
+  void definePropertyAt(uint id, JSValue value, PropertyAttributes attributes = PropertyAttributes.default_) {
     xsDefineAt(machine.the, slot, machine.the.xsUnsigned(id), value.slot, attributes);
   }
 
@@ -782,15 +786,21 @@ unittest {
 
 /// A set of JSObject property attributes. Combine multiple attributes with bitwise OR.
 enum PropertyAttributes : xsAttribute {
-  /// Specifies that a property has no special attributes.
-  none = 0,
+  /// Specifies that a property has default attributes, i.e. the property is writable, enumerable, and configurable.
+  default_ = 0,
   /// Specifies that a property is read-only.
+  ///
+  /// Corresponds to the ECMAScript  ReadOnly attribute
   readOnly = xsDontSet,
   /// Specifies that a property is read-only.
   dontSet = xsDontSet,
   /// Specifies that a property should not be enumerated by property enumerators and JavaScript `for...in` loops.
+  ///
+  /// Corresponds to the ECMAScript DontEnum attribute
   dontEnumerate = xsDontEnum,
   /// Specifies that the delete operation should fail on a property.
+  ///
+  /// Corresponds to the ECMAScript DontDelete attribute
   /// See_Also: `JSObject.deleteProperty`
   dontDelete = xsDontDelete,
   /// Specifies that a property is static.
@@ -864,9 +874,6 @@ struct ClassDefinition {
   xsDelegate finalize;
   ///
   xsDestructor destructor;
-  // xsDelegate callAsConstructor; TODO: Not a thing in XS?
-  // xsDelegate callAsFunction; TODO: Not a thing in XS?
-  // xsDelegate hasInstance; TODO: Not a thing in XS?
   /// Invoked when determining whether an Object has a property.
   xsDelegate hasProperty;
   ///
@@ -881,7 +888,6 @@ struct ClassDefinition {
   xsDelegate setProperty;
   ///
   xsDelegate deleteProperty;
-  // xsDelegate convertToType; TODO: Not a thing in XS?
   /// Statically declared function properties on the class' prototype.
   JSStaticFunction[] staticFunctions;
   /// Statically declared value properties on the class' prototype.

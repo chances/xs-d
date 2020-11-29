@@ -159,6 +159,20 @@ class Machine {
     return cast(xsMachine*) the_;
   }
 
+  /// Returns the number of function arguments of the current stack frame.
+  int argc() @property const {
+    return xsToInteger(the, xsArgc(the));
+  }
+
+  /// Returns the function arguments of the current stack frame.
+  JSValue[] args() @property const {
+    auto result = new JSValue[this.argc];
+    for (auto i = 0; i < this.argc; i += 1) {
+      result[i] = this.arg(i);
+    }
+    return result;
+  }
+
   const(Script[]) scripts() @property const {
     return scripts_;
   }
@@ -220,6 +234,17 @@ class Machine {
   /// See_Also: `xs.bindings.macros.xsString`
   JSValue string_(string value) {
     return this.value(the.xsString(value));
+  }
+
+  /// Returns the currently bound `this` value from the current stack frame.
+  /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this">`this`</a> on MDN
+  JSValue this_() @property const {
+    return new JSValue(cast(Machine) this, xsThis(the));
+  }
+
+  /// Returns the function argument at `index` from the current stack frame.
+  JSValue arg(int index) inout {
+    return new JSValue(cast(Machine) this, xsArg(the, index));
   }
 
   /// Tests whether an instance has a property corresponding to a particular ECMAScript property name.
@@ -831,6 +856,8 @@ struct ClassDefinition {
   JSClass parentClass;
   /// A set of attributes. Combine multiple attributes with bitwise OR.
   ClassAttributes attributes;
+  ///
+  uint constructorArgc;
   /// Invoked when an object is first created.
   xsDelegate initialize;
   /// Invoked when an object is finalized (prepared for garbage collection). An Object may be finalized on any thread.
@@ -879,13 +906,23 @@ abstract class JSClass {
 
 version (unittest) {
   class Point : JSClass {
-    uint x, y;
+    int x, y;
 
-    this(uint x = 0, uint y = 0) {
+    this(int x = 0, int y = 0) {
       import std.traits : fullyQualifiedName;
       const ClassDefinition klass = {
         name: fullyQualifiedName!Point,
         attributes: ClassAttributes.none,
+        initialize: (scope Machine machine) => {
+          auto args = machine.args;
+          x = args[0].integer;
+          y = args[1].integer;
+
+          auto this_ = machine.this_.object;
+          // TODO: Make these getter/setter properties so JS values are reflected back here
+          this_.setProperty(__traits(identifier, x), args[0]);
+          this_.setProperty(__traits(identifier, y), args[1]);
+        }(),
       };
       super(klass);
 

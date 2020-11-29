@@ -913,24 +913,24 @@ void xsSetHostDestructor(scope xsMachine* the, const xsSlot slot, xsDestructor d
 // Arguments and Variables
 
 ///
-enum xsVars(alias xsMachine* the, alias int count) = fxVars(the, count);
+alias xsVars = fxVars;
 
 ///
-enum xsThis(alias xsMachine* the) = the.frame[4];
+xsSlot xsThis(xsMachine* the) { return the.frame[4]; }
 ///
-enum xsFunction(alias xsMachine* the) = the.frame[3];
+xsSlot xsFunction(xsMachine* the) { return the.frame[3]; }
 ///
-enum xsTarget(alias xsMachine* the) = the.frame[2];
+xsSlot xsTarget(xsMachine* the) { return the.frame[2]; }
 ///
-enum xsResult(alias xsMachine* the) = the.frame[1];
+xsSlot xsResult(xsMachine* the) { return the.frame[1]; }
 ///
-enum xsArgc(alias xsMachine* the) = the.frame[-1];
+xsSlot xsArgc(xsMachine* the) { return the.frame[-1]; }
 ///
-enum xsArg(alias xsMachine* the, alias int index) = (the.frame[-2 - fxCheckArg(the, index)]);
+xsSlot xsArg(xsMachine* the, int index) { return (the.frame[-2 - fxCheckArg(the, index)]); }
 ///
-enum xsVarc(alias xsMachine* the) = the.scope_[0];
+xsSlot xsVarc(xsMachine* the) { return the.scope_[0]; }
 ///
-enum xsVar(alias xsMachine* the, alias int index) = (the.scope_[-1 - fxCheckVar(the, index)]);
+xsSlot xsVar(xsMachine* the, int index) { return (the.scope_[-1 - fxCheckVar(the, index)]); }
 
 // Garbage Collector
 

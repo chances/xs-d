@@ -627,6 +627,16 @@ class JSObject : JSValue {
     return xsHasAt(machine.the, slot, machine.the.xsUnsigned(id));
   }
 
+  ///
+  void defineProperty(string key, JSValue value, PropertyAttributes attributes) {
+    xsDefine(machine.the, slot, machine.id(key), value.slot, attributes);
+  }
+
+  ///
+  void definePropertyAt(uint id, JSValue value, PropertyAttributes attributes) {
+    xsDefineAt(machine.the, slot, machine.the.xsUnsigned(id), value.slot, attributes);
+  }
+
   /// Gets a property from this Object.
   JSValue getProperty(string key) {
     return machine.get(slot, machine.id(key));

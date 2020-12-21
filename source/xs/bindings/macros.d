@@ -811,7 +811,15 @@ xsSlot xsNewHostConstructor(scope xsMachine* the, xsCallback callback, int lengt
 	return fxPop(the);
 }
 
+/// Creates a named host constructor, and returns a reference to the new host constructor.
 ///
+/// Params:
+/// the=A machine
+/// callback=The callback to execute
+/// length=The number of parameters expected by the callback
+/// prototype=A reference to the prototype of the instance to create
+/// name=
+/// Returns: A reference to the new host constructor.
 xsSlot xsNewHostConstructorObject(scope xsMachine* the, xsCallback callback, int length, const xsSlot prototype, xsIndex name) {
 	xsOverflow(the, -1);
 	fxPush(the, cast(xsSlot) prototype);

@@ -915,14 +915,28 @@ abstract class JSClass {
   }
 }
 
+import std.traits : fullyQualifiedName;
+/// Get the base name of the fully qualified name of a type or symbol.
+template baseName(T) {
+  import std.array : split;
+  import std.range : tail;
+
+  static assert(fullyQualifiedName!T.split(".").length, "Must have a namespaced FQN!");
+  enum string baseName = fullyQualifiedName!T.split(".").tail(1)[0];
+}
+
+unittest {
+  static assert(baseName!Point != "xs.Point");
+  static assert(baseName!Point == "Point");
+}
+
 version (unittest) {
   class Point : JSClass {
     int x, y;
 
     this(int x = 0, int y = 0) {
-      import std.traits : fullyQualifiedName;
       const ClassDefinition klass = {
-        name: fullyQualifiedName!Point,
+        name: baseName!Point,
         attributes: ClassAttributes.none,
         initialize: (scope Machine machine) => {
           auto args = machine.args;
@@ -951,6 +965,7 @@ unittest {
   assertThrown!JSException(global.data);
 
   auto point = new Point();
+  assert(point.definition.name == "Point");
   global.setProperty("position", JSObject.make(machine, point));
   const position = global.getProperty("position");
   assert(position.type == JSType.reference);

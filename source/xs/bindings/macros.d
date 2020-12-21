@@ -790,30 +790,63 @@ xsSlot xsNew(scope xsMachine* the, const xsSlot this_, const xsSlot constructor,
 // Globals
 
 ///
-inout(xsSlot) xsGlobal(inout xsMachine* the) {
+inout(xsSlot) xsGlobal(scope inout xsMachine* the) {
   return the.stackTop[-1];
 }
 
 // Host Constructors, Functions and Objects
 
-// TODO: xsNewHostConstructor
-// #define xsNewHostConstructor(xsCallback _CALLBACK,_LENGTH,_PROTOTYPE) \
-// 	(xsOverflow(-1), \
-// 	fxPush(_PROTOTYPE), \
-// 	fxNewHostConstructor(the, _CALLBACK, _LENGTH, xsNoID), \
-// 	fxPop())
+/// Creates a host constructor, and returns a reference to the new host constructor.
+///
+/// Params:
+/// the=A machine
+/// callback=The callback to execute
+/// length=The number of parameters expected by the callback
+/// prototype=A reference to the prototype of the instance to create
+/// Returns: A reference to the new host constructor.
+xsSlot xsNewHostConstructor(scope xsMachine* the, xsCallback callback, int length, const xsSlot prototype) {
+	xsOverflow(the, -1);
+	fxPush(the, cast(xsSlot) prototype);
+	fxNewHostConstructor(the, callback, length, xsNoID);
+	return fxPop(the);
+}
 
-// TODO: xsNewHostConstructorObject
-// #define xsNewHostConstructorObject(xsCallback _CALLBACK,_LENGTH,_PROTOTYPE, _NAME) \
-// 	(xsOverflow(-1), \
-// 	fxPush(_PROTOTYPE), \
-// 	fxNewHostConstructor(the, _CALLBACK, _LENGTH, _NAME), \
-// 	fxPop())
+/// Creates a named host constructor, and returns a reference to the new host constructor.
+///
+/// Params:
+/// the=A machine
+/// callback=The callback to execute
+/// length=The number of parameters expected by the callback
+/// prototype=A reference to the prototype of the instance to create
+/// name=
+/// Returns: A reference to the new host constructor.
+xsSlot xsNewHostConstructorObject(scope xsMachine* the, xsCallback callback, int length, const xsSlot prototype, xsIndex name) {
+	xsOverflow(the, -1);
+	fxPush(the, cast(xsSlot) prototype);
+	fxNewHostConstructor(the, callback, length, name);
+	return fxPop(the);
+}
 
-// TODO: xsNewHostFunction
-// #define xsNewHostFunction(xsCallback _CALLBACK,_LENGTH) \
-// 	(fxNewHostFunction(the, _CALLBACK, _LENGTH, xsNoID), \
-// 	fxPop())
+/// Creates a host function, and returns a reference to the new host function.
+///
+/// A <i>host function</i> is a special kind of function, one whose implementation is in C rather than ECMAScript.
+/// For a script, a host function is just like a function; however, when a script invokes a host function, a C callback is executed.
+///
+/// Params:
+/// the=A machine
+/// callback=The callback to execute
+/// length=The number of parameters expected by the callback
+/// Returns: A reference to the new host function.
+///
+/// See_Also:
+/// $(UL
+///   $(LI <a href="../../JSObject.makeFunction.html">`JSObject.makeFunction`</a>)
+///   $(LI `isCallableAsHostZone`)
+/// )
+xsSlot xsNewHostFunction(scope xsMachine* the, xsCallback callback, int length) {
+	fxNewHostFunction(the, callback, length, xsNoID);
+	return fxPop(the);
+}
 
 // TODO: xsNewHostFunctionObject
 // #define xsNewHostFunctionObject(xsCallback _CALLBACK,_LENGTH, _NAME) \
@@ -827,10 +860,22 @@ inout(xsSlot) xsGlobal(inout xsMachine* the) {
 // 	fxNewHostInstance(the), \
 // 	fxPop())
 
-// TODO: xsNewHostObject
-// #define xsNewHostObject(xsDestructor destructor) \
-// 	(fxNewHostObject(the, xsDestructor destructor), \
-// 	fxPop())
+/// Creates a host object, and returns a reference to the new host object.
+///
+/// A <i>host object</i> is a special kind of object with data that can be directly accessed only in C.
+/// The data in a host object is invisible to scripts.
+///
+/// When the garbage collector is about to get rid of a host object, it executes the host object's destructor, if any.
+/// No reference to the host object is passed to the destructor: a destructor can only destroy data.
+///
+/// Params:
+/// the=A machine
+/// destructor=The destructor to be executed by the garbage collector. Pass the host object's destructor, or `null` if it does not need a destructor.
+/// Returns: A reference to the new host object.
+xsSlot xsNewHostObject(scope xsMachine* the, xsDestructor destructor = null) {
+	fxNewHostObject(the, destructor);
+	return fxPop(the);
+}
 
 // TODO: xsGetHostChunk
 // #define xsGetHostChunk(_SLOT) \
@@ -841,23 +886,27 @@ inout(xsSlot) xsGlobal(inout xsMachine* the) {
 // 	(the.scratch = (_SLOT), \
 // 	fxSetHostChunk(the, &(the.scratch), _DATA, _SIZE))
 
-// TODO: xsGetHostData
-// #define xsGetHostData(_SLOT) \
-// 	(the.scratch = (_SLOT), \
-// 	fxGetHostData(the, &(the.scratch)))
-// TODO: xsSetHostData
-// #define xsSetHostData(_SLOT,_DATA) \
-// 	(the.scratch = (_SLOT), \
-// 	fxSetHostData(the, &(the.scratch), _DATA))
+///
+void* xsGetHostData(scope xsMachine* the, const xsSlot slot) {
+	the.scratch = cast(xsSlot) slot;
+	return fxGetHostData(the, &the.scratch);
+}
+///
+void xsSetHostData(scope xsMachine* the, const xsSlot slot, void* data) {
+	the.scratch = cast(xsSlot) slot;
+	fxSetHostData(the, &the.scratch, data);
+}
 
-// TODO: xsGetHostDestructor
-// #define xsGetHostDestructor(_SLOT) \
-// 	(the.scratch = (_SLOT), \
-// 	fxGetHostDestructor(the, &(the.scratch)))
-// TODO: xsSetHostDestructor
-// #define xsSetHostDestructor(_SLOT,xsDestructor destructor) \
-// 	(the.scratch = (_SLOT), \
-// 	fxSetHostDestructor(the, &(the.scratch), xsDestructor destructor))
+///
+xsDestructor xsGetHostDestructor(scope xsMachine* the, const xsSlot slot) {
+	the.scratch = cast(xsSlot) slot;
+	return fxGetHostDestructor(the, &the.scratch);
+}
+///
+void xsSetHostDestructor(scope xsMachine* the, const xsSlot slot, xsDestructor destructor) {
+	the.scratch = cast(xsSlot) slot;
+	fxSetHostDestructor(the, &the.scratch, destructor);
+}
 
 // TODO: xsGetHostHandle
 // #define xsGetHostHandle(_SLOT) \
@@ -880,31 +929,51 @@ inout(xsSlot) xsGlobal(inout xsMachine* the) {
 
 // Arguments and Variables
 
-enum xsVars(alias xsMachine* the, alias int count) = fxVars(the, count);
+///
+alias xsVars = fxVars;
 
-enum xsThis(alias xsMachine* the) = the.frame[4];
-enum xsFunction(alias xsMachine* the) = the.frame[3];
-enum xsTarget(alias xsMachine* the) = the.frame[2];
-enum xsResult(alias xsMachine* the) = the.frame[1];
-enum xsArgc(alias xsMachine* the) = the.frame[-1];
-enum xsArg(alias xsMachine* the, alias int index) = (the.frame[-2 - fxCheckArg(the, index)]);
-enum xsVarc(alias xsMachine* the) = the.scope_[0];
-enum xsVar(alias xsMachine* the, alias int index) = (the.scope_[-1 - fxCheckVar(the, index)]);
+///
+xsSlot xsThis(xsMachine* the) { return the.frame[4]; }
+///
+xsSlot xsThis(xsMachine* the, const xsSlot value) { return the.frame[4] = cast(xsSlot) value; }
+///
+xsSlot xsFunction(xsMachine* the) { return the.frame[3]; }
+///
+xsSlot xsTarget(xsMachine* the) { return the.frame[2]; }
+///
+xsSlot xsTarget(xsMachine* the, const xsSlot value) { return the.frame[2] = cast(xsSlot) value; }
+///
+xsSlot xsResult(xsMachine* the) { return the.frame[1]; }
+///
+xsSlot xsResult(xsMachine* the, const xsSlot value) { return the.frame[1] = cast(xsSlot) value; }
+///
+xsSlot xsArgc(xsMachine* the) { return the.frame[-1]; }
+///
+xsSlot xsArg(xsMachine* the, int index) { return (the.frame[-2 - fxCheckArg(the, index)]); }
+///
+xsSlot xsVarc(xsMachine* the) { return the.scope_[0]; }
+///
+xsSlot xsVar(xsMachine* the, int index) { return (the.scope_[-1 - fxCheckVar(the, index)]); }
 
 // Garbage Collector
 
+///
 void xsCollectGarbage(scope xsMachine* the) {
 	fxCollectGarbage(the);
 }
+///
 void xsEnableGarbageCollection(scope xsMachine* the, bool enableIt) {
 	fxEnableGarbageCollection(the, enableIt);
 }
+///
 void xsRemember(scope xsMachine* the, const xsSlot slot) {
 	fxRemember(the, cast(xsSlot*) &slot);
 }
+///
 void xsForget(scope xsMachine* the, const xsSlot slot) {
 	fxForget(the, cast(xsSlot*) &slot);
 }
+///
 void xsAccess(scope xsMachine* the, const xsSlot slot) {
 	fxAccess(the, cast(xsSlot*) &slot);
 }
@@ -912,13 +981,15 @@ void xsAccess(scope xsMachine* the, const xsSlot slot) {
 // Exceptions
 
 debug {
-  void xsThrow(scope xsMachine* the, xsSlot slot, string file = __FILE__, int line = __LINE__) {
-    the.stackTop[-2] = slot;
+  ///
+  void xsThrow(scope xsMachine* the, const xsSlot slot, string file = __FILE__, int line = __LINE__) {
+    the.stackTop[-2] = cast(xsSlot) slot;
     fxThrow(the, cast(char*) file.toStringz, line);
   }
 } else {
-  void xsThrow(scope xsMachine* the, xsSlot slot) {
-    the.stackTop[-2] = slot;
+  ///
+  void xsThrow(scope xsMachine* the, const xsSlot slot) {
+    the.stackTop[-2] = cast(xsSlot) slot;
     fxThrow(the, null, 0);
   }
 }
@@ -1291,11 +1362,11 @@ private template illegallyEscapesScope(Param, alias ParamStorage) {
   enum bool illegallyEscapesScope = notHasScopeStorage!ParamStorage && isXsMachinePtr!Param;
 }
 
-/// Detect whether `T` is callable as a Host zone, in lieu of `xsBeginHost` and `xsEndHost`.
+/// Detect whether `T` is callable as a Host zone, in lieu of <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#xsbeginhost-and-xsendhost">`xsBeginHost` and `xsEndHost`</a>.
 /// See_Also:
 /// $(UL
 ///   $(LI `xsHostZone`)
-///   $(LI `JSObject.makeFunction`)
+///   $(LI <a href="../../JSObject.makeFunction.html">`JSObject.makeFunction`</a>)
 ///   $(LI From the <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#xs-in-c">XS in C</a> Moddable SDK <a href="https://github.com/Moddable-OpenSource/moddable/tree/OS201116/documentation#readme">Documentation</a>:)
 ///   $(UL
 ///     $(LI <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#host">Host</a>)
@@ -1310,7 +1381,7 @@ template isCallableAsHostZone(T...) if (T.length == 1 && isCallable!T) {
   static assert(TParams.length == 1, "A Host zone entry point must have a single parameter of type `scope xsMachine*`");
   static if(illegallyEscapesScope!(TParams[0], ParameterStorageClassTuple!T[0])) {
     static assert(0, "The VM parameter of a Host zone entry point must use the scope storage class. " ~
-      "\n\ti.e. Add the `scope` storage class to the `xsMachine*` parameter of method or delegate `" ~ __traits(identifier, T) ~ "`" ~
+      "\n\ti.e. Add the `scope` storage class to the `xsMachine*` parameter of the function or delegate" ~
       "\n\tSee https://dlang.org/spec/function.html#parameters");
   }
   enum bool isCallableAsHostZone = allSatisfy!(isXsMachinePtr, TParams);
@@ -1321,7 +1392,7 @@ template isCallableAsHostZone(T...) if (T.length == 1 && isCallable!T) {
 /// Uncaught exceptions that occur within `Func` do not propagate beyond the execution of `xsHostZone`.
 ///
 /// Returns: The result of `Func`, or `void` if `Func` has no return type.
-/// Throws: `JSException` when the JS VM is aborted with the `xsUnhandledExceptionExit` status while executing `Func`.
+/// Throws: <a href="../../JSException.html">`JSException`</a> when the JS VM is aborted with the `xsUnhandledExceptionExit` status while executing `Func`.
 /// See_Also:
 /// From the <a href="https://github.com/Moddable-OpenSource/moddable/blob/OS201116/documentation/xs/XS%20in%20C.md#xs-in-c">XS in C</a> Moddable SDK <a href="https://github.com/Moddable-OpenSource/moddable/tree/OS201116/documentation#readme">Documentation</a>:
 /// $(UL

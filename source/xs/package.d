@@ -828,7 +828,7 @@ enum ClassAttributes {
 }
 
 ///
-alias xsDelegate = void delegate(xsMachineRecord*);
+alias xsDelegate = void delegate(Machine);
 
 /// Describes a statically declared function property.
 ///

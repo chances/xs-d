@@ -941,7 +941,11 @@ xsSlot xsFunction(xsMachine* the) { return the.frame[3]; }
 ///
 xsSlot xsTarget(xsMachine* the) { return the.frame[2]; }
 ///
+xsSlot xsTarget(xsMachine* the, const xsSlot value) { return the.frame[2] = cast(xsSlot) value; }
+///
 xsSlot xsResult(xsMachine* the) { return the.frame[1]; }
+///
+xsSlot xsResult(xsMachine* the, const xsSlot value) { return the.frame[1] = cast(xsSlot) value; }
 ///
 xsSlot xsArgc(xsMachine* the) { return the.frame[-1]; }
 ///

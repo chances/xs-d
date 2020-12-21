@@ -935,6 +935,8 @@ alias xsVars = fxVars;
 ///
 xsSlot xsThis(xsMachine* the) { return the.frame[4]; }
 ///
+xsSlot xsThis(xsMachine* the, const xsSlot value) { return the.frame[4] = cast(xsSlot) value; }
+///
 xsSlot xsFunction(xsMachine* the) { return the.frame[3]; }
 ///
 xsSlot xsTarget(xsMachine* the) { return the.frame[2]; }

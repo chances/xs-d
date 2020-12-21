@@ -526,7 +526,7 @@ class JSObject : JSValue {
   /// Returns: A newly constructed `JSObject` with host data set to the instance of the given `class_`.
   static JSObject make(Machine machine, JSClass class_) {
     assert(class_, "Expected a non-null `JSClass` instance");
-    auto obj = new JSObject(machine, xsNewHostObject(machine.the), cast(void*) class_);
+    auto obj = new JSObject(machine, xsNewHostObject(machine.the, class_.definition.destructor), cast(void*) class_);
     if (class_.definition.initialize is null) return obj;
 
     const lastTarget = machine.target;
@@ -909,6 +909,13 @@ struct ClassDefinition {
 }
 
 ///
+extern (C) void xs_classDestructor(T)(void* data) if (is(T == class)) {
+  assert(data, "No host object!");
+  auto klass = cast(T) data;
+  destroy(klass);
+}
+
+///
 extern (C) void xs_classGetter(string key)(scope xsMachine* the) {
   auto target = xsThis(the);
   JSClass targetClass = cast(JSClass) xsGetHostData(the, target);
@@ -1013,6 +1020,7 @@ version (unittest) {
             PropertyAttributes.isSetter
           );
         }(),
+        destructor: &xs_classDestructor!Point,
       };
       super(klass);
 

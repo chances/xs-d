@@ -236,6 +236,11 @@ class Machine {
     return this.value(the.xsString(value));
   }
 
+  ///
+  JSValue target() @property const {
+    return new JSValue(cast (Machine) this, xsTarget(the));
+  }
+
   /// Returns the currently bound `this` value from the current stack frame.
   /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this">`this`</a> on MDN
   JSValue this_() @property const {

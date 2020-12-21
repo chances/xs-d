@@ -240,6 +240,10 @@ class Machine {
   JSValue target() @property const {
     return new JSValue(cast (Machine) this, xsTarget(the));
   }
+  ///
+  void target(inout JSValue value) @property {
+    xsTarget(the, value.slot);
+  }
 
   /// The currently bound `this` value from the current stack frame.
   /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this">`this`</a> on MDN
@@ -525,10 +529,10 @@ class JSObject : JSValue {
     auto obj = new JSObject(machine, xsNewHostObject(machine.the), cast(void*) class_);
     if (class_.definition.initialize is null) return obj;
 
-    const that = machine.this_;
-    machine.this_ = obj;
+    const lastTarget = machine.target;
+    machine.target = obj;
     class_.definition.initialize(machine);
-    machine.this_ = that;
+    machine.target = lastTarget;
     return obj;
   }
 
@@ -894,14 +898,6 @@ struct ClassDefinition {
   xsDelegate hasProperty;
   ///
   xsDelegate getPropertyNames;
-  /// Invoked when getting a property’s value.
-  ///
-  /// If this function returns `null`, the get request forwards to object’s statically declared properties, then its parent class chain (which includes the default Object class), then its prototype chain.
-  xsDelegate getProperty;
-  /// Invoked when setting a property’s value.
-  ///
-  /// If this function returns `null`, the get request forwards to object’s statically declared properties, then its parent class chain (which includes the default Object class), then its prototype chain.
-  xsDelegate setProperty;
   ///
   xsDelegate deleteProperty;
   /// Statically declared function properties on the class' prototype.
@@ -910,6 +906,25 @@ struct ClassDefinition {
   JSStaticValue[] staticValues;
   ///
   uint version_;
+}
+
+///
+extern (C) void xs_classGetter(string key)(scope xsMachine* the) {
+  auto target = xsThis(the);
+  JSClass targetClass = cast(JSClass) xsGetHostData(the, target);
+  // TODO: Throw on exceptional cases? xsThrow(the, xsString(the, ""));
+  if (targetClass is null) return;
+  xsResult(the, targetClass.getProperty(new Machine(the), key));
+}
+
+///
+extern (C) void xs_classSetter(string key)(scope xsMachine* the) {
+  auto target = xsThis(the);
+  JSClass targetClass = cast(JSClass) xsGetHostData(the, target);
+  // TODO: Throw on exceptional cases? xsThrow(the, xsString(the, ""));
+  if (targetClass is null) return;
+  auto theMachine = new Machine(the);
+  targetClass.setProperty(theMachine, key, new JSValue(theMachine, xsArg(the, 0)));
 }
 
 /// A JavaScript class. Subclass a D class with `JSClass` and use `JSObject.make` to construct objects with custom behavior.
@@ -923,6 +938,23 @@ abstract class JSClass {
   this(const ClassDefinition definition) {
     assert(definition.name.length, "A class definition must have a name");
     this.definition = definition;
+  }
+
+  /// Invoked when getting a property’s value.
+  ///
+  /// If this function returns `null`, the get request forwards to object’s statically declared properties, then its parent class chain (which includes the default Object class), then its prototype chain.
+  const(xsSlot) getProperty(Machine machine, string key) {
+    assert(key.length);
+    return xsUndefined(machine.the);
+  }
+
+  /// Invoked when setting a property’s value.
+  ///
+  /// If this function returns `null`, the get request forwards to object’s statically declared properties, then its parent class chain (which includes the default Object class), then its prototype chain.
+  void setProperty(Machine machine, string key, const JSValue value) {
+    assert(machine !is null);
+    assert(key.length);
+    assert(value !is null);
   }
 }
 
@@ -959,16 +991,49 @@ version (unittest) {
           x = argX.integer;
           y = argY.integer;
 
-          auto this_ = machine.this_.object;
-          // TODO: Make these getter/setter properties so JS values are reflected back here
-          this_.setProperty(__traits(identifier, x), argX);
-          this_.setProperty(__traits(identifier, y), argY);
+          auto target = machine.target.object;
+          target.defineProperty(
+            __traits(identifier, x),
+            JSObject.makeFunction(machine, &xs_classGetter!"x"),
+            PropertyAttributes.isGetter
+          );
+          target.defineProperty(
+            __traits(identifier, x),
+            JSObject.makeFunction(machine, &xs_classSetter!"x"),
+            PropertyAttributes.isSetter
+          );
+          target.defineProperty(
+            __traits(identifier, y),
+            JSObject.makeFunction(machine, &xs_classGetter!"y"),
+            PropertyAttributes.isGetter
+          );
+          target.defineProperty(
+            __traits(identifier, y),
+            JSObject.makeFunction(machine, &xs_classSetter!"y"),
+            PropertyAttributes.isSetter
+          );
         }(),
       };
       super(klass);
 
       this.x = x;
       this.y = y;
+    }
+
+    override const(xsSlot) getProperty(Machine machine, string key) {
+      if (key == __traits(identifier, x)) return machine.integer(x).slot;
+      if (key == __traits(identifier, y)) return machine.integer(y).slot;
+      return super.getProperty(machine, key);
+    }
+
+    /// Invoked when setting a property’s value.
+    ///
+    /// If this function returns `null`, the get request forwards to object’s statically declared properties, then its parent class chain (which includes the default Object class), then its prototype chain.
+    override void setProperty(Machine machine, string key, const JSValue value) {
+      super.setProperty(machine, key, value);
+      assert(value.type == JSType.integer || value.type == JSType.number);
+      if (key == __traits(identifier, x)) x = value.integer.to!int;
+      if (key == __traits(identifier, y)) y = value.integer.to!int;
     }
   }
 }
@@ -989,6 +1054,22 @@ unittest {
   assert(position.data!Point == point);
   assert(position.data!Point.x == 0);
   assert(position.data!Point.y == 0);
+
+  auto x = position.object.getProperty("x");
+  auto y = position.object.getProperty("y");
+  assertThrown(position.object.getProperty("z"));
+  assert(x.type == JSType.integer);
+  assert(y.type == JSType.integer);
+  assert(x.integer == 0);
+  assert(y.integer == 0);
+
+  new Script(machine, "position.x = 10; position.y = position.x * 10;");
+  x = position.object.getProperty("x");
+  y = position.object.getProperty("y");
+  assert(x.type == JSType.integer);
+  assert(y.type == JSType.integer);
+  assert(x.integer == 10);
+  assert(y.integer == 100);
 
   destroy(machine);
 }

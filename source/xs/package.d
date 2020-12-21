@@ -241,10 +241,14 @@ class Machine {
     return new JSValue(cast (Machine) this, xsTarget(the));
   }
 
-  /// Returns the currently bound `this` value from the current stack frame.
+  /// The currently bound `this` value from the current stack frame.
   /// See_Also: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this">`this`</a> on MDN
   JSValue this_() @property const {
     return new JSValue(cast(Machine) this, xsThis(the));
+  }
+  ///
+  void this_(inout JSValue value) @property {
+    xsThis(the, value.slot);
   }
 
   /// Returns the function argument at `index` from the current stack frame.
@@ -518,7 +522,14 @@ class JSObject : JSValue {
   /// Returns: A newly constructed `JSObject` with host data set to the instance of the given `class_`.
   static JSObject make(Machine machine, JSClass class_) {
     assert(class_, "Expected a non-null `JSClass` instance");
-    return new JSObject(machine, xsNewHostObject(machine.the), cast(void*) class_);
+    auto obj = new JSObject(machine, xsNewHostObject(machine.the), cast(void*) class_);
+    if (class_.definition.initialize is null) return obj;
+
+    const that = machine.this_;
+    machine.this_ = obj;
+    class_.definition.initialize(machine);
+    machine.this_ = that;
+    return obj;
   }
 
   /// Creates a JavaScript Array object.
@@ -940,13 +951,18 @@ version (unittest) {
         attributes: ClassAttributes.none,
         initialize: (scope Machine machine) => {
           auto args = machine.args;
-          x = args[0].integer;
-          y = args[1].integer;
+          const hasArgX = args.length >= 1 && (args[0].type == JSType.integer || args[0].type == JSType.number);
+          const hasArgY = args.length >= 2 && (args[1].type == JSType.integer || args[1].type == JSType.number);
+
+          const argX = hasArgX ? args[0] : machine.integer(0);
+          const argY = hasArgY ? args[1] : machine.integer(0);
+          x = argX.integer;
+          y = argY.integer;
 
           auto this_ = machine.this_.object;
           // TODO: Make these getter/setter properties so JS values are reflected back here
-          this_.setProperty(__traits(identifier, x), args[0]);
-          this_.setProperty(__traits(identifier, y), args[1]);
+          this_.setProperty(__traits(identifier, x), argX);
+          this_.setProperty(__traits(identifier, y), argY);
         }(),
       };
       super(klass);
@@ -971,6 +987,8 @@ unittest {
   assert(position.type == JSType.reference);
   assert(position.data == cast(void*) point);
   assert(position.data!Point == point);
+  assert(position.data!Point.x == 0);
+  assert(position.data!Point.y == 0);
 
   destroy(machine);
 }

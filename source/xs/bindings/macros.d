@@ -796,19 +796,28 @@ inout(xsSlot) xsGlobal(scope inout xsMachine* the) {
 
 // Host Constructors, Functions and Objects
 
-// TODO: xsNewHostConstructor
-// #define xsNewHostConstructor(xsCallback _CALLBACK,_LENGTH,_PROTOTYPE) \
-// 	(xsOverflow(-1), \
-// 	fxPush(_PROTOTYPE), \
-// 	fxNewHostConstructor(the, _CALLBACK, _LENGTH, xsNoID), \
-// 	fxPop())
+/// Creates a host constructor, and returns a reference to the new host constructor.
+///
+/// Params:
+/// the=A machine
+/// callback=The callback to execute
+/// length=The number of parameters expected by the callback
+/// prototype=A reference to the prototype of the instance to create
+/// Returns: A reference to the new host constructor.
+xsSlot xsNewHostConstructor(scope xsMachine* the, xsCallback callback, int length, const xsSlot prototype) {
+	xsOverflow(the, -1);
+	fxPush(the, cast(xsSlot) prototype);
+	fxNewHostConstructor(the, callback, length, xsNoID);
+	return fxPop(the);
+}
 
-// TODO: xsNewHostConstructorObject
-// #define xsNewHostConstructorObject(xsCallback _CALLBACK,_LENGTH,_PROTOTYPE, _NAME) \
-// 	(xsOverflow(-1), \
-// 	fxPush(_PROTOTYPE), \
-// 	fxNewHostConstructor(the, _CALLBACK, _LENGTH, _NAME), \
-// 	fxPop())
+///
+xsSlot xsNewHostConstructorObject(scope xsMachine* the, xsCallback callback, int length, const xsSlot prototype, xsIndex name) {
+	xsOverflow(the, -1);
+	fxPush(the, cast(xsSlot) prototype);
+	fxNewHostConstructor(the, callback, length, name);
+	return fxPop(the);
+}
 
 /// Creates a host function, and returns a reference to the new host function.
 ///
@@ -959,14 +968,14 @@ void xsAccess(scope xsMachine* the, const xsSlot slot) {
 
 debug {
   ///
-  void xsThrow(scope xsMachine* the, xsSlot slot, string file = __FILE__, int line = __LINE__) {
-    the.stackTop[-2] = slot;
+  void xsThrow(scope xsMachine* the, const xsSlot slot, string file = __FILE__, int line = __LINE__) {
+    the.stackTop[-2] = cast(xsSlot) slot;
     fxThrow(the, cast(char*) file.toStringz, line);
   }
 } else {
   ///
-  void xsThrow(scope xsMachine* the, xsSlot slot) {
-    the.stackTop[-2] = slot;
+  void xsThrow(scope xsMachine* the, const xsSlot slot) {
+    the.stackTop[-2] = cast(xsSlot) slot;
     fxThrow(the, null, 0);
   }
 }
